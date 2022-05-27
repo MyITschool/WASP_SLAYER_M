@@ -5,8 +5,10 @@ import com.example.engine.core.Updated;
 import com.example.engine.math.Vector2;
 import com.example.engine.math.Vector2Int;
 import com.example.engine.math.Vector3;
+import com.example.engine.math.Vector4;
 import com.example.engine.render.RenderUI;
 import com.example.tao2.scenes.DungeScene;
+import com.example.tao2.scenes.NextLvlAnim;
 import com.example.tao2.updated.Player;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class DungeGen extends Updated {
     public Vector2Int res;
     public float roomRes;
     public int maxRooms;
-
+    private RenderUI bs;
     private Room[][] spawnedRooms;
     private final Core core;
     private final Player player;
@@ -28,6 +30,9 @@ public class DungeGen extends Updated {
     }
 
     private int es;
+
+
+
     public void start(){
         spawnedRooms = new Room[res.x][res.y];
         spawnedRooms[res.x/2][res.y/2] = startRoom;
@@ -68,10 +73,13 @@ public class DungeGen extends Updated {
             RenderUI dt = core.getRenderer().addUI();
             dt.setTexture(7);
             dt.setScale(new Vector2(0.8f, -0.3f));
+            dt.setPosition(new Vector3(0,0,0));
+
+            bs = core.getRenderer().addUI();
+            bs.setColor(new Vector4(0));
 
             det = System.currentTimeMillis()+dcd;
         }
-            //core.setScene(new DungeScene(core), false);
     }
 
     private void placeRoom(){
@@ -181,11 +189,23 @@ public class DungeGen extends Updated {
     }
 
 
+    private boolean nl = false;
+
     @Override
     public void update() {
         Vector2 touch = core.getTouchListener().getTouchDown(new Vector2(0), new Vector2(0.8f, 0.3f));
         if (touch.x != -1 && (System.currentTimeMillis() - det) > 0){
-            core.setScene(new DungeScene(core), false);
+            //core.setScene(new DungeScene(core), false);
+            nl = true;
+            det = System.currentTimeMillis()+dcd;
         }
+
+        if (nl && (System.currentTimeMillis() - det) < 0){
+            bs.setColor(new Vector4(0,0,0, 1+(System.currentTimeMillis() - det) / (float)dcd));
+        }else if (nl && (System.currentTimeMillis() - det) > 0){
+            core.setScene(new NextLvlAnim(core), false);
+        }
+
+
     }
 }

@@ -26,10 +26,10 @@ public class Menu extends Scene {
                         "img/gun_0.png","img/gun_1.png","img/gun_2.png", "img/razjalovan.png",
                         "img/dalishe.png", "img/menu.png"}
         );
-        config.usRandL = 0;
+        config.usRandL = 0.09f;
         config.ambient = 0;
         modelLoader.loadModels(new String[]{"models/room_0.obj","models/door_0.obj",
-                "models/room_1.obj","models/room_2.obj","models/bee.obj"}, true);
+                "models/room_1.obj","models/room_2.obj","models/bee.obj","models/pipe.obj"}, true);
 
         audioLoader.addAudios(new String[]{"mp3/menu.mp3", "mp3/bee.mp3", "mp3/bg_m.mp3", "mp3/shoot_0.mp3"});
         core.getLoop().setFPS(30);
@@ -63,6 +63,6 @@ public class Menu extends Scene {
 
     @Override
     public void dispose() {
-//        audioLoader.getAudio(0).dispose();
+        audioLoader.getAudio(0).dispose();
     }
 }

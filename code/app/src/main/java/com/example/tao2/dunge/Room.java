@@ -32,12 +32,12 @@ public class Room implements Cloneable{
 
     public void addLight(){
         Vector3 arrP = room.getPosition();
-        core.getRenderer().addPointLight(new Vector4(arrP.x, arrP.y+3f, arrP.z, 0), new Vector4(1,1,1,3f));//new float[]{arrP.x, arrP.y-0.2f, arrP.z, 0}, new float[]{1,1,1,0.1f});
+        core.getRenderer().addPointLight(new Vector4(arrP.x, arrP.y+3f, arrP.z, 0), new Vector4(1,1,1,2f));//new float[]{arrP.x, arrP.y-0.2f, arrP.z, 0}, new float[]{1,1,1,0.1f});
 
         RendererGL renderer = core.getRenderer();
         RenderObject l = renderer.addObject(renderer.getCubeVert());
         l.setScale(new Vector3(0.3f));
-        l.setPosition(new Vector3(arrP.x, arrP.y+3f, arrP.z));
+        l.setPosition(new Vector3(arrP.x, arrP.y+3.5f, arrP.z));
     }
 
     public int spawn_enemy(Player player, DungeGen dungeGen){

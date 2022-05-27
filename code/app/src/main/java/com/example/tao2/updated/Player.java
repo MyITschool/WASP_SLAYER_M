@@ -33,6 +33,8 @@ public class Player extends Updated {
 
     private final Audio shoot;
 
+    private RenderUI bs;
+
     public Player(Core core){
         this.core = core;
         this.renderer = core.getRenderer();
@@ -71,6 +73,8 @@ public class Player extends Updated {
         gun.setScale(new Vector2(0.5f,-0.5f));
         gun.setPosition(new Vector3(0.5f,-0.5f,0));
         gun.setTexture(3);
+
+
     }
 
     private long det = -1;
@@ -91,6 +95,9 @@ public class Player extends Updated {
                 dt.setTexture(6);
                 dt.setScale(new Vector2(0.8f, -0.3f));
 
+                bs = core.getRenderer().addUI();
+                bs.setColor(new Vector4(1,0,0,0));
+
                 core.getLoop().clear();
                 core.getLoop().addUpdateObj(this);
 
@@ -110,12 +117,22 @@ public class Player extends Updated {
 
     private boolean gun_s = true;
 
+    private boolean nl = false;
+
     public void update() {
         if (hp > 0){
             upd();
         }else {
             Vector2 touch = touchListener.getTouchDown(new Vector2(0), new Vector2(0.8f, 0.3f));
             if (touch.x != -1 && (System.currentTimeMillis() - det) > 0){
+               // core.setScene(new Menu(core), false);
+                det = System.currentTimeMillis()+dcd;
+                nl=true;
+            }
+
+            if (nl && (System.currentTimeMillis() - det) < 0){
+                bs.setColor(new Vector4(1,0,0, 1+(System.currentTimeMillis() - det) / (float)dcd));
+            }else if (nl && (System.currentTimeMillis() - det) > 0){
                 core.setScene(new Menu(core), false);
             }
         }

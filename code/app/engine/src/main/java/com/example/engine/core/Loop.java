@@ -31,6 +31,9 @@ public class Loop extends GLSurfaceView implements Runnable{
     public void setFPS(int fps){
         UPDATE_TIME = 1000/fps;
     }
+    public int getFPS(){
+        return UPDATE_TIME * 1000;
+    }
 
     @Override
     public void run() {

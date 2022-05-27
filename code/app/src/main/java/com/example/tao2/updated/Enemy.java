@@ -114,14 +114,13 @@ public class Enemy extends Updated {
             if(dir.length() <= max_depth){
                 float a = -(float) ((float) Math.atan2(pp.z-ep.z, pp.x-ep.x)*180/Math.PI)+90;
                 float ry = enemy_ro.getRotate().y;
-                float da = 0;
                 //if(a>0){
-                    da = (a-ry)/Math.abs(a-ry)*rot_speed;
+                float da = (a-ry)/Math.abs(a-ry)*rot_speed;
 //                }else {
 //                    da = (ry-a)/Math.abs(a-ry)*rot_speed;
 //                }
 
-                if(Math.abs(a-ry)>5){
+                if(Math.abs(a-ry)>10){
                     ry+=da;
                     enemy_ro.setRotate(new Vector3(0, ry, 0));
                 }
