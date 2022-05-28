@@ -13,9 +13,10 @@ import com.example.engine.model.ModelLoader;
 import com.example.engine.physics.CubeCollider;
 import com.example.engine.render.RenderUI;
 import com.example.engine.render.RendererGL;
+import com.example.tao2.MainActivity;
 
 public class Menu extends Scene {
-    private boolean usp = false;
+    private final boolean usp;
     public Menu(Core core, boolean usp) {
         super(core);
         this.usp=usp;
@@ -31,7 +32,7 @@ public class Menu extends Scene {
             renderer.loadTextures(new String[]
                     {"models/room_0.png","img/controlBox.png","img/controlBoxBarrier.png",
                             "img/gun_0.png","img/gun_1.png","img/gun_2.png", "img/razjalovan.png",
-                            "img/dalishe.png", "img/menu.png"}
+                            "img/dalishe.png", "img/menu.png", "img/font.png"}
             );
             config.usRandL = 0.09f;
             config.ambient = 0;
@@ -90,14 +91,22 @@ public class Menu extends Scene {
         }
 
         System.out.println("Menu preload");
+
     }
 
+    private RenderUI bs;
     @Override
     public void start() {
         RenderUI m = renderer.addUI();
         m.setTexture(8);
         m.setScale(new Vector2(1, -1));
-        audioLoader.getAudio(0).play(true, new Vector2(1));
+
+        MainActivity ma = (MainActivity)core;
+
+        audioLoader.getAudio(0).play(true, new Vector2(ma.settings.musicVolume));
+
+        bs = renderer.addUI();
+        bs.setColor(new Vector4(0));
     }
 
     @Override
@@ -105,10 +114,22 @@ public class Menu extends Scene {
         audioLoader.getAudio(0).play(true, new Vector2(1));
     }
 
+    private boolean nl = false;
+    private long det;
+    private final int dcd = 500;
+
     @Override
     public void update() {
         Vector2 t = touchListener.getTouchDown(new Vector2(0), new Vector2(0.4f));
         if (t.x != -1){
+            //core.setScene(new NextLvlAnim(core), false);
+            nl = true;
+            det = System.currentTimeMillis()+dcd;
+        }
+
+        if (nl && (System.currentTimeMillis() - det) < 0){
+            bs.setColor(new Vector4(0,0,0, 1+(System.currentTimeMillis() - det) / (float)dcd));
+        }else if (nl && (System.currentTimeMillis() - det) > 0){
             core.setScene(new NextLvlAnim(core), false);
         }
     }

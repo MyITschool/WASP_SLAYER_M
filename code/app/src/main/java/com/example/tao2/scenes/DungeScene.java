@@ -11,6 +11,7 @@ import com.example.engine.math.Vector3;
 import com.example.engine.model.Model;
 import com.example.engine.model.ModelLoader;
 import com.example.engine.render.RendererGL;
+import com.example.tao2.MainActivity;
 import com.example.tao2.dunge.DungeGen;
 import com.example.tao2.dunge.Room;
 import com.example.tao2.updated.Player;
@@ -32,9 +33,9 @@ public class DungeScene extends Scene {
 
     @Override
     public void start() {
-
-        audioLoader.getAudio(2).play(true, new Vector2(0.7f));
-        audioLoader.getAudio(1).play(true, new Vector2(0.1f));
+        MainActivity ma = (MainActivity)core;
+        audioLoader.getAudio(2).play(true, new Vector2(ma.settings.musicVolume));
+        audioLoader.getAudio(1).play(true, new Vector2(ma.settings.musicVolume*0.1f));
 
         Player player = new Player(core);
 

@@ -78,9 +78,6 @@ public class Core  extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-    public Core(){
-
-    }
 
     public void onResume(){
         super.onResume();

@@ -14,6 +14,7 @@ import com.example.engine.physics.Hit;
 import com.example.engine.physics.Physics;
 import com.example.engine.render.RenderUI;
 import com.example.engine.render.RendererGL;
+import com.example.tao2.MainActivity;
 import com.example.tao2.scenes.Menu;
 
 public class Player extends Updated {
@@ -41,7 +42,11 @@ public class Player extends Updated {
         this.touchListener = core.getTouchListener();
         this.physics = core.getPhysics();
         this.func = core.getFunc();
+
+        MainActivity ma = (MainActivity)core;
+
         shoot = core.getAudioLoader().getAudio(3);
+        shoot.setVolume(new Vector2(ma.settings.soundsVolume));
 
         renderer.camera.rotateModeView=false;
         renderer.camera.setPosition(new Vector3(0,-2f,0));
