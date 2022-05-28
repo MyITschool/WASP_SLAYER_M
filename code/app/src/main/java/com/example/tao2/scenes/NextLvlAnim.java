@@ -21,17 +21,6 @@ public class NextLvlAnim extends Scene {
 
     @Override
     public void preload() {
-//        modelLoader.loadModels(new String[]{"models/room_0.obj","models/door_0.obj",
-//                "models/room_1.obj","models/room_2.obj","models/bee.obj","models/pipe.obj"}, true);
-//        renderer.loadTextures(new String[]
-//                {"models/room_0.png","img/controlBox.png","img/controlBoxBarrier.png",
-//                        "img/gun_0.png","img/gun_1.png","img/gun_2.png", "img/razjalovan.png",
-//                        "img/dalishe.png", "img/menu.png"}
-//        );
-//
-//        config.ambient = 0;
-//
-//        core.getLoop().setFPS(30);
     }
 
     private boolean es = false;
@@ -40,10 +29,6 @@ public class NextLvlAnim extends Scene {
 
     @Override
     public void start() {
-//        config.setGlobal_light_dir(new Vector3(0, 1, 0));
-////        config.setGlobal_light_color(new float[]{0.5f,0.5f,0.5f});
-//        config.setClear_color(new Vector4(0,0,0,1));
-//        config.setGlobal_light_color(new Vector3(0.f,0.f,0.f));
 
 
         Model model = modelLoader.getModel(5);

@@ -118,7 +118,8 @@ public class Core  extends AppCompatActivity {
         }
 
         this.scene=scene;
-        this.scene.start();
+        renderer.sns=true;
+       // this.scene.start();
         //renderer.set_scene();
     }
 

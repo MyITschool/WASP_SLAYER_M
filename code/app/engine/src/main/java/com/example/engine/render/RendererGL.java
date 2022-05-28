@@ -321,10 +321,17 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         core.getScene().start();
     }
 
+    public boolean sns = false;
+
     @Override
     public void onDrawFrame(GL10 gl10) {
         //glDisable(GL10.GL_CULL_FACE);
         //glEnable(GL10.GL_ALPHA);
+
+        if(sns){
+            activ_preload();
+            sns=false;
+        }
 
         glEnable(GL10.GL_BLEND);
         glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);

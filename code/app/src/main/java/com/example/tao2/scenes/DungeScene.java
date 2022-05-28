@@ -8,10 +8,8 @@ import com.example.engine.core.Scene;
 import com.example.engine.math.Vector2;
 import com.example.engine.math.Vector2Int;
 import com.example.engine.math.Vector3;
-import com.example.engine.math.Vector4;
 import com.example.engine.model.Model;
 import com.example.engine.model.ModelLoader;
-import com.example.engine.physics.CubeCollider;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.dunge.DungeGen;
 import com.example.tao2.dunge.Room;
@@ -38,11 +36,6 @@ public class DungeScene extends Scene {
         audioLoader.getAudio(2).play(true, new Vector2(0.7f));
         audioLoader.getAudio(1).play(true, new Vector2(0.1f));
 
-        config.setGlobal_light_dir(new Vector3(0, 1, 0));
-//        config.setGlobal_light_color(new float[]{0.5f,0.5f,0.5f});
-        config.setClear_color(new Vector4(0,0,0,1));
-        config.setGlobal_light_color(new Vector3(0.f,0.f,0.f));
-
         Player player = new Player(core);
 
         /*RenderObject c = renderer.addObject(renderer.getCubeVert());
@@ -57,40 +50,7 @@ public class DungeScene extends Scene {
                 modelLoader.getModel(3),
         };
         Model bee = modelLoader.getModel(4);
-        bee.texture = 0;
 
-        roomsModel[0].texture = 0;
-        roomsModel[1].texture = 0;
-        roomsModel[2].texture = 0;
-        roomsModel[3].texture = 0;
-
-        roomsModel[0].colliders = new CubeCollider[]{
-                new CubeCollider(new Vector3(-4.5f, 0, -3), new Vector3(2,2,3.25f)),
-                new CubeCollider(new Vector3(-2.5f, 0, -4.5f), new Vector3(2.5f,2,1.25f)),
-
-                new CubeCollider(new Vector3(2, 0, -4.5f), new Vector3(3f,2,1.25f)),
-                new CubeCollider(new Vector3(4.5f, 0, -3), new Vector3(1,2,3.25f)),
-
-                ////////////////////////////////////////////////////////////////////
-                new CubeCollider(new Vector3(-4.5f, 0, 2), new Vector3(1.25f,2,3.25f)),
-                new CubeCollider(new Vector3(-2.5f, 0, 4f), new Vector3(2.5f,2,1.25f)),
-
-                new CubeCollider(new Vector3(2, 0, 4f), new Vector3(3f,2,1.25f)),
-                new CubeCollider(new Vector3(4f, 0, 2), new Vector3(1.25f,2,3.25f))
-        };
-        roomsModel[2].colliders = new CubeCollider[]{
-                new CubeCollider(new Vector3(-2.5f, 0, 4f), new Vector3(2.5f,2,1.25f)),
-                new CubeCollider(new Vector3(2, 0, 4f), new Vector3(3f,2,1.25f)),
-
-                new CubeCollider(new Vector3(-4.5f, 0, 0), new Vector3(1,2,10)),
-                new CubeCollider(new Vector3(4f, 0, 0), new Vector3(1,2,10)),
-
-                new CubeCollider(new Vector3(0, 0, -4.5f), new Vector3(10,2,1.25f)),
-        };
-        roomsModel[3].colliders = new CubeCollider[]{
-                new CubeCollider(new Vector3(-1.5f, 0, 0), new Vector3(1,2,10)),
-                new CubeCollider(new Vector3(1f, 0, 0), new Vector3(1,2,10)),
-        };
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         Room startRoom = new Room(core);

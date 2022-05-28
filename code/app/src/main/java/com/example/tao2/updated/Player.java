@@ -133,7 +133,7 @@ public class Player extends Updated {
             if (nl && (System.currentTimeMillis() - det) < 0){
                 bs.setColor(new Vector4(1,0,0, 1+(System.currentTimeMillis() - det) / (float)dcd));
             }else if (nl && (System.currentTimeMillis() - det) > 0){
-                core.setScene(new Menu(core), false);
+                core.setScene(new Menu(core, false), false);
             }
         }
     }
