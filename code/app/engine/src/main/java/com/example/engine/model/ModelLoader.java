@@ -1,6 +1,7 @@
 package com.example.engine.model;
 
 import com.example.engine.core.Core;
+import com.example.engine.math.Vector3;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,12 +83,39 @@ public class ModelLoader {
 
         //System.out.println(Ovt);
 //        System.out.println(v.size());
+        Model m = new Model();
+
+        Vector3 min = new Vector3(0);
+        Vector3 max = new Vector3(0);
 
         float[] arr = new float[Ov.size()];
         for (int i = 0;i<Ov.size();i++){
             arr[i]=Ov.get(i);
+
+            if(i%3==0){
+                if(arr[i] > max.x){
+                    max.x=arr[i];
+                }else if(arr[i] < min.x){
+                    min.x=arr[i];
+                }
+            }else if(i%3-1==0){
+                if(arr[i] > max.y){
+                    max.y=arr[i];
+                }else if(arr[i] < min.y){
+                    min.y=arr[i];
+                }
+            }else if(i%3-2==0){
+                if(arr[i] > max.z){
+                    max.z=arr[i];
+                }else if(arr[i] < min.z){
+                    min.z=arr[i];
+                }
+            }
         }
-        Model m = new Model();
+
+        m.maxPoint=max.clone();
+        m.minPoint=min.clone();
+
         m.v=arr;
         ////////////////////////////////////////
         arr = new float[Ovn.size()];

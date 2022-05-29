@@ -21,6 +21,7 @@ import android.opengl.Matrix;
 import com.example.engine.core.Core;
 import com.example.engine.math.Vector;
 import com.example.engine.math.Vector3;
+import com.example.engine.math.Vector4;
 import com.example.engine.model.Model;
 import com.example.engine.physics.CubeCollider;
 
@@ -72,12 +73,16 @@ public class RenderModel {
 
     private final Core core;
 
+    private Model tmodel=new Model();
+
     public RenderModel(float[] vertex, int[] shader_vars, int[] mVBOIds, int[] uMaterial, Core core) {
         this.core=core;
+        tmodel.minPoint=new Vector3(-1);
+        tmodel.maxPoint= new Vector3(1);
         this.shader_vars = shader_vars;
         this.mVBOIds = mVBOIds;
         this.uMaterial = uMaterial;
-        
+
         mVerticesData=vertex;
         //mIndicesData=index;
 
@@ -94,6 +99,7 @@ public class RenderModel {
     }
     public RenderModel(Model model, int[] shader_vars, int[] mVBOIds, int[] uMaterial, Core core){
         this.core=core;
+        tmodel=model;
         this.shader_vars = shader_vars;
         this.mVBOIds = mVBOIds;
         this.uMaterial = uMaterial;
@@ -408,6 +414,23 @@ public class RenderModel {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVBOIds[1]);
     }
 
+    private boolean gp(Vector3 vm, float[] m){
+        float[] vpos = new float[4];
+        Vector3 v = vm.clone();
+        float[] va = v.getArray();
+        System.arraycopy(va, 0, vpos, 0, 3);
+        vpos[3]=1;
+        Matrix.multiplyMV(vpos, 0, m, 0, vpos, 0);
+
+        Vector4 p = new Vector4(vpos);
+        //return (vpos[0] >= 1 || vpos[0] <= -1 || vpos[1] >= 1 || vpos[1] <= -1 || vpos[2] >= 1 || vpos[2] <= -1);
+        return (-p.w <= p.x && p.x <= p.w) &&
+                (-p.w <= p.y && p.y <= p.w) &&
+                (0 <= p.z && p.z <= p.w);
+    }
+
+
+
     public void draw() {
 
         if(objUpd){
@@ -417,17 +440,68 @@ public class RenderModel {
 
         Vector3 cam_p = Vector.mul(core.getRenderer().camera.getPosition(), -1);
         if (Vector.sub(objectPos, cam_p).length() > core.getConfig().max_render_depth){
+
             return;
         }
 
+
         if(material[5]==1){
+            //if (true){
+                float[] cm = core.getRenderer().camera.getvPMatrix();
+                float[] m = new float[16];
+                Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
+
+                Vector3 v0 = tmodel.maxPoint.clone();
+                Vector3 v1 = tmodel.minPoint.clone();
+                Vector3 v2 = new Vector3(v1.x, v0.y, v0.z);
+                Vector3 v3 = new Vector3(v1.x, v1.y, v0.z);
+                Vector3 v4 = new Vector3(v0.x, v1.y, v0.z);
+                Vector3 v5 = new Vector3(v0.x, v0.y, v1.z);
+                Vector3 v6 = new Vector3(v0.x, v1.y, v1.z);
+                Vector3 v7 = new Vector3(v1.x, v0.y, v1.z);
+
+                Vector3 v8 = new Vector3(v0.x/2, v0.y/2, v0.z);
+                Vector3 v9 = new Vector3(v0.x, v0.y/2, v0.z/2);
+                Vector3 v10 = new Vector3(v0.x/2, v0.y/2, v0.z);
+                Vector3 v11 = new Vector3(v1.x, v0.y/2, v0.z/2);
+
+                Vector3 v12 = new Vector3(v0.x/2, v1.y, v0.z);
+                Vector3 v13 = new Vector3(v0.x, v1.y, v0.z/2);
+                Vector3 v14 = new Vector3(v0.x/2, v1.y, v0.z);
+                Vector3 v15 = new Vector3(v1.x, v1.y, v0.z/2);
+
+//                float ml = Math.max(Math.max(Math.max(v0.x, Math.abs(v1.x)), Math.max(v0.y, Math.abs(v1.y))), Math.max(v0.z, Math.abs(v1.z)));
+                float s = Math.max(Math.abs(objectSize.z), Math.max(Math.abs(objectSize.x), Math.abs(objectSize.y)));
+//                ml*=s*2;
+                 Vector3 ml = new Vector3(
+                         Math.max(v0.x, Math.abs(v1.x)),
+                         Math.max(v0.y, Math.abs(v1.y)),
+                         Math.max(v0.z, Math.abs(v1.z))
+                 );
+                float l = ml.length()*s*2;
+
+                if(!(gp(v0, m) || gp(v1, m) || gp(v2, m) || gp(v3, m) ||
+                        gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
+                        || gp(v8, m) || gp(v9, m) || gp(v10, m) || gp(v11, m)
+                        || gp(v12, m) || gp(v13, m) || gp(v14, m) || gp(v15, m)
+                || Vector.sub(objectPos, cam_p).length() <= l)){
+                    return;
+                }
+
+           // }
+
+            //int l = setBuffers2();
             setBuffers();
             putBuffers();
 
             setUniforms();
 
-            // glDrawElements(GL_TRIANGLES, mIndicesData.length, GL_UNSIGNED_SHORT, 0);
+            //if (l!=0) glDrawArrays(GL_TRIANGLES, 0, l);
+
+
             glDrawArrays(GL_TRIANGLES, 0, mVerticesData.length);
+
+
 
 //        if(material[5]>-1.f) {
 //            //glUniformMatrix4fv(renderer.uVPMatrix, 1, false, renderer.camera.getvPMatrix(), 0);
@@ -446,6 +520,10 @@ public class RenderModel {
     }
 
     public void draw_shadow() {
+        Vector3 cam_p = Vector.mul(core.getRenderer().shadow_camera.getPosition(), -1);
+        if (Vector.sub(objectPos, cam_p).length() > core.getConfig().max_render_depth){
+            return;
+        }
         if(material[0]!=0&&material[5]==1){
             setBuffers();
             putShadowBuffers();

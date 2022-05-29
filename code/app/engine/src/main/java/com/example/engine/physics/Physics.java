@@ -48,6 +48,17 @@ public class Physics {
         return false;
     }
 
+    public boolean CubeInters(CubeCollider collider, CubeCollider collider1) {
+        float[] cube0 = new float[]{collider.pos.x-collider.size.x/2, collider.pos.y-collider.size.y/2, collider.pos.z-collider.size.z/2,
+                collider.pos.x+collider.size.x/2, collider.pos.y+collider.size.y/2, collider.pos.z+collider.size.z/2,};
+        float[] cube1 = new float[]{collider1.pos.x-collider1.size.x/2, collider1.pos.y-collider1.size.y/2, collider1.pos.z-collider1.size.z/2,
+                collider1.pos.x+collider1.size.x/2, collider1.pos.y+collider1.size.y/2, collider1.pos.z+collider1.size.z/2,};
+        for (int i = 0; i < 3; ++i)
+            if (!Inters(cube0[i], cube0[i + 3], cube1[i], cube1[i + 3]))
+                return false;
+        return true;
+    }
+
     private boolean CubeInters(float[] cube0, float[] cube1 ) {
         for (int i = 0; i < 3; ++i)
             if (!Inters(cube0[i], cube0[i + 3], cube1[i], cube1[i + 3]))
@@ -102,7 +113,9 @@ public class Physics {
                 float dist = Vector.sub(ro, c.pos).length();
                 if(dist < min){
                     min=dist;
-                    hit=new Hit(dist, c, i);
+                    hit.distance=dist;
+                    hit.collider=c;
+                    hit.index=i;
                 }
             }
         }

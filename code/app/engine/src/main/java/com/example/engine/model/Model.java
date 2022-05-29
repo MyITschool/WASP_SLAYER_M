@@ -17,6 +17,8 @@ public class Model {
     public Vector3 pos=new Vector3(0);
     public Vector3 rot=new Vector3(0);
 
+    public Vector3 minPoint = new Vector3(-1);
+    public Vector3 maxPoint = new Vector3(1);
 
     @Override
     public String toString() {

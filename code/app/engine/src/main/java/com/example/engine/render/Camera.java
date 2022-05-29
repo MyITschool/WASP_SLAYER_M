@@ -22,7 +22,8 @@ public class Camera {
 
     public void setFar(float far){
         this.far = far;
-        genVPMatrix();
+        cameraUpd=true;
+        //genVPMatrix();
     }
 
     public boolean rotateModeView = true;
@@ -32,23 +33,23 @@ public class Camera {
 
     public void setResolution(Vector2Int res){
         this.res = res;
-
         cameraUpd=true;
-
-        genProjectionMatrix();
-        genVPMatrix();
+        //rotate();
     }
     public void setFOV(float fov){
         this.FOV = fov;
         cameraUpd=true;
+        //rotate();
     }
     public void setPosition(Vector3 cameraPos){
         this.cameraPos=cameraPos;
         cameraUpd=true;
+        //rotate();
     }
     public void setRotate(Vector3 cameraRot){
         this.cameraRot=cameraRot;
         cameraUpd=true;
+        //rotate();
     }
 
     private void rotate(){
@@ -100,11 +101,13 @@ public class Camera {
         float ratio = (float) res.x / res.y;
 
         Matrix.perspectiveM(vPMatrix,0, FOV, ratio, 0.1f, far);
+
     }
     private void genProjectionMatrix(){
         float ratio = (float) res.x / res.y;
         //Matrix.frustumM(projectionMatrix,0,-ratio,ratio,-1,1,1,100);
         Matrix.perspectiveM(projectionMatrix,0, FOV, ratio, 0.1f, far);
+
     }
 
 

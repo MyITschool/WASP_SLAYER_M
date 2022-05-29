@@ -18,6 +18,12 @@ public class Vector4 implements Cloneable{
         this.z = i;
         this.w = i;
     }
+    public Vector4(float[] arr){
+        this.x = arr[0];
+        this.y = arr[1];
+        this.z = arr[2];
+        this.w = arr[3];
+    }
 
     public void setXYZW(float x, float y, float z, float w){
         this.x = x;

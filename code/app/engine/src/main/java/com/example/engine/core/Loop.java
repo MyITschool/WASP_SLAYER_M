@@ -1,5 +1,7 @@
 package com.example.engine.core;
 
+import static java.lang.Thread.sleep;
+
 import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
 
@@ -25,7 +27,7 @@ public class Loop extends GLSurfaceView implements Runnable{
         setPreserveEGLContextOnPause(true);
 
         setRenderer(this.core.getRenderer());
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     public void setFPS(int fps){
@@ -46,18 +48,18 @@ public class Loop extends GLSurfaceView implements Runnable{
                 upd=0;
                 timer+=System.currentTimeMillis()-timer;
             }
-            long t = System.currentTimeMillis();
+           // long t = System.currentTimeMillis();
             updateGame();
-            requestRender();
+            //requestRender();
 
-            t = System.currentTimeMillis() - t;
-            if(t>=UPDATE_TIME){
-                t=0;
-            }else {
-                t = UPDATE_TIME-t;
-            }
+//            t = System.currentTimeMillis() - t;
+//            if(t>=UPDATE_TIME){
+//                t=0;
+//            }else {
+//                t = UPDATE_TIME-t;
+//            }
             try {
-                Thread.sleep(t);
+                sleep(UPDATE_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -75,9 +77,8 @@ public class Loop extends GLSurfaceView implements Runnable{
 
     private LinkedList<Updated> updateds = new LinkedList<>();
 
-    public Updated addUpdateObj(Updated updated){
+    public void addUpdateObj(Updated updated){
         updateds.add(updated);
-        return updateds.get(updateds.size()-1);
     }
     public void deleteUpdateObj(Updated updated){
         updateds.remove(updated);
