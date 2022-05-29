@@ -32,6 +32,7 @@ import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glClearDepthf;
 import static android.opengl.GLES20.glDepthFunc;
+import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawElements;
 import static android.opengl.GLES20.glEnable;
@@ -100,7 +101,7 @@ public class RendererGL implements GLSurfaceView.Renderer  {
     //          31          32              33      34
             uUITexture, vuTextureCoord, uUIColor, rotateMatrix;*/
 
-    private final int[] shader_vars = new int[37];
+    private final int[] shader_vars = new int[40];
 
     private final int[] uMaterial = new int[6];
     private int[] uUIMaterial = new int[1];
@@ -116,8 +117,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
     public boolean setClearColor = false;
 
-    private LinkedList<RenderObject> renderObjectList = new LinkedList<>();
-    private LinkedList<RenderUI> renderUIList = new LinkedList<>();
+    private LinkedList<RenderModel> renderObjectList = new LinkedList<>();
+    private LinkedList<RenderImg> renderUIList = new LinkedList<>();
 
     public int FBO = -1;
     public boolean usFBO_shadow = false;
@@ -158,10 +159,6 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         config = core.getConfig();
     }
 
-    public boolean upd_s = false;
-    public void set_scene(){
-        upd_s = true;
-    }
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
@@ -179,6 +176,9 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         shader_vars[32] = glGetAttribLocation(mUIPorgramObject, "vTextureCoord");
         //uUIModelMatrix = glGetUniformLocation(mUIPorgramObject, "uModelMatrix");
         shader_vars[30] = glGetUniformLocation(mUIPorgramObject, "uModelMatrix");
+
+
+
         //uUITexture = glGetUniformLocation(mUIPorgramObject, "uTexture");
         shader_vars[31] = glGetUniformLocation(mUIPorgramObject, "uTexture");
         //uUIColor = glGetUniformLocation(mUIPorgramObject, "uColor");
@@ -189,8 +189,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-
-
+        shader_vars[39] = glGetUniformLocation(mProgramObject, "fog_color");
+        shader_vars[37] = glGetUniformLocation(mProgramObject, "far");
         //vPosition = glGetAttribLocation(mProgramObject, "vPosition");
         shader_vars[0] = glGetAttribLocation(mProgramObject, "vPosition");
         shader_vars[35] = glGetUniformLocation(mProgramObject, "random_seed");
@@ -267,6 +267,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         glDepthFunc(GL_LEQUAL);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glEnable(GL10.GL_BLEND);
+        glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
@@ -300,6 +302,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
             shader_vars[14] = glGetUniformLocation(mShadowProgramObject, "uVPMatrix");
             //usModelMatrix = glGetUniformLocation(mShadowProgramObject, "uModelMatrix");
             shader_vars[15] = glGetUniformLocation(mShadowProgramObject, "uModelMatrix");
+
+            shader_vars[38] = glGetUniformLocation(mShadowProgramObject, "far");
         }
 
         if(skyboxN>-1){
@@ -333,9 +337,6 @@ public class RendererGL implements GLSurfaceView.Renderer  {
             sns=false;
         }
 
-        glEnable(GL10.GL_BLEND);
-        glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
         if(setClearColor){
             glClearColor(config.clear_color.x,config.clear_color.y,config.clear_color.z,config.clear_color.w);
             setClearColor=false;
@@ -351,20 +352,17 @@ public class RendererGL implements GLSurfaceView.Renderer  {
             drawSkyBox();
         }
         drawUI();
-
     }
 
     private void drawUI(){
         glUseProgram(mUIPorgramObject);
 
-        //glClearDepthf(1.0f);
-        //glEnable(GL_DEPTH_TEST);
-        //glDepthFunc(GL_LEQUAL);
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
 
         for (int i = 0; i < renderUIList.size(); i++){
             renderUIList.get(i).draw();
         }
+        glEnable(GL_DEPTH_TEST);
     }
 
     private void drawSkyBox(){
@@ -439,7 +437,6 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-
         glViewport(0, 0, res.x,res.y);
 
         setUniforms();
@@ -462,6 +459,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         glUniform1f(shader_vars[35], (float) (Math.random()));
         glUniform1f(shader_vars[36], config.usRandL);
 
+        glUniform1f(shader_vars[37], camera.getFar());
+
         glUniform1i(shader_vars[24], config.ultroSoftShadow);
 
         glUniform3fv(shader_vars[9], 1, new float[]{config.global_light_dir.x,config.global_light_dir.y,config.global_light_dir.z}, 0);
@@ -470,6 +469,7 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         Vector3 cam_pos = camera.getPosition();
         glUniform3fv(shader_vars[12],1, new float[]{cam_pos.x,cam_pos.y,cam_pos.z}, 0);
 
+        glUniform4fv(shader_vars[39],1, config.fog_color.getArray(), 0);
 
         glUniform1f(shader_vars[13], config.ambient);
         glUniform1f(shader_vars[21], config.soft_shadow_cof);
@@ -485,6 +485,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
         if (usFBO_shadow){
             glUniform1i(shader_vars[20], 1);
+
+            glUniform1f(shader_vars[38], shadow_camera.getFar());
         }
 
         drawingLigth();
@@ -521,31 +523,36 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         }
     }
 
-    public RenderObject addObject(float[] vertex){
-        renderObjectList.addLast(new RenderObject(vertex, shader_vars, mVBOIds, uMaterial));
+    public RenderModel addObject(float[] vertex){
+        renderObjectList.addLast(new RenderModel(vertex, shader_vars, mVBOIds, uMaterial,core));
 
         return renderObjectList.get(renderObjectList.size()-1);
     }
 
-    public RenderObject addObject(Model model){
-        renderObjectList.addLast(new RenderObject(model, shader_vars, mVBOIds, uMaterial));
+    public RenderModel addObject(Model model){
+        renderObjectList.addLast(new RenderModel(model, shader_vars, mVBOIds, uMaterial,core));
 
         return renderObjectList.get(renderObjectList.size()-1);
     }
 
-    public void deleteObject(RenderObject object){
+    public void deleteObject(RenderModel object){
         renderObjectList.remove(object);
     }
 
-    public void deleteUI(RenderUI ui){
+    public void deleteUI(RenderImg ui){
         renderUIList.remove(ui);
     }
 
 
-    public RenderUI addUI(){
-        renderUIList.addLast(new RenderUI(shader_vars, mVBOIds, uUIMaterial));
+    public RenderImg addUIImg(){
+        renderUIList.addLast(new RenderImg(shader_vars, mVBOIds, uUIMaterial));
 
         return renderUIList.get(renderUIList.size()-1);
+    }
+    public RenderText addUIText(){
+        RenderText rt = new RenderText(shader_vars, mVBOIds, uUIMaterial);
+        renderUIList.addLast(rt);
+        return rt;
     }
 
 

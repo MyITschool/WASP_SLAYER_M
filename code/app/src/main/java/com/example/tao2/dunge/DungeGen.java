@@ -6,7 +6,7 @@ import com.example.engine.math.Vector2;
 import com.example.engine.math.Vector2Int;
 import com.example.engine.math.Vector3;
 import com.example.engine.math.Vector4;
-import com.example.engine.render.RenderUI;
+import com.example.engine.render.RenderImg;
 import com.example.tao2.scenes.DungeScene;
 import com.example.tao2.scenes.NextLvlAnim;
 import com.example.tao2.updated.Player;
@@ -14,13 +14,13 @@ import com.example.tao2.updated.Player;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class DungeGen extends Updated {
+public class DungeGen implements Updated {
     public Room[] rooms;
     public Room startRoom;
     public Vector2Int res;
     public float roomRes;
     public int maxRooms;
-    private RenderUI bs;
+    private RenderImg bs;
     private Room[][] spawnedRooms;
     private final Core core;
     private final Player player;
@@ -70,12 +70,12 @@ public class DungeGen extends Updated {
             core.getLoop().clear();
             core.getLoop().addUpdateObj(this);
 
-            RenderUI dt = core.getRenderer().addUI();
+            RenderImg dt = core.getRenderer().addUIImg();
             dt.setTexture(7);
-            dt.setScale(new Vector2(0.8f, -0.3f));
+            dt.setScale(new Vector2(0.8f, 0.3f));
             dt.setPosition(new Vector3(0,0,0));
 
-            bs = core.getRenderer().addUI();
+            bs = core.getRenderer().addUIImg();
             bs.setColor(new Vector4(0));
 
             det = System.currentTimeMillis()+dcd;

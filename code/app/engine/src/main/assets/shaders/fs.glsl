@@ -39,6 +39,11 @@ varying mat3 fTBN;
 varying vec3 fFragPos;
 varying vec4 fShadowCoord;
 
+varying float z;
+varying float far_f;
+
+uniform vec4 fog_color;
+
 vec2 r;
 float random(){
     r+=random_seed;
@@ -154,7 +159,7 @@ float getShadow(){
 
     float sc = texture2D(shadowMap, projCoords.xy).x;
 
-    float currentDepth = fShadowCoord.z/100.;
+    float currentDepth = fShadowCoord.z/far_f;
 
     float s = currentDepth - bias < sc ? 1.0 : 0.0;
 
@@ -221,6 +226,8 @@ void main(){
     }
 
 
-    gl_FragColor = vec4(color, 1.0);
+    //gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, 1.0)*(1.0-z)+fog_color*z;
+
     //gl_FragColor = vec4(vec3(random()), 1.0);
 }

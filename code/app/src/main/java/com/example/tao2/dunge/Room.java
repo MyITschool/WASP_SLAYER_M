@@ -8,7 +8,7 @@ import com.example.engine.math.Vector4;
 import com.example.engine.model.Model;
 import com.example.engine.physics.CubeCollider;
 import com.example.engine.physics.Physics;
-import com.example.engine.render.RenderObject;
+import com.example.engine.render.RenderModel;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.updated.Enemy;
 import com.example.tao2.updated.Player;
@@ -17,8 +17,8 @@ public class Room implements Cloneable{
     public float roomRes;
     public Vector2 doorRes;
 
-    public RenderObject room;
-    public RenderObject[] doors = new RenderObject[4];
+    public RenderModel room;
+    public RenderModel[] doors = new RenderModel[4];
 
     private final Core core;
     public Room(Core core){
@@ -35,7 +35,7 @@ public class Room implements Cloneable{
         core.getRenderer().addPointLight(new Vector4(arrP.x, arrP.y+3f, arrP.z, 0), new Vector4(1,1,1,2f));//new float[]{arrP.x, arrP.y-0.2f, arrP.z, 0}, new float[]{1,1,1,0.1f});
 
         RendererGL renderer = core.getRenderer();
-        RenderObject l = renderer.addObject(renderer.getCubeVert());
+        RenderModel l = renderer.addObject(renderer.getCubeVert());
         l.setScale(new Vector3(0.3f));
         l.setPosition(new Vector3(arrP.x, arrP.y+3.5f, arrP.z));
     }
@@ -131,9 +131,9 @@ public class Room implements Cloneable{
     @Override
     public Room clone() {
         try {
-            RenderObject newRoomObj = core.getRenderer().addObject(room.getModel());
+            RenderModel newRoomObj = core.getRenderer().addObject(room.getModel());
 
-            RenderObject[] newDoors = new RenderObject[4];
+            RenderModel[] newDoors = new RenderModel[4];
             for(int i = 0; i < 4; i++){
                 if(doors[i] != null){
                     newDoors[i] = core.getRenderer().addObject(doors[i].getModel());

@@ -10,7 +10,7 @@ varying vec2 fTextureCoord;
 void main() {
     vec4 color;
     if(material[0]>-1.){
-        color = texture2D(uTexture, fTextureCoord);
+        color = texture2D(uTexture, fTextureCoord)*uColor;
     }else{
         color = uColor;
     }

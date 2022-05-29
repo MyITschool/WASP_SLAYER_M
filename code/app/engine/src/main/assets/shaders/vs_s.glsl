@@ -5,7 +5,9 @@ uniform mat4 uModelMatrix;
 
 varying float fz;
 
+uniform float far;
+
 void main(){
-    fz = vec4(uVPMatrix*uModelMatrix*vPosition).z;
+    fz = vec4(uVPMatrix*uModelMatrix*vPosition).z/far;
     gl_Position = uVPMatrix*uModelMatrix*vPosition;
 }

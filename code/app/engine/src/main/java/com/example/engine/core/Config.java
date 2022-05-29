@@ -13,6 +13,9 @@ public class Config {
     public float soft_shadow_cof = 10;
     public float bias = 0.005f;
     public int ultroSoftShadow = 0;
+    public float max_render_depth = 100;
+
+    public Vector4 fog_color = new Vector4(1);
 
     private final Core core;
 

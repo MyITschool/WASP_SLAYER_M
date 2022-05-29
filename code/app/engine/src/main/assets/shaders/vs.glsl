@@ -17,6 +17,10 @@ varying vec2 fNormalTextureCoord;
 varying mat3 fTBN;
 varying vec3 fFragPos;
 varying vec4 fShadowCoord;
+varying float z;
+
+uniform float far;
+varying float far_f;
 
 void main(){
 
@@ -45,6 +49,7 @@ void main(){
         fShadowCoord = depthMVP*uModelMatrix*vPosition;
 
    // }
-
+        far_f=far;
+        z=(uVPMatrix*uModelMatrix*vPosition).z/far;
     gl_Position = uVPMatrix*uModelMatrix*vPosition;
 }

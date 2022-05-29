@@ -7,7 +7,7 @@ import com.example.engine.math.Vector3;
 import com.example.engine.math.Vector4;
 import com.example.engine.model.Model;
 import com.example.engine.model.ModelLoader;
-import com.example.engine.render.RenderObject;
+import com.example.engine.render.RenderModel;
 import com.example.engine.render.RendererGL;
 
 public class NextLvlAnim extends Scene {
@@ -37,7 +37,7 @@ public class NextLvlAnim extends Scene {
 
 
         for (int i = 0; i < 10; i++){
-            RenderObject wall = renderer.addObject(model);
+            RenderModel wall = renderer.addObject(model);
             wall.setPosition(new Vector3(0,-i*5,0));
             wall.setScale(new Vector3(1,1,1));
             wall.setUsNormal(true);

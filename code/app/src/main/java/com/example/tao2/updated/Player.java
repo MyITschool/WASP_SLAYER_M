@@ -12,12 +12,12 @@ import com.example.engine.math.Vector4;
 import com.example.engine.physics.CubeCollider;
 import com.example.engine.physics.Hit;
 import com.example.engine.physics.Physics;
-import com.example.engine.render.RenderUI;
+import com.example.engine.render.RenderImg;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.MainActivity;
 import com.example.tao2.scenes.Menu;
 
-public class Player extends Updated {
+public class Player implements Updated {
 
     private final Core core;
     private final RendererGL renderer;
@@ -25,16 +25,16 @@ public class Player extends Updated {
     private final Physics physics;
     private final Func func;
 
-    private final RenderUI hp_bar;
-    private final RenderUI controlBox;
-    private final RenderUI controlBoxBarrier;
+    private final RenderImg hp_bar;
+    private final RenderImg controlBox;
+    private final RenderImg controlBoxBarrier;
     private float hp = 10;
 
-    private final RenderUI gun;
+    private final RenderImg gun;
 
     private final Audio shoot;
 
-    private RenderUI bs;
+    private RenderImg bs;
 
     public Player(Core core){
         this.core = core;
@@ -52,7 +52,7 @@ public class Player extends Updated {
         renderer.camera.setPosition(new Vector3(0,-2f,0));
         renderer.camera.setRotate(new Vector3(0));
 
-        hp_bar = renderer.addUI();
+        hp_bar = renderer.addUIImg();
         hp_bar.setPosition(new Vector3(0f,1,0));
         hp_bar.setScale(new Vector2(0.5f,0.1f));
         hp_bar.setColor(new Vector4(1,0,0,1));
@@ -61,12 +61,12 @@ public class Player extends Updated {
 
         float ycor = (float) renderer.getResolution().x / (float)renderer.getResolution().y;
 
-        controlBoxBarrier = renderer.addUI();
+        controlBoxBarrier = renderer.addUIImg();
         controlBoxBarrier.setPosition(new Vector3(-0.6f,-0.6f, 0));
         controlBoxBarrier.setScale(new Vector2(0.4f,0.4f*ycor));
         controlBoxBarrier.setTexture(2);
 
-        controlBox= renderer.addUI();
+        controlBox= renderer.addUIImg();
         controlBox.setPosition(new Vector3(-0.6f,-0.6f, 0));
         controlBox.setScale(new Vector2(0.05f,0.05f*ycor));
         controlBox.setTexture(1);
@@ -74,8 +74,8 @@ public class Player extends Updated {
 //        RenderUI curs = renderer.addUI();
 //        curs.setScale(new Vector2(0.01f,0.006f));
 
-        gun = renderer.addUI();
-        gun.setScale(new Vector2(0.5f,-0.5f));
+        gun = renderer.addUIImg();
+        gun.setScale(new Vector2(0.5f,0.5f));
         gun.setPosition(new Vector3(0.5f,-0.5f,0));
         gun.setTexture(3);
 
@@ -96,11 +96,11 @@ public class Player extends Updated {
                 renderer.deleteUI(controlBox);
                 renderer.deleteUI(controlBoxBarrier);
 
-                RenderUI dt = renderer.addUI();
+                RenderImg dt = renderer.addUIImg();
                 dt.setTexture(6);
-                dt.setScale(new Vector2(0.8f, -0.3f));
+                dt.setScale(new Vector2(0.8f, 0.3f));
 
-                bs = core.getRenderer().addUI();
+                bs = core.getRenderer().addUIImg();
                 bs.setColor(new Vector4(1,0,0,0));
 
                 core.getLoop().clear();

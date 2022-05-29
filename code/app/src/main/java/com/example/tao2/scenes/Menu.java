@@ -11,7 +11,8 @@ import com.example.engine.math.Vector4;
 import com.example.engine.model.Model;
 import com.example.engine.model.ModelLoader;
 import com.example.engine.physics.CubeCollider;
-import com.example.engine.render.RenderUI;
+import com.example.engine.render.RenderImg;
+import com.example.engine.render.RenderModel;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.MainActivity;
 
@@ -32,9 +33,10 @@ public class Menu extends Scene {
             renderer.loadTextures(new String[]
                     {"models/room_0.png","img/controlBox.png","img/controlBoxBarrier.png",
                             "img/gun_0.png","img/gun_1.png","img/gun_2.png", "img/razjalovan.png",
-                            "img/dalishe.png", "img/menu.png", "img/font.png"}
+                            "img/dalishe.png", "img/button_start.png", "img/font.png", "img/button_settings.png",
+                            "img/game_name.png"}
             );
-            config.usRandL = 0.09f;
+            config.usRandL = 0.0f;
             config.ambient = 0;
             modelLoader.loadModels(new String[]{"models/room_0.obj","models/door_0.obj",
                     "models/room_1.obj","models/room_2.obj","models/bee.obj","models/pipe.obj"}, true);
@@ -86,27 +88,80 @@ public class Menu extends Scene {
 
 
             config.setGlobal_light_dir(new Vector3(0, 1, 0));
-            config.setClear_color(new Vector4(0,0,0,1));
             config.setGlobal_light_color(new Vector3(0.f,0.f,0.f));
+
+            config.max_render_depth = 15;
+            renderer.camera.setFar(15);
+
+            Vector4 cc = new Vector4((float)44/256*2,(float)26/256*2, (float)2/256*2, 1);
+            config.fog_color = cc;
+            config.setClear_color(cc);
         }
 
         System.out.println("Menu preload");
 
     }
 
-    private RenderUI bs;
+    private RenderImg bs;
+
+    private RenderModel bee;
+
+    boolean es = false;
+
     @Override
     public void start() {
-        RenderUI m = renderer.addUI();
-        m.setTexture(8);
-        m.setScale(new Vector2(1, -1));
+
+        RenderImg gn = renderer.addUIImg();
+        gn.setTexture(11);
+        gn.setScale(new Vector2(0.6f,0.3f));
+        gn.setPosition(new Vector3(0, 0.5f,0));
+        gn.setColor(new Vector4(1,1,1,0.7f));
+        ////////////////////////////////////////////////
+        RenderImg sb = renderer.addUIImg();
+        sb.setTexture(8);
+        sb.setScale(new Vector2(0.3f,0.15f));
+        sb.setPosition(new Vector3(0, 0f,0));
+        sb.setColor(new Vector4(1,1,1,0.7f));
+        ////////////////////////////////////////////////
+        RenderImg seb = renderer.addUIImg();
+        seb.setTexture(10);
+        seb.setScale(new Vector2(0.3f,0.15f));
+        seb.setPosition(new Vector3(0, -0.4f,0));
+        seb.setColor(new Vector4(1,1,1,0.7f));
 
         MainActivity ma = (MainActivity)core;
 
         audioLoader.getAudio(0).play(true, new Vector2(ma.settings.musicVolume));
 
-        bs = renderer.addUI();
+        bs = renderer.addUIImg();
         bs.setColor(new Vector4(0));
+
+        renderer.camera.rotateModeView=false;
+        renderer.camera.setPosition(new Vector3(0,-2f,0));
+        renderer.camera.setRotate(new Vector3(0, 45, 0));
+
+        RenderModel r = renderer.addObject(modelLoader.getModel(0));
+        r.setUsNormal(true);
+        r.setScale(new Vector3(1,1.4f,1));
+
+        RenderModel d = renderer.addObject(modelLoader.getModel(1));
+        d.setUsNormal(true);
+        d.setScale(new Vector3(10,17,10));
+        d.setPosition(new Vector3(0,0.1f,-5));
+
+        RenderModel d1 = renderer.addObject(modelLoader.getModel(1));
+        d1.setUsNormal(true);
+        d1.setScale(new Vector3(10,17,10));
+        d1.setPosition(new Vector3(4f, 0.2f, 0));
+        d1.setRotate(new Vector3(0,90,0));
+
+        renderer.addPointLight(new Vector4(0,2,0,0), new Vector4(1,1,1,2));
+
+        bee = renderer.addObject(modelLoader.getModel(4));
+        bee.setUsNormal(true);
+        bee.setPosition(new Vector3(2, 1.5f, -2));
+
+        es = true;
     }
 
     @Override
@@ -118,9 +173,11 @@ public class Menu extends Scene {
     private long det;
     private final int dcd = 500;
 
+
+    float iu = 0;
     @Override
     public void update() {
-        Vector2 t = touchListener.getTouchDown(new Vector2(0), new Vector2(0.4f));
+        Vector2 t = touchListener.getTouchDown(new Vector2(0), new Vector2(0.3f,0.15f));
         if (t.x != -1){
             //core.setScene(new NextLvlAnim(core), false);
             nl = true;
@@ -132,6 +189,16 @@ public class Menu extends Scene {
         }else if (nl && (System.currentTimeMillis() - det) > 0){
             core.setScene(new NextLvlAnim(core), false);
         }
+
+        if (es){
+            bee.setPosition(new Vector3(2, (float) (1.5f+Math.sin(iu)*0.25f), -2));
+            bee.setRotate(new Vector3(0, (float) (Math.sin(iu)*15f), 0));
+
+            renderer.camera.setRotate(new Vector3((float) (Math.sin(iu)*5), 45+(float) (Math.cos(iu)*5), 0));
+
+            iu+=0.01f;
+        }
+
     }
 
     @Override

@@ -35,7 +35,7 @@ public class DungeScene extends Scene {
     public void start() {
         MainActivity ma = (MainActivity)core;
         audioLoader.getAudio(2).play(true, new Vector2(ma.settings.musicVolume));
-        audioLoader.getAudio(1).play(true, new Vector2(ma.settings.musicVolume*0.1f));
+        audioLoader.getAudio(1).play(true, new Vector2(ma.settings.soundsVolume*0.5f));
 
         Player player = new Player(core);
 

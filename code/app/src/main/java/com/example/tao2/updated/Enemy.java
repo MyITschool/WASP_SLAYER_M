@@ -7,12 +7,12 @@ import com.example.engine.math.Vector3;
 import com.example.engine.model.Model;
 import com.example.engine.physics.CubeCollider;
 import com.example.engine.physics.Physics;
-import com.example.engine.render.RenderObject;
+import com.example.engine.render.RenderModel;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.dunge.DungeGen;
 
-public class Enemy extends Updated {
-    public RenderObject enemy_ro;
+public class Enemy implements Updated {
+    public RenderModel enemy_ro;
 
     private final Core core;
     private final CubeCollider collider;
