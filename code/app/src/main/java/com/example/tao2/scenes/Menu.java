@@ -119,7 +119,7 @@ public class Menu extends Scene {
 
     @Override
     public void start() {
-        ma.settings.read();
+        //ma.settings.read();
 
         RenderImg gn = renderer.addUIImg();
         gn.setTexture(11);
