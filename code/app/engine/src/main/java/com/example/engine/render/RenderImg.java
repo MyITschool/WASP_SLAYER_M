@@ -214,7 +214,11 @@ public class RenderImg {
         return mColor;
     }
 
+    public boolean actively = true;
+
     public void draw() {
+        if(!actively)
+            return;
         setBuffers();
         putBuffers();
 

@@ -8,8 +8,8 @@ import com.example.engine.math.Vector3;
 
 public class Camera {
 
-    private final float[] projectionMatrix = new float[16];
-    private final float[] vPMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
+    private float[] vPMatrix = new float[16];
 
     private Vector3 cameraPos, cameraRot;
 
@@ -24,6 +24,7 @@ public class Camera {
         this.far = far;
         cameraUpd=true;
         //genVPMatrix();
+        rotate();
     }
 
     public boolean rotateModeView = true;
@@ -34,29 +35,35 @@ public class Camera {
     public void setResolution(Vector2Int res){
         this.res = res;
         cameraUpd=true;
-        //rotate();
+        rotate();
     }
     public void setFOV(float fov){
         this.FOV = fov;
         cameraUpd=true;
-        //rotate();
+        rotate();
     }
     public void setPosition(Vector3 cameraPos){
         this.cameraPos=cameraPos;
         cameraUpd=true;
-        //rotate();
+        rotate();
     }
     public void setRotate(Vector3 cameraRot){
         this.cameraRot=cameraRot;
         cameraUpd=true;
-        //rotate();
+        rotate();
     }
 
     private void rotate(){
         cameraUpd=false;
 
-        genVPMatrix();
-        genProjectionMatrix();
+//        genVPMatrix();
+//        genProjectionMatrix();
+        float[] vPMatrix = new float[16];
+        float[] projectionMatrix = new float[16];
+        float ratio = (float) res.x / res.y;
+        Matrix.perspectiveM(vPMatrix,0, FOV, ratio, 0.1f, far);
+        Matrix.perspectiveM(projectionMatrix,0, FOV, ratio, 0.1f, far);
+
         if(rotateModeView){
 
 
@@ -95,19 +102,18 @@ public class Camera {
             Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotY,0);
             Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotZ,0);
         }
+
+        this.vPMatrix = vPMatrix;
+        this.projectionMatrix = projectionMatrix;
     }
 
     private void genVPMatrix(){
         float ratio = (float) res.x / res.y;
-
         Matrix.perspectiveM(vPMatrix,0, FOV, ratio, 0.1f, far);
-
     }
     private void genProjectionMatrix(){
         float ratio = (float) res.x / res.y;
-        //Matrix.frustumM(projectionMatrix,0,-ratio,ratio,-1,1,1,100);
         Matrix.perspectiveM(projectionMatrix,0, FOV, ratio, 0.1f, far);
-
     }
 
 
@@ -115,8 +121,8 @@ public class Camera {
         return projectionMatrix;
     }
     public float[] getvPMatrix(){
-        if(cameraUpd)
-            rotate();
+//        if(cameraUpd)
+//            rotate();
         return vPMatrix;
     }
     public Vector3 getPosition(){

@@ -8,8 +8,8 @@ public class MainActivity extends Core {
 
     public final Settings settings;
 
-    {
-        settings = new Settings();
+    public MainActivity(){
+        settings = new Settings(this);
     }
 
     protected Scene getStartScene(){

@@ -29,7 +29,7 @@ public class TouchListener implements View.OnTouchListener{
 
         synchronized (this){
             int actionMask = event.getActionMasked();
-            int pointerIndex = event.getActionIndex();
+            //int pointerIndex = event.getActionIndex();
             pointerCount = event.getPointerCount();
             switch (actionMask & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN: // первое касание
@@ -53,7 +53,7 @@ public class TouchListener implements View.OnTouchListener{
                         touch[i*2]=event.getX(i);
                         touch[i*2+1]=event.getY(i);
                     }
-                    touchArr(0);
+                    //touchArr(0);
                     isTouch = false;
                     //sb.setLength(0);
                 case MotionEvent.ACTION_POINTER_UP: // прерывания касаний
@@ -62,7 +62,7 @@ public class TouchListener implements View.OnTouchListener{
                         touch[i*2]=event.getX(i);
                         touch[i*2+1]=event.getY(i);
                     }
-                    touchArr(pointerCount);
+                    //touchArr(pointerCount);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     for (int i = 0; i < pointerCount; i++){
@@ -80,11 +80,11 @@ public class TouchListener implements View.OnTouchListener{
     private void touchArr(int pointerCount){
        // System.out.println(pointerCount);
 
-        for (int i = 0; i < 10; i++){
-            if(i>=pointerCount){
+        for (int i = pointerCount; i < 10; i++){
+            //if(i>=pointerCount){
                 touch[i*2]=-1;
                 touch[i*2+1]=-1;
-            }
+            //}
         }
     }
 

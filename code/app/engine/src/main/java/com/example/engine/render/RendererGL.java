@@ -72,8 +72,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -117,8 +117,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
     public boolean setClearColor = false;
 
-    private LinkedList<RenderModel> renderObjectList = new LinkedList<>();
-    private LinkedList<RenderImg> renderUIList = new LinkedList<>();
+    private ArrayList<RenderModel> renderObjectList = new ArrayList<>();
+    private ArrayList<RenderImg> renderUIList = new ArrayList<>();
 
     public int FBO = -1;
     public boolean usFBO_shadow = false;
@@ -399,8 +399,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
     public void clear(){
         Arrays.fill(mLight, 0);
         lastLightIndex = 0;
-        renderObjectList = new LinkedList<>();
-        renderUIList = new LinkedList<>();
+        renderObjectList = new ArrayList<>();
+        renderUIList = new ArrayList<>();
     }
 
     public void addSearchlight(Vector4 pos, Vector4 dir, Vector4 col){//float[] pos, float[] dir, float[] col){
@@ -524,13 +524,13 @@ public class RendererGL implements GLSurfaceView.Renderer  {
     }
 
     public RenderModel addObject(float[] vertex){
-        renderObjectList.addLast(new RenderModel(vertex, shader_vars, mVBOIds, uMaterial,core));
+        renderObjectList.add(new RenderModel(vertex, shader_vars, mVBOIds, uMaterial,core));
 
         return renderObjectList.get(renderObjectList.size()-1);
     }
 
     public RenderModel addObject(Model model){
-        renderObjectList.addLast(new RenderModel(model, shader_vars, mVBOIds, uMaterial,core));
+        renderObjectList.add(new RenderModel(model, shader_vars, mVBOIds, uMaterial,core));
 
         return renderObjectList.get(renderObjectList.size()-1);
     }
@@ -545,13 +545,13 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
 
     public RenderImg addUIImg(){
-        renderUIList.addLast(new RenderImg(shader_vars, mVBOIds, uUIMaterial));
+        renderUIList.add(new RenderImg(shader_vars, mVBOIds, uUIMaterial));
 
         return renderUIList.get(renderUIList.size()-1);
     }
     public RenderText addUIText(){
         RenderText rt = new RenderText(shader_vars, mVBOIds, uUIMaterial);
-        renderUIList.addLast(rt);
+        renderUIList.add(rt);
         return rt;
     }
 

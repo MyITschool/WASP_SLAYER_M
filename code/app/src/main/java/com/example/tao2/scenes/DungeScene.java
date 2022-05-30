@@ -34,8 +34,8 @@ public class DungeScene extends Scene {
     @Override
     public void start() {
         MainActivity ma = (MainActivity)core;
-        audioLoader.getAudio(2).play(true, new Vector2(ma.settings.musicVolume));
-        audioLoader.getAudio(1).play(true, new Vector2(ma.settings.soundsVolume*0.5f));
+        audioLoader.getAudio(2).play(true, new Vector2(ma.settings.getMusicVolume()));
+        audioLoader.getAudio(1).play(true, new Vector2(ma.settings.getSoundsVolume()*0.5f));
 
         Player player = new Player(core);
 
@@ -78,8 +78,8 @@ public class DungeScene extends Scene {
 
         rooms[0].enemys_count = 5;
         rooms[0].enemys_models = bee;
-        rooms[1].enemys_count = 5;
-        rooms[1].enemys_models = bee;
+//        rooms[1].enemys_count = 5;
+//        rooms[1].enemys_models = bee;
 
         createRoom(rooms[2], roomsModel[3], 1, doorRes, new Vector3(1,1.4f,1));
         createDoor(rooms[2], roomsModel[1], new int[]{0,2}, new Vector3(10,17,10));
@@ -115,9 +115,6 @@ public class DungeScene extends Scene {
         room.roomRes = roomRes;
         room.doorRes = doorRes.clone();
         room.room.setScale(scale);
-
-//        room.enemys_models = bee;
-//        room.enemys_count = 3;
     }
 
     private void createDoor(Room room, Model model, int[] activeDoors, Vector3 scale){

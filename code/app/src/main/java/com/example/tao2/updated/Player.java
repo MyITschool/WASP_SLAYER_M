@@ -46,7 +46,7 @@ public class Player implements Updated {
         MainActivity ma = (MainActivity)core;
 
         shoot = core.getAudioLoader().getAudio(3);
-        shoot.setVolume(new Vector2(ma.settings.soundsVolume));
+        shoot.setVolume(new Vector2(ma.settings.getSoundsVolume()));
 
         renderer.camera.rotateModeView=false;
         renderer.camera.setPosition(new Vector3(0,-2f,0));

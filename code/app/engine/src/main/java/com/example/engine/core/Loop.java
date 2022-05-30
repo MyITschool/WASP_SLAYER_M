@@ -27,7 +27,7 @@ public class Loop extends GLSurfaceView implements Runnable{
         setPreserveEGLContextOnPause(true);
 
         setRenderer(this.core.getRenderer());
-        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     public void setFPS(int fps){
@@ -48,18 +48,18 @@ public class Loop extends GLSurfaceView implements Runnable{
                 upd=0;
                 timer+=System.currentTimeMillis()-timer;
             }
-           // long t = System.currentTimeMillis();
+            long t = System.currentTimeMillis();
+            requestRender();
             updateGame();
-            //requestRender();
 
-//            t = System.currentTimeMillis() - t;
-//            if(t>=UPDATE_TIME){
-//                t=0;
-//            }else {
-//                t = UPDATE_TIME-t;
-//            }
+            t = System.currentTimeMillis() - t;
+            if(t>=UPDATE_TIME){
+                t=0;
+            }else {
+                t = UPDATE_TIME-t;
+            }
             try {
-                sleep(UPDATE_TIME);
+                sleep(t);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

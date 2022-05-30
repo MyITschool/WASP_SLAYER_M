@@ -51,8 +51,8 @@ public class RenderModel {
 
     public CubeCollider[] colliders;
 
-    private final float[] modelMatrix = new float[16];
-    private final float[] rotateMatrix = new float[16];
+    private float[] modelMatrix = new float[16];
+    private float[] rotateMatrix = new float[16];
 
     //использовать нормали, использовать текстуру(номер текстуры), использовать текстуру нормалей(номер текстуры), specularStrength, specularPow
     private float[] material = new float[]{0, -1, -1, 0.5f, 32, 1};
@@ -104,6 +104,7 @@ public class RenderModel {
         this.mVBOIds = mVBOIds;
         this.uMaterial = uMaterial;
 
+        mNormalTextureCoordsData = model.vnt;
         mVerticesData = model.v;
         mNormalsData = model.vn;
         mTextureCoordsData = model.vt;
@@ -112,6 +113,8 @@ public class RenderModel {
         objectPos=model.pos.clone();
         objectRot=model.rot.clone();
         objectSize=model.scale.clone();
+
+        setMaterial(model.material.clone());
 
         if(model.texture != -1){
             setUsTexture(model.texture);
@@ -136,7 +139,7 @@ public class RenderModel {
         model.v = mVerticesData;
         model.vn = mNormalsData;
         model.vt = mTextureCoordsData;
-
+        model.vnt = mNormalTextureCoordsData;
         //model.material =  material;
         model.texture = (int) material[1];
        // model.color = mColor;
@@ -258,6 +261,9 @@ public class RenderModel {
     }
 
     private void genModelMatrix(){
+        float[] modelMatrix = new float[16];
+        float[] rotateMatrix = new float[16];
+
         Matrix.setIdentityM(modelMatrix, 0);
 
         //////////////////////////////////////////////////////////////////////////////
@@ -288,6 +294,9 @@ public class RenderModel {
         Matrix.multiplyMM(rotateMatrix, 0, rotateMatrix, 0, rotateMatrixZ, 0);
 
         Matrix.scaleM(rotateMatrix, 0, rotateMatrix,0,1,1,1);
+
+        this.modelMatrix=modelMatrix;
+        this.rotateMatrix=rotateMatrix;
         ///////////////////////////////////////////////////////////////////////////////
     }
 
@@ -329,14 +338,17 @@ public class RenderModel {
     public void setScale(Vector3 size){
         objectSize=size;
         objUpd=true;
+        genModelMatrix();
     }
     public void setRotate(Vector3 rotate){
         objectRot=rotate;
         objUpd=true;
+        genModelMatrix();
     }
     public void setPosition(Vector3 position){
         objectPos=position;
         objUpd=true;
+        genModelMatrix();
     }
     public void setVertices(float[] mVerticesData){
         this.mVerticesData=mVerticesData;
@@ -433,10 +445,10 @@ public class RenderModel {
 
     public void draw() {
 
-        if(objUpd){
-            objUpd=false;
-            genModelMatrix();
-        }
+//        if(objUpd){
+//            objUpd=false;
+//            genModelMatrix();
+//        }
 
         Vector3 cam_p = Vector.mul(core.getRenderer().camera.getPosition(), -1);
         if (Vector.sub(objectPos, cam_p).length() > core.getConfig().max_render_depth){
@@ -460,16 +472,6 @@ public class RenderModel {
                 Vector3 v6 = new Vector3(v0.x, v1.y, v1.z);
                 Vector3 v7 = new Vector3(v1.x, v0.y, v1.z);
 
-                Vector3 v8 = new Vector3(v0.x/2, v0.y/2, v0.z);
-                Vector3 v9 = new Vector3(v0.x, v0.y/2, v0.z/2);
-                Vector3 v10 = new Vector3(v0.x/2, v0.y/2, v0.z);
-                Vector3 v11 = new Vector3(v1.x, v0.y/2, v0.z/2);
-
-                Vector3 v12 = new Vector3(v0.x/2, v1.y, v0.z);
-                Vector3 v13 = new Vector3(v0.x, v1.y, v0.z/2);
-                Vector3 v14 = new Vector3(v0.x/2, v1.y, v0.z);
-                Vector3 v15 = new Vector3(v1.x, v1.y, v0.z/2);
-
 //                float ml = Math.max(Math.max(Math.max(v0.x, Math.abs(v1.x)), Math.max(v0.y, Math.abs(v1.y))), Math.max(v0.z, Math.abs(v1.z)));
                 float s = Math.max(Math.abs(objectSize.z), Math.max(Math.abs(objectSize.x), Math.abs(objectSize.y)));
 //                ml*=s*2;
@@ -482,9 +484,9 @@ public class RenderModel {
 
                 if(!(gp(v0, m) || gp(v1, m) || gp(v2, m) || gp(v3, m) ||
                         gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
-                        || gp(v8, m) || gp(v9, m) || gp(v10, m) || gp(v11, m)
-                        || gp(v12, m) || gp(v13, m) || gp(v14, m) || gp(v15, m)
-                || Vector.sub(objectPos, cam_p).length() <= l)){
+//                        || gp(v8, m) || gp(v9, m) || gp(v10, m) || gp(v11, m)
+//                        || gp(v12, m) || gp(v13, m) || gp(v14, m) || gp(v15, m)
+                || Vector.sub(objectPos, cam_p).length() <= l+3)){
                     return;
                 }
 

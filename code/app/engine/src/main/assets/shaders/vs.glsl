@@ -40,7 +40,7 @@ void main(){
         fFragPos = (uModelMatrix*vPosition).xyz;
 
         vec3 T = normalize(vec3(uModelMatrix * vec4(vTangent,   0.0)));
-        vec3 N = normalize(vec3(rotateMatrix * vec4(vNormal,    0.0)));
+        vec3 N = normalize(vec3(rotateMatrix * vec4(fNormal,    0.0)));
         vec3 B = normalize(vec3(uModelMatrix * vec4(cross(N, T), 0.0)));
         mat3 TBN = mat3(T, B, N);
 
