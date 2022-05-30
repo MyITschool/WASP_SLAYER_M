@@ -15,6 +15,7 @@ import com.example.engine.physics.Physics;
 import com.example.engine.render.RenderImg;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.MainActivity;
+import com.example.tao2.Settings;
 import com.example.tao2.scenes.Menu;
 
 public class Player implements Updated {
@@ -36,6 +37,8 @@ public class Player implements Updated {
 
     private RenderImg bs;
 
+    Settings settings;
+
     public Player(Core core){
         this.core = core;
         this.renderer = core.getRenderer();
@@ -43,10 +46,10 @@ public class Player implements Updated {
         this.physics = core.getPhysics();
         this.func = core.getFunc();
 
-        MainActivity ma = (MainActivity)core;
+        settings = ((MainActivity)core).settings;
 
         shoot = core.getAudioLoader().getAudio(3);
-        shoot.setVolume(new Vector2(ma.settings.getSoundsVolume()));
+        shoot.setVolume(new Vector2(settings.getSoundsVolume()));
 
         renderer.camera.rotateModeView=false;
         renderer.camera.setPosition(new Vector3(0,-2f,0));
@@ -227,7 +230,7 @@ public class Player implements Updated {
                     if(hit.collider.getType()==1 && (System.currentTimeMillis() - last_fire) >= cd){
                         Enemy enemy = (Enemy)hit.collider.getColliderObj();
                         enemy.damage(1);
-                        shoot.play(false, new Vector2(1));
+                        shoot.play(false, new Vector2(settings.getSoundsVolume()));
                         gun_texture =4;
                         gun.setTexture(gun_texture);
                         bullets--;
