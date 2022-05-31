@@ -5,18 +5,20 @@ import com.example.engine.audio.AudioLoader;
 import com.example.engine.core.Config;
 import com.example.engine.core.Core;
 import com.example.engine.core.Scene;
+import com.example.engine.core.Updated;
 import com.example.engine.math.Vector2;
 import com.example.engine.math.Vector2Int;
 import com.example.engine.math.Vector3;
 import com.example.engine.model.Model;
 import com.example.engine.model.ModelLoader;
+import com.example.engine.render.RenderText;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.MainActivity;
 import com.example.tao2.dunge.DungeGen;
 import com.example.tao2.dunge.Room;
 import com.example.tao2.updated.Player;
 
-public class DungeScene extends Scene {
+public class DungeScene extends Scene implements Updated {
     public DungeScene(Core core) {
         super(core);
     }
@@ -30,6 +32,8 @@ public class DungeScene extends Scene {
     public void preload() {
 
     }
+
+    RenderText fps;
 
     @Override
     public void start() {
@@ -66,23 +70,23 @@ public class DungeScene extends Scene {
         //////////////////////////////////////////////////////////////////////////////
         Room[] rooms = new Room[]{
                 new Room(core)
-               // ,new Room(core)
-                //, new Room(core)
+                ,new Room(core)
+                , new Room(core)
 //                new Room(core)
         };
         createRoom(rooms[0], roomsModel[0], 10, doorRes, new Vector3(1,1.4f,1));
         createDoor(rooms[0], roomsModel[1], new int[]{0,1,2,3}, new Vector3(10,17,10));
 
-//        createRoom(rooms[1], roomsModel[2], 10, doorRes, new Vector3(1,1.4f,1));
-//        createDoor(rooms[1], roomsModel[1], new int[]{2}, new Vector3(10,17,10));
+        createRoom(rooms[1], roomsModel[2], 10, doorRes, new Vector3(1,1.4f,1));
+        createDoor(rooms[1], roomsModel[1], new int[]{2}, new Vector3(10,17,10));
 
         rooms[0].enemys_count = 5;
         rooms[0].enemys_models = bee;
-//        rooms[1].enemys_count = 5;
-//        rooms[1].enemys_models = bee;
+        rooms[1].enemys_count = 5;
+        rooms[1].enemys_models = bee;
 
-//        createRoom(rooms[2], roomsModel[3], 1, doorRes, new Vector3(1,1.4f,1));
-//        createDoor(rooms[2], roomsModel[1], new int[]{0,2}, new Vector3(10,17,10));
+        createRoom(rooms[2], roomsModel[3], 1, doorRes, new Vector3(1,1.4f,1));
+        createDoor(rooms[2], roomsModel[1], new int[]{0,2}, new Vector3(10,17,10));
 
 
         for (Room room : rooms) {
@@ -90,7 +94,6 @@ public class DungeScene extends Scene {
         }
 
         /////////////////////////////////////////////////////////////
-
 
 
         DungeGen dungeGen = new DungeGen(player, core);
@@ -106,24 +109,31 @@ public class DungeScene extends Scene {
             room.delete();
         }
 
+        fps = renderer.addUIText();
+        fps.setPosition(new Vector3(-0.8f,0.8f, 0));
+        fps.setScale(new Vector2(0.1f,0.2f));
+        fps.setTexture(9);
+        fps.setText(renderer.getLastFPS()+"");
+
+        core.getLoop().addUpdateObj(this);
     }
 
     private void createRoom(Room room, Model model, float roomRes, Vector2 doorRes, Vector3 scale){
         room.room = renderer.addObject(model);
-        room.room.setUsNormal(true);
-        room.room.setUsTexture(model.texture);
+        //room.room.setUsNormal(true);
+        //room.room.setUsTexture(model.texture);
         room.roomRes = roomRes;
         room.doorRes = doorRes.clone();
         room.room.setScale(scale);
     }
 
     private void createDoor(Room room, Model model, int[] activeDoors, Vector3 scale){
-        room.doors[activeDoors[0]] = renderer.addObject(model.v);
-        room.doors[activeDoors[0]].setNormals(model.vn);
-        room.doors[activeDoors[0]].setTextureCoords(model.vt);
-        room.doors[activeDoors[0]].setActive(true);
-        room.doors[activeDoors[0]].setUsNormal(true);
-        room.doors[activeDoors[0]].setUsTexture(model.texture);
+        room.doors[activeDoors[0]] = renderer.addObject(model);
+//        room.doors[activeDoors[0]].setNormals(model.vn);
+//        room.doors[activeDoors[0]].setTextureCoords(model.vt);
+        //room.doors[activeDoors[0]].setActive(true);
+//        room.doors[activeDoors[0]].setUsNormal(true);
+        //room.doors[activeDoors[0]].setUsTexture(model.texture);
         room.doors[activeDoors[0]].setScale(scale);
 
         for(int i = 1; i < activeDoors.length; i++){
@@ -149,5 +159,10 @@ public class DungeScene extends Scene {
 //        audioLoader.getAudio(3).dispose();
 //        audioLoader.getAudio(2).dispose();
 //        audioLoader.getAudio(1).dispose();
+    }
+
+    @Override
+    public void update() {
+        fps.setText(renderer.getLastFPS()+"");
     }
 }

@@ -28,7 +28,6 @@ import com.example.engine.physics.CubeCollider;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 public class RenderModel {
     private final int BYTES_PER_FLOAT = 4;
@@ -39,7 +38,10 @@ public class RenderModel {
     private final int TEXTURE_COMPONENT_SIZE = 2;
 
     private FloatBuffer mVertices, mNormals, mTextureCoords, mNormalTextureCoords, mTangents;
-    private ShortBuffer mIndices;
+
+    public FloatBuffer[] getBuffers(){
+        return new FloatBuffer[]{mVertices, mNormals, mTextureCoords, mNormalTextureCoords, mTangents};
+    }
 
     private float[] mVerticesData, mNormalsData, mTextureCoordsData, mNormalTextureCoordsData, mTangentData;
 
@@ -409,12 +411,6 @@ public class RenderModel {
         if (material[2]>-1){
             glUniform1i(shader_vars[8], (int)material[2]);
         }
-        //if(material[5]>-1.f){
-       //     glUniform1i(shader_vars[23], (int)material[5]);
-
-           // glUniformMatrix4fv(renderer.uVPMatrix, 1, false, renderer.camera.getProjectionMatrix(), 0);
-       // }
-
     }
 
     private void putShadowBuffers(){
@@ -441,62 +437,60 @@ public class RenderModel {
                 (0 <= p.z && p.z <= p.w);
     }
 
+    public boolean inCamera(){
+        Vector3 cam_p = Vector.mul(core.getRenderer().camera.getPosition(), -1);
+        if (Vector.sub(objectPos, cam_p).length() > core.getConfig().max_render_depth || material[5] != 1){
+            return false;
+        }
+
+        float[] cm = core.getRenderer().camera.getvPMatrix();
+        float[] m = new float[16];
+        Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
+
+        Vector3 v0 = tmodel.maxPoint.clone();
+        Vector3 v1 = tmodel.minPoint.clone();
+        Vector3 v2 = new Vector3(v1.x, v0.y, v0.z);
+        Vector3 v3 = new Vector3(v1.x, v1.y, v0.z);
+        Vector3 v4 = new Vector3(v0.x, v1.y, v0.z);
+        Vector3 v5 = new Vector3(v0.x, v0.y, v1.z);
+        Vector3 v6 = new Vector3(v0.x, v1.y, v1.z);
+        Vector3 v7 = new Vector3(v1.x, v0.y, v1.z);
+
+        float s = Math.max(Math.abs(objectSize.z), Math.max(Math.abs(objectSize.x), Math.abs(objectSize.y)));
+
+        Vector3 ml = new Vector3(
+                Math.max(v0.x, Math.abs(v1.x)),
+                Math.max(v0.y, Math.abs(v1.y)),
+                Math.max(v0.z, Math.abs(v1.z))
+        );
+        float l = ml.length()*s*2;
+
+        return gp(v0, m) || gp(v1, m) || gp(v2, m) || gp(v3, m) ||
+                gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
+                || Vector.sub(objectPos, cam_p).length() <= l + 3;
+    }
 
     public void draw() {
 
-        Vector3 cam_p = Vector.mul(core.getRenderer().camera.getPosition(), -1);
-        if (Vector.sub(objectPos, cam_p).length() > core.getConfig().max_render_depth){
-            return;
-        }
+         if (!inCamera())return;
 
 
-        if(material[5]==1){
-            float[] cm = core.getRenderer().camera.getvPMatrix();
-            float[] m = new float[16];
-            Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
+//        setBuffers();
+//        putBuffers();
 
-            Vector3 v0 = tmodel.maxPoint.clone();
-            Vector3 v1 = tmodel.minPoint.clone();
-            Vector3 v2 = new Vector3(v1.x, v0.y, v0.z);
-            Vector3 v3 = new Vector3(v1.x, v1.y, v0.z);
-            Vector3 v4 = new Vector3(v0.x, v1.y, v0.z);
-            Vector3 v5 = new Vector3(v0.x, v0.y, v1.z);
-            Vector3 v6 = new Vector3(v0.x, v1.y, v1.z);
-            Vector3 v7 = new Vector3(v1.x, v0.y, v1.z);
-
-            float s = Math.max(Math.abs(objectSize.z), Math.max(Math.abs(objectSize.x), Math.abs(objectSize.y)));
-
-            Vector3 ml = new Vector3(
-                    Math.max(v0.x, Math.abs(v1.x)),
-                    Math.max(v0.y, Math.abs(v1.y)),
-                    Math.max(v0.z, Math.abs(v1.z))
-            );
-            float l = ml.length()*s*2;
-
-            if(!(gp(v0, m) || gp(v1, m) || gp(v2, m) || gp(v3, m) ||
-                    gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
-                    || Vector.sub(objectPos, cam_p).length() <= l+3)){
-                return;
-            }
+        setUniforms();
 
 
-            setBuffers();
-            putBuffers();
-
-            setUniforms();
+        glDrawArrays(GL_TRIANGLES, 0, mVerticesData.length);
 
 
-            glDrawArrays(GL_TRIANGLES, 0, mVerticesData.length);
-
-
-            glDisableVertexAttribArray(shader_vars[0]);
-            glDisableVertexAttribArray(shader_vars[1]);
-            glDisableVertexAttribArray(shader_vars[2]);
-            glDisableVertexAttribArray(shader_vars[3]);
-            glDisableVertexAttribArray(shader_vars[4]);
+//        glDisableVertexAttribArray(shader_vars[0]);
+//        glDisableVertexAttribArray(shader_vars[1]);
+//        glDisableVertexAttribArray(shader_vars[2]);
+//        glDisableVertexAttribArray(shader_vars[3]);
+//        glDisableVertexAttribArray(shader_vars[4]);
 //
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
+//        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     public void draw_shadow() {

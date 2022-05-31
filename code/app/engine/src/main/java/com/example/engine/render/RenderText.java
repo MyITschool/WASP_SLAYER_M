@@ -32,10 +32,13 @@ public class RenderText extends RenderImg{
 
         setScale(new Vector2(scaleX, isc.y));
 
-        if (objUpd){
-            objUpd=false;
-            genModelMatrix();
-        }
+        if(!actively)
+            return;
+
+//        if (objUpd){
+//            objUpd=false;
+//            genModelMatrix();
+//        }
         if (material[0]>-1){
             GLES20.glUniform1i(shader_vars[31], (int) material[0]);
         }
@@ -44,12 +47,12 @@ public class RenderText extends RenderImg{
             GLES20.glUniform1f(uUIMaterial[i], material[i]);
         }
 
-
+        putBuffers();
         for (int i = 0; i < text.length(); i++){
             drawChar(i, scaleX, posX);
 
             setBuffers();
-            putBuffers();
+
 
             GLES20.glUniformMatrix4fv(shader_vars[30], 1, false, modelMatrix, 0);
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndicesData.length, GLES20.GL_UNSIGNED_SHORT, 0);
@@ -84,9 +87,9 @@ public class RenderText extends RenderImg{
 
         setTextureCoords(mTextureCoordsData);
 
-        if (objUpd){
-            objUpd=false;
-            genModelMatrix();
-        }
+//        if (objUpd){
+//            objUpd=false;
+//            genModelMatrix();
+//        }
     }
 }

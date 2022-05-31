@@ -38,21 +38,12 @@ public class RenderImg {
     private ShortBuffer mIndices;
 
     private final float[] mVerticesData = new float[]{
-//            -1, -1, 0,
-//            -1, 1, 0,
-//            1, 1, 0,
-//            1, -1, 0
-
             -1, -1, 0,
             1, -1, 0,
             1, 1, 0,
             -1, 1, 0
     };
     protected float[] mTextureCoordsData = new float[]{
-//            0, 0,
-//            0, 1,
-//            1, 1,
-//            1, 0
             0,1,
             1,1,
             1,0,

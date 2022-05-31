@@ -30,7 +30,7 @@ public class Physics {
     }
     public CubeCollider getCubeCollider(int i){return cubeColliders.get(i);}
     public void clear(){
-        cubeColliders = new ArrayList<>();
+        cubeColliders.clear();
     }
 
     public boolean testCollisionCube(CubeCollider collider){

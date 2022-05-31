@@ -40,7 +40,10 @@ public class Menu extends Scene implements Updated {
             );
             config.usRandL = 0.0f;
             config.ambient = 0.04f;
-            modelLoader.loadModels(new String[]{"models/nr0O.obj","models/door_0.obj",
+            //modelLoader.loadModels(new String[]{"models/nr0O.obj","models/door_0.obj",
+            //        "models/room_1.obj","models/room_2.obj","models/bee.obj","models/pipe.obj"}, true);
+
+            modelLoader.loadModels(new String[]{"models/room_0.obj","models/door_0.obj",
                     "models/room_1.obj","models/room_2.obj","models/bee.obj","models/pipe.obj"}, true);
 
             audioLoader.addAudios(new String[]{"mp3/menu.mp3", "mp3/bee.mp3", "mp3/bg_m.mp3", "mp3/shoot_0.mp3"});
@@ -51,19 +54,24 @@ public class Menu extends Scene implements Updated {
                     modelLoader.getModel(1),
                     modelLoader.getModel(2),
                     modelLoader.getModel(3),
+                    modelLoader.getModel(4)
             };
-            Model bee = modelLoader.getModel(4);
-            bee.texture = 0;
+           // Model bee = modelLoader.getModel(4);
+            //bee.texture = 0;
 
-            roomsModel[0].texture = 13;
-            roomsModel[0].vnt = roomsModel[0].vt;
-            roomsModel[0].setUsTextureNormals(14);
+            //roomsModel[0].texture = 13;
+//            roomsModel[0].vnt = roomsModel[0].vt;
+//            roomsModel[0].setUsTextureNormals(14);
 //            roomsModel[0].vnt = roomsModel[0].vt;
 //            roomsModel[0].setUsTextureNormals(13);
-
-            roomsModel[1].texture = 0;
-            roomsModel[2].texture = 0;
-            roomsModel[3].texture = 0;
+//            roomsModel[0].texture = 0;
+//            roomsModel[1].texture = 0;
+//            roomsModel[2].texture = 0;
+//            roomsModel[3].texture = 0;
+            for (int i = 0; i < roomsModel.length; i++){
+                roomsModel[i].setUsTexture(0);
+                roomsModel[i].setUsNormal(true);
+            }
 
             roomsModel[0].colliders = new CubeCollider[]{
                     new CubeCollider(new Vector3(-4.5f, 0, -3), new Vector3(2,2,3.25f)),

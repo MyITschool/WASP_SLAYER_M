@@ -121,7 +121,8 @@ public class Room implements Cloneable{
     public void delete(){
         core.getRenderer().deleteObject(room);
         for (int i = 0; i < doors.length; i++){
-            core.getRenderer().deleteObject(doors[i]);
+            if(doors[i]!=null)
+                core.getRenderer().deleteObject(doors[i]);
         }
 //        for (int i = 0; i < cubeColliders.size(); i++){
 //            core.getPhysics().deleteCubeCollider(cubeColliders.get(i));

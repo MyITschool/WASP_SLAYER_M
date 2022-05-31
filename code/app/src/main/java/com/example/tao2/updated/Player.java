@@ -223,7 +223,7 @@ public class Player implements Updated {
                 // System.out.println("a");
 
                 Hit hit = new Hit();
-                if(physics.rayCastCamera(hit, 0, 100)){
+                if(physics.rayCastCamera(hit, 0, 15)){
                     if(hit.collider.getType()==1 && (System.currentTimeMillis() - last_fire) >= cd){
                         Enemy enemy = (Enemy)hit.collider.getColliderObj();
                         enemy.damage(1);

@@ -157,10 +157,43 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         
         config = core.getConfig();
     }
-
+    private final int BYTES_PER_FLOAT = 4;
+    private final int BYTES_PER_SHORT = 2;
+    private FloatBuffer mVertices, mTextureCoords;
+    private ShortBuffer mIndices;
+    private final float[] mVerticesData = new float[]{
+            -1, -1, 0,
+            1, -1, 0,
+            1, 1, 0,
+            -1, 1, 0
+    };
+    private float[] mTextureCoordsData = new float[]{
+            0,1,
+            1,1,
+            1,0,
+            0,0
+    };
+    private final short[] mIndicesData = new short[]{
+            0, 1, 2,    0, 2, 3
+    };
+    private void genBuffers(){
+        mVertices = ByteBuffer.allocateDirect(mVerticesData.length * BYTES_PER_FLOAT)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mVertices.put(mVerticesData).position(0);
+        //////////////////////////////////////////////////////////////////////////////
+        mIndices = ByteBuffer.allocateDirect(mIndicesData.length * BYTES_PER_SHORT)
+                .order(ByteOrder.nativeOrder()).asShortBuffer();
+        mIndices.put(mIndicesData).position(0);
+        /////////////////////////////////////////////////////////////////////////////////
+        mTextureCoords = ByteBuffer.allocateDirect(mTextureCoordsData.length * BYTES_PER_FLOAT)
+                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mTextureCoords.put(mTextureCoordsData).position(0);
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
+        genBuffers();
+
         String vShaderStr = GLUtil.readShader(core, "shaders/vs.glsl");
         String fShaderStr = GLUtil.readShader(core, "shaders/fs.glsl");
         mProgramObject = GLUtil.loadProgram(vShaderStr, fShaderStr);
@@ -325,6 +358,11 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
     int upd = 0;
     long timer=System.currentTimeMillis();
+    int fps = 0;
+    public int getLastFPS(){
+        return fps;
+    }
+
     @Override
     public void onDrawFrame(GL10 gl10) {
         //glDisable(GL10.GL_CULL_FACE);
@@ -332,6 +370,7 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         upd++;
         if(System.currentTimeMillis()-timer>1000){
             System.out.println("Render: "+upd+"FPS");
+            fps=upd;
             upd=0;
             timer+=System.currentTimeMillis()-timer;
         }
@@ -358,14 +397,49 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         drawUI();
     }
 
+    protected void setBuffers(){
+        mVertices.position(0);
+        glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[0]);
+        glBufferData(GL_ARRAY_BUFFER, BYTES_PER_FLOAT * mVerticesData.length,
+                mVertices, GL_STATIC_DRAW);
+
+        mIndices.position(0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVBOIds[1]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, BYTES_PER_SHORT * mIndicesData.length, mIndices, GL_STATIC_DRAW);
+
+        mTextureCoords.position(0);
+        glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[3]);
+        glBufferData(GL_ARRAY_BUFFER, BYTES_PER_FLOAT * mTextureCoordsData.length,
+                mTextureCoords, GL_STATIC_DRAW);
+        ////////////////////////////////////////////////////////////
+        glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[0]);
+        glEnableVertexAttribArray(shader_vars[29]);
+        int POSITION_COMPONENT_SIZE = 3;
+        glVertexAttribPointer(shader_vars[29], POSITION_COMPONENT_SIZE,
+                GL_FLOAT, false, 0, 0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVBOIds[1]);
+
+        glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[3]);
+        glEnableVertexAttribArray(shader_vars[32]);
+        int TEXTURE_COMPONENT_SIZE = 2;
+        glVertexAttribPointer(shader_vars[32], TEXTURE_COMPONENT_SIZE,
+                GL_FLOAT, false, 0, 0);
+    }
+
     private void drawUI(){
         glUseProgram(mUIPorgramObject);
-
+        //setBuffers();
         glDisable(GL_DEPTH_TEST);
 
         for (int i = 0; i < renderUIList.size(); i++){
             renderUIList.get(i).draw();
         }
+//        glDisableVertexAttribArray(shader_vars[29]);
+//        glDisableVertexAttribArray(shader_vars[32]);
+//
+//        glBindBuffer(GL_ARRAY_BUFFER, 0);
+//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glEnable(GL_DEPTH_TEST);
     }
 
@@ -400,11 +474,19 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
+    ArrayList<float[]> meshs = new ArrayList<>();
+    ArrayList<FloatBuffer[]> buffers = new ArrayList<>();
+    ArrayList<ArrayList<RenderModel>> obj = new ArrayList<>();
+
     public void clear(){
         Arrays.fill(mLight, 0);
         lastLightIndex = 0;
-        renderObjectList = new ArrayList<>();
-        renderUIList = new ArrayList<>();
+        renderObjectList.clear();
+        renderUIList.clear();
+
+        meshs.clear();
+        buffers.clear();
+        obj.clear();
     }
 
     public void addSearchlight(Vector4 pos, Vector4 dir, Vector4 col){//float[] pos, float[] dir, float[] col){
@@ -436,6 +518,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
         lastLightIndex+=4;
     }
 
+
+
     private void drawing(){
         glUseProgram(mProgramObject);
         glClearDepthf(1.0f);
@@ -446,9 +530,89 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
         setUniforms();
 
-        for (int i = 0; i < renderObjectList.size(); i++){
-            renderObjectList.get(i).draw();
+
+        if(meshs.size() != 0){
+            for (int i = 0; i < obj.size(); i++){
+                ArrayList<RenderModel> m = obj.get(i);
+                FloatBuffer[] buff = buffers.get(i);
+                int vl = meshs.get(i).length;
+                int tl = vl/3*2;
+
+                /////////////////////////////////////////////////////////////////////////////////////
+                buff[0].position(0);
+                glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[0]);
+                glBufferData(GL_ARRAY_BUFFER, BYTES_PER_FLOAT * vl,
+                        buff[0], GL_STATIC_DRAW);
+
+                if(buff[1]!=null){
+                    buff[1].position(0);
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[2]);
+                    glBufferData(GL_ARRAY_BUFFER, BYTES_PER_FLOAT * vl,
+                            buff[1], GL_STATIC_DRAW);
+                }
+
+                if (buff[2]!=null){
+                    buff[2].position(0);
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[3]);
+                    glBufferData(GL_ARRAY_BUFFER, BYTES_PER_FLOAT * tl,
+                            buff[2], GL_STATIC_DRAW);
+                }
+
+                if(buff[3] != null){
+                    buff[3].position(0);
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[4]);
+                    glBufferData(GL_ARRAY_BUFFER, BYTES_PER_FLOAT * tl,
+                            buff[3], GL_STATIC_DRAW);
+
+                    buff[4].position(0);
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[5]);
+                    glBufferData(GL_ARRAY_BUFFER, BYTES_PER_FLOAT * vl,
+                            buff[4], GL_STATIC_DRAW);
+                }
+
+                /////////////////////////////////////////////////////////////////////////////////////
+                glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[0]);
+                glEnableVertexAttribArray(shader_vars[0]);
+                glVertexAttribPointer(shader_vars[0], 3,
+                        GL_FLOAT, false, 0, 0);
+
+
+                if (buff[1]!=null) {
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[2]);
+                    glEnableVertexAttribArray(shader_vars[1]);
+                    glVertexAttribPointer(shader_vars[1], 3,
+                            GL_FLOAT, false, 0, 0);
+                }
+                if (buff[2]!=null) {
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[3]);
+                    glEnableVertexAttribArray(shader_vars[2]);
+                    glVertexAttribPointer(shader_vars[2], 2,
+                            GL_FLOAT, false, 0, 0);
+                }
+                if(buff[3] != null){
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[4]);
+                    glEnableVertexAttribArray(shader_vars[3]);
+                    glVertexAttribPointer(shader_vars[3], 2,
+                            GL_FLOAT, false, 0, 0);
+
+                    glBindBuffer(GL_ARRAY_BUFFER, mVBOIds[5]);
+                    glEnableVertexAttribArray(shader_vars[4]);
+                    glVertexAttribPointer(shader_vars[4], 3,
+                            GL_FLOAT, false, 0, 0);
+                }
+                /////////////////////////////////////////////////////////////////////////////////////
+                for (int j = 0; j < m.size(); j++){
+                    m.get(j).draw();
+                }
+            }
         }
+        glDisableVertexAttribArray(shader_vars[0]);
+        glDisableVertexAttribArray(shader_vars[1]);
+        glDisableVertexAttribArray(shader_vars[2]);
+        glDisableVertexAttribArray(shader_vars[3]);
+        glDisableVertexAttribArray(shader_vars[4]);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     private void setUniforms(){
         glUniformMatrix4fv(shader_vars[5], 1, false, camera.getvPMatrix(), 0);
@@ -520,18 +684,60 @@ public class RendererGL implements GLSurfaceView.Renderer  {
     }
 
     public RenderModel addObject(float[] vertex){
-        renderObjectList.add(new RenderModel(vertex, shader_vars, mVBOIds, uMaterial,core));
-
-        return renderObjectList.get(renderObjectList.size()-1);
+        RenderModel rm = new RenderModel(vertex, shader_vars, mVBOIds, uMaterial,core);
+        renderObjectList.add(rm);
+        //for (int i = 0; i < renderObjectList.size(); i++){
+            //renderObjectList.get(i).draw();
+            //RenderModel rm = renderObjectList.get(i);
+            //if(rm.inCamera()) {
+                int li = meshs.lastIndexOf(vertex);
+                if(li != -1){
+                    obj.get(li).add(rm);
+                }else {
+                    meshs.add(vertex);
+                    buffers.add(rm.getBuffers());
+                    obj.add(new ArrayList<RenderModel>());
+                    obj.get(obj.size()-1).add(rm);
+                }
+           // }
+            // rm.draw();
+        //}
+        return rm;//renderObjectList.get(renderObjectList.size()-1);
     }
 
     public RenderModel addObject(Model model){
-        renderObjectList.add(new RenderModel(model, shader_vars, mVBOIds, uMaterial,core));
+        RenderModel rm = new RenderModel(model, shader_vars, mVBOIds, uMaterial,core);
+        renderObjectList.add(rm);
 
-        return renderObjectList.get(renderObjectList.size()-1);
+        //if(rm.inCamera()) {
+            float[] v = rm.getmVerticesData();
+            int li = meshs.lastIndexOf(v);
+            if(li != -1){
+                obj.get(li).add(rm);
+            }else {
+                meshs.add(v);
+                buffers.add(rm.getBuffers());
+                obj.add(new ArrayList<RenderModel>());
+                obj.get(obj.size()-1).add(rm);
+            }
+        //}
+        // rm.draw();
+        //}
+
+        return rm;
     }
 
     public void deleteObject(RenderModel object){
+        float[] v = object.getmVerticesData();
+        int i = meshs.lastIndexOf(v);
+        ArrayList<RenderModel> ral = obj.get(i);
+        ral.remove(object);
+        if(ral.size() == 0){
+            obj.remove(i);
+            meshs.remove(i);
+            buffers.remove(i);
+        }
+
         renderObjectList.remove(object);
     }
 
