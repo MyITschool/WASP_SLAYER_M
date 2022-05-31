@@ -66,23 +66,23 @@ public class DungeScene extends Scene {
         //////////////////////////////////////////////////////////////////////////////
         Room[] rooms = new Room[]{
                 new Room(core)
-                ,new Room(core)
-                , new Room(core)
+               // ,new Room(core)
+                //, new Room(core)
 //                new Room(core)
         };
         createRoom(rooms[0], roomsModel[0], 10, doorRes, new Vector3(1,1.4f,1));
         createDoor(rooms[0], roomsModel[1], new int[]{0,1,2,3}, new Vector3(10,17,10));
 
-        createRoom(rooms[1], roomsModel[2], 10, doorRes, new Vector3(1,1.4f,1));
-        createDoor(rooms[1], roomsModel[1], new int[]{2}, new Vector3(10,17,10));
+//        createRoom(rooms[1], roomsModel[2], 10, doorRes, new Vector3(1,1.4f,1));
+//        createDoor(rooms[1], roomsModel[1], new int[]{2}, new Vector3(10,17,10));
 
         rooms[0].enemys_count = 5;
         rooms[0].enemys_models = bee;
 //        rooms[1].enemys_count = 5;
 //        rooms[1].enemys_models = bee;
 
-        createRoom(rooms[2], roomsModel[3], 1, doorRes, new Vector3(1,1.4f,1));
-        createDoor(rooms[2], roomsModel[1], new int[]{0,2}, new Vector3(10,17,10));
+//        createRoom(rooms[2], roomsModel[3], 1, doorRes, new Vector3(1,1.4f,1));
+//        createDoor(rooms[2], roomsModel[1], new int[]{0,2}, new Vector3(10,17,10));
 
 
         for (Room room : rooms) {
@@ -98,7 +98,7 @@ public class DungeScene extends Scene {
         dungeGen.rooms = rooms;
         dungeGen.res = new Vector2Int(10,10);
         dungeGen.roomRes = 10;
-        dungeGen.maxRooms = 10;
+        dungeGen.maxRooms = 5;
 
         dungeGen.start();
 
@@ -135,9 +135,6 @@ public class DungeScene extends Scene {
     public void resume() {
         audioLoader.getAudio(2).play(true, new Vector2(0.7f));
         audioLoader.getAudio(1).play(true, new Vector2(0.1f));
-    }
-    @Override
-    public void update() {
     }
 
     @Override

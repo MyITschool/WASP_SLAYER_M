@@ -73,7 +73,7 @@ public class RenderImg {
             0, 1, 2,    0, 2, 3
     };
 
-    protected final float[] modelMatrix = new float[16];
+    protected float[] modelMatrix = new float[16];
 
     protected float[] material = new float[]{-1};
 
@@ -157,10 +157,12 @@ public class RenderImg {
     public void setScale(Vector2 size){
         objectSize=size;
         objUpd=true;
+        genModelMatrix();
     }
     public void setRotate(Vector3 rotate){
         objectRot=rotate;
         objUpd=true;
+        genModelMatrix();
     }
     public void setPosition(Vector3 position){
         //int[] res = renderer.getResolution();
@@ -169,6 +171,7 @@ public class RenderImg {
 //        position[1]=position[1]/res[0]*2-1;
         objectPos=position;
         objUpd=true;
+        genModelMatrix();
     }
     public void setColor(Vector4 mColor){
         this.mColor=mColor;
@@ -176,6 +179,8 @@ public class RenderImg {
 
 
     protected void genModelMatrix(){
+        float[] modelMatrix = new float[16];
+
         Matrix.setIdentityM(modelMatrix, 0);
 
         //////////////////////////////////////////////////////////////////////////////
@@ -198,6 +203,8 @@ public class RenderImg {
         ///////////////////////////////////////////////////////////////////////////////
 
         Matrix.scaleM(modelMatrix, 0, modelMatrix,0,objectSize.x,objectSize.y, 1);
+
+        this.modelMatrix=modelMatrix;
     }
 
 
@@ -222,10 +229,10 @@ public class RenderImg {
         setBuffers();
         putBuffers();
 
-        if (objUpd){
-            objUpd=false;
-            genModelMatrix();
-        }
+//        if (objUpd){
+//            objUpd=false;
+//            genModelMatrix();
+//        }
         if (material[0]>-1){
             glUniform1i(shader_vars[31], (int) material[0]);
         }
@@ -241,6 +248,7 @@ public class RenderImg {
         glDrawElements(GL_TRIANGLES, mIndicesData.length, GL_UNSIGNED_SHORT, 0);
 
         glDisableVertexAttribArray(shader_vars[29]);
+        glDisableVertexAttribArray(shader_vars[32]);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

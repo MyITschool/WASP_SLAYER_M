@@ -1,13 +1,10 @@
 package com.example.engine.core;
 
-import static java.lang.Thread.sleep;
-
-import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
 
 import java.util.LinkedList;
 
-@SuppressLint("ViewConstructor")
+
 public class Loop extends GLSurfaceView implements Runnable{
 
     private boolean running = false;
@@ -15,7 +12,7 @@ public class Loop extends GLSurfaceView implements Runnable{
     private Thread gameThread;
     private final Core core;
 
-    float upd = 0;
+    int upd = 0;
 
     private int UPDATE_TIME = 1000 / 60;
 
@@ -27,7 +24,7 @@ public class Loop extends GLSurfaceView implements Runnable{
         setPreserveEGLContextOnPause(true);
 
         setRenderer(this.core.getRenderer());
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     public void setFPS(int fps){
@@ -48,18 +45,18 @@ public class Loop extends GLSurfaceView implements Runnable{
                 upd=0;
                 timer+=System.currentTimeMillis()-timer;
             }
-            long t = System.currentTimeMillis();
-            requestRender();
-            updateGame();
+            //long t = System.currentTimeMillis();
 
-            t = System.currentTimeMillis() - t;
-            if(t>=UPDATE_TIME){
-                t=0;
-            }else {
-                t = UPDATE_TIME-t;
-            }
+            updateGame();
+            //requestRender();
+//            t = System.currentTimeMillis() - t;
+//            if(t>=UPDATE_TIME){
+//                t=0;
+//            }else {
+//                t = UPDATE_TIME-t;
+//            }
             try {
-                sleep(t);
+                gameThread.sleep(UPDATE_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -69,7 +66,7 @@ public class Loop extends GLSurfaceView implements Runnable{
 
     private void updateGame(){
         upd++;
-        core.getScene().update();
+       // core.getScene().update();
         for (int i = 0; i < updateds.size(); i++){
             updateds.get(i).update();
         }

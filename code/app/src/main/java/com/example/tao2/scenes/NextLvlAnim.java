@@ -3,6 +3,7 @@ package com.example.tao2.scenes;
 import com.example.engine.core.Config;
 import com.example.engine.core.Core;
 import com.example.engine.core.Scene;
+import com.example.engine.core.Updated;
 import com.example.engine.math.Vector3;
 import com.example.engine.math.Vector4;
 import com.example.engine.model.Model;
@@ -10,7 +11,7 @@ import com.example.engine.model.ModelLoader;
 import com.example.engine.render.RenderModel;
 import com.example.engine.render.RendererGL;
 
-public class NextLvlAnim extends Scene {
+public class NextLvlAnim extends Scene implements Updated {
     public NextLvlAnim(Core core) {
         super(core);
     }
@@ -52,6 +53,8 @@ public class NextLvlAnim extends Scene {
         es = true;
 
         s = System.currentTimeMillis() + 1400;
+
+        core.getLoop().addUpdateObj(this);
     }
 
     @Override

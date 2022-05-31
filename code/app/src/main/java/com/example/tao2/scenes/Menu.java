@@ -4,6 +4,7 @@ import com.example.engine.audio.AudioLoader;
 import com.example.engine.core.Config;
 import com.example.engine.core.Core;
 import com.example.engine.core.Scene;
+import com.example.engine.core.Updated;
 import com.example.engine.event.TouchListener;
 import com.example.engine.math.Vector2;
 import com.example.engine.math.Vector2Int;
@@ -17,7 +18,7 @@ import com.example.engine.render.RenderModel;
 import com.example.engine.render.RendererGL;
 import com.example.tao2.MainActivity;
 
-public class Menu extends Scene {
+public class Menu extends Scene implements Updated {
     private final boolean usp;
     public Menu(Core core, boolean usp) {
         super(core);
@@ -35,11 +36,11 @@ public class Menu extends Scene {
                     {"models/room_0.png","img/controlBox.png","img/controlBoxBarrier.png",
                             "img/gun_0.png","img/gun_1.png","img/gun_2.png", "img/razjalovan.png",
                             "img/dalishe.png", "img/button_start.png", "img/font.png", "img/button_settings.png",
-                            "img/game_name.png", "img/settings.png"}
+                            "img/game_name.png", "img/settings.png", "models/texture_R.png", "models/NormalMap.png" }
             );
             config.usRandL = 0.0f;
             config.ambient = 0.04f;
-            modelLoader.loadModels(new String[]{"models/room_0.obj","models/door_0.obj",
+            modelLoader.loadModels(new String[]{"models/nr0O.obj","models/door_0.obj",
                     "models/room_1.obj","models/room_2.obj","models/bee.obj","models/pipe.obj"}, true);
 
             audioLoader.addAudios(new String[]{"mp3/menu.mp3", "mp3/bee.mp3", "mp3/bg_m.mp3", "mp3/shoot_0.mp3"});
@@ -54,7 +55,9 @@ public class Menu extends Scene {
             Model bee = modelLoader.getModel(4);
             bee.texture = 0;
 
-            roomsModel[0].texture = 0;
+            roomsModel[0].texture = 13;
+            roomsModel[0].vnt = roomsModel[0].vt;
+            roomsModel[0].setUsTextureNormals(14);
 //            roomsModel[0].vnt = roomsModel[0].vt;
 //            roomsModel[0].setUsTextureNormals(13);
 
@@ -187,6 +190,7 @@ public class Menu extends Scene {
         bee.setPosition(new Vector3(2, 1.5f, -2));
 
         es = true;
+        core.getLoop().addUpdateObj(this);
     }
 
     @Override

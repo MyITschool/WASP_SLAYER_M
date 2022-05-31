@@ -442,83 +442,61 @@ public class RenderModel {
     }
 
 
-
     public void draw() {
-
-//        if(objUpd){
-//            objUpd=false;
-//            genModelMatrix();
-//        }
 
         Vector3 cam_p = Vector.mul(core.getRenderer().camera.getPosition(), -1);
         if (Vector.sub(objectPos, cam_p).length() > core.getConfig().max_render_depth){
-
             return;
         }
 
 
         if(material[5]==1){
-            //if (true){
-                float[] cm = core.getRenderer().camera.getvPMatrix();
-                float[] m = new float[16];
-                Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
+            float[] cm = core.getRenderer().camera.getvPMatrix();
+            float[] m = new float[16];
+            Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
 
-                Vector3 v0 = tmodel.maxPoint.clone();
-                Vector3 v1 = tmodel.minPoint.clone();
-                Vector3 v2 = new Vector3(v1.x, v0.y, v0.z);
-                Vector3 v3 = new Vector3(v1.x, v1.y, v0.z);
-                Vector3 v4 = new Vector3(v0.x, v1.y, v0.z);
-                Vector3 v5 = new Vector3(v0.x, v0.y, v1.z);
-                Vector3 v6 = new Vector3(v0.x, v1.y, v1.z);
-                Vector3 v7 = new Vector3(v1.x, v0.y, v1.z);
+            Vector3 v0 = tmodel.maxPoint.clone();
+            Vector3 v1 = tmodel.minPoint.clone();
+            Vector3 v2 = new Vector3(v1.x, v0.y, v0.z);
+            Vector3 v3 = new Vector3(v1.x, v1.y, v0.z);
+            Vector3 v4 = new Vector3(v0.x, v1.y, v0.z);
+            Vector3 v5 = new Vector3(v0.x, v0.y, v1.z);
+            Vector3 v6 = new Vector3(v0.x, v1.y, v1.z);
+            Vector3 v7 = new Vector3(v1.x, v0.y, v1.z);
 
-//                float ml = Math.max(Math.max(Math.max(v0.x, Math.abs(v1.x)), Math.max(v0.y, Math.abs(v1.y))), Math.max(v0.z, Math.abs(v1.z)));
-                float s = Math.max(Math.abs(objectSize.z), Math.max(Math.abs(objectSize.x), Math.abs(objectSize.y)));
-//                ml*=s*2;
-                 Vector3 ml = new Vector3(
-                         Math.max(v0.x, Math.abs(v1.x)),
-                         Math.max(v0.y, Math.abs(v1.y)),
-                         Math.max(v0.z, Math.abs(v1.z))
-                 );
-                float l = ml.length()*s*2;
+            float s = Math.max(Math.abs(objectSize.z), Math.max(Math.abs(objectSize.x), Math.abs(objectSize.y)));
 
-                if(!(gp(v0, m) || gp(v1, m) || gp(v2, m) || gp(v3, m) ||
-                        gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
-//                        || gp(v8, m) || gp(v9, m) || gp(v10, m) || gp(v11, m)
-//                        || gp(v12, m) || gp(v13, m) || gp(v14, m) || gp(v15, m)
-                || Vector.sub(objectPos, cam_p).length() <= l+3)){
-                    return;
-                }
+            Vector3 ml = new Vector3(
+                    Math.max(v0.x, Math.abs(v1.x)),
+                    Math.max(v0.y, Math.abs(v1.y)),
+                    Math.max(v0.z, Math.abs(v1.z))
+            );
+            float l = ml.length()*s*2;
 
-           // }
+            if(!(gp(v0, m) || gp(v1, m) || gp(v2, m) || gp(v3, m) ||
+                    gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
+                    || Vector.sub(objectPos, cam_p).length() <= l+3)){
+                return;
+            }
 
-            //int l = setBuffers2();
+
             setBuffers();
             putBuffers();
 
             setUniforms();
 
-            //if (l!=0) glDrawArrays(GL_TRIANGLES, 0, l);
-
 
             glDrawArrays(GL_TRIANGLES, 0, mVerticesData.length);
 
-
-
-//        if(material[5]>-1.f) {
-//            //glUniformMatrix4fv(renderer.uVPMatrix, 1, false, renderer.camera.getvPMatrix(), 0);
-//        }
 
             glDisableVertexAttribArray(shader_vars[0]);
             glDisableVertexAttribArray(shader_vars[1]);
             glDisableVertexAttribArray(shader_vars[2]);
             glDisableVertexAttribArray(shader_vars[3]);
             glDisableVertexAttribArray(shader_vars[4]);
-
+//
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
-
-        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     public void draw_shadow() {

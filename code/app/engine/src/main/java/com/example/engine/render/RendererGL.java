@@ -62,7 +62,6 @@ import android.opengl.GLSurfaceView;
 import com.example.engine.core.Config;
 import com.example.engine.core.Core;
 import com.example.engine.math.Vector2Int;
-import com.example.engine.math.Vector3;
 import com.example.engine.math.Vector4;
 import com.example.engine.model.Model;
 
@@ -261,12 +260,8 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
         glClearColor(config.clear_color.x,config.clear_color.y,config.clear_color.z,config.clear_color.w);
 
-        glClearDepthf(1.0f);
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_MULTISAMPLE);
-        glDepthFunc(GL_LEQUAL);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glEnable(GL_MULTISAMPLE);
         glEnable(GL10.GL_BLEND);
         glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
     }
@@ -323,14 +318,23 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
         }
         core.getScene().start();
+
     }
 
     public boolean sns = false;
 
+    int upd = 0;
+    long timer=System.currentTimeMillis();
     @Override
     public void onDrawFrame(GL10 gl10) {
         //glDisable(GL10.GL_CULL_FACE);
         //glEnable(GL10.GL_ALPHA);
+        upd++;
+        if(System.currentTimeMillis()-timer>1000){
+            System.out.println("Render: "+upd+"FPS");
+            upd=0;
+            timer+=System.currentTimeMillis()-timer;
+        }
 
         if(sns){
             activ_preload();
@@ -341,7 +345,7 @@ public class RendererGL implements GLSurfaceView.Renderer  {
             glClearColor(config.clear_color.x,config.clear_color.y,config.clear_color.z,config.clear_color.w);
             setClearColor=false;
         }
-
+        glClear(GL_COLOR_BUFFER_BIT);
         if(usFBO_shadow){
             Vector2Int cr = shadow_camera.getResolution();
             glViewport(0, 0, cr.x, cr.y);
@@ -434,17 +438,13 @@ public class RendererGL implements GLSurfaceView.Renderer  {
 
     private void drawing(){
         glUseProgram(mProgramObject);
-
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glViewport(0, 0, res.x,res.y);
-
-        setUniforms();
-
         glClearDepthf(1.0f);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0, 0, res.x,res.y);
+
+        setUniforms();
 
         for (int i = 0; i < renderObjectList.size(); i++){
             renderObjectList.get(i).draw();
@@ -452,28 +452,24 @@ public class RendererGL implements GLSurfaceView.Renderer  {
     }
     private void setUniforms(){
         glUniformMatrix4fv(shader_vars[5], 1, false, camera.getvPMatrix(), 0);
-        glUniformMatrix4fv(shader_vars[17], 1, false, shadow_camera.getvPMatrix(), 0);
-
-        glUniform1i(shader_vars[18], lastTextureIndex);
 
         glUniform1f(shader_vars[35], (float) (Math.random()));
         glUniform1f(shader_vars[36], config.usRandL);
 
         glUniform1f(shader_vars[37], camera.getFar());
-
-        glUniform1i(shader_vars[24], config.ultroSoftShadow);
-
         glUniform3fv(shader_vars[9], 1, new float[]{config.global_light_dir.x,config.global_light_dir.y,config.global_light_dir.z}, 0);
         glUniform3fv(shader_vars[10], 1, new float[]{config.global_light_color.x,config.global_light_color.y,config.global_light_color.z}, 0);
+        glUniformMatrix4fv(shader_vars[17], 1, false, shadow_camera.getvPMatrix(), 0);
+        glUniform1i(shader_vars[18], lastTextureIndex);
+        glUniform1i(shader_vars[24], config.ultroSoftShadow);
+        glUniform1f(shader_vars[21], config.soft_shadow_cof);
+        glUniform1f(shader_vars[22], config.bias);
 
-        Vector3 cam_pos = camera.getPosition();
-        glUniform3fv(shader_vars[12],1, new float[]{cam_pos.x,cam_pos.y,cam_pos.z}, 0);
+        glUniform3fv(shader_vars[12],1, camera.getPosition().getArray(), 0);
 
         glUniform4fv(shader_vars[39],1, config.fog_color.getArray(), 0);
 
         glUniform1f(shader_vars[13], config.ambient);
-        glUniform1f(shader_vars[21], config.soft_shadow_cof);
-        glUniform1f(shader_vars[22], config.bias);
 
         if(skyboxN>-1){
             glUniform1i(shader_vars[23], skyboxN);

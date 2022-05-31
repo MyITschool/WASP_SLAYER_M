@@ -47,7 +47,7 @@ uniform vec4 fog_color;
 vec2 r;
 float random(){
     r+=random_seed;
-    return fract(sin(dot(r, vec2(12.9898, 78.233))) * 43758.5453);
+    return 0.0;//fract(sin(dot(r, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
 vec3 getColor(){

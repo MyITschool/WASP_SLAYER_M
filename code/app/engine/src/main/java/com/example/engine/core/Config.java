@@ -50,6 +50,6 @@ public class Config {
 
     public Vector2Int shadow_res;
 
-    public float usRandL=0;
+    public float usRandL=0.0f;
 
 }

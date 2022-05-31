@@ -104,6 +104,7 @@ public class Core  extends AppCompatActivity {
         }
 
         //this.scene.dispose();
+       // loop.stopGame();
         this.scene.pause();
 
         loop.clear();

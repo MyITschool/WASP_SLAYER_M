@@ -74,9 +74,6 @@ public class Player implements Updated {
         controlBox.setScale(new Vector2(0.05f,0.05f*ycor));
         controlBox.setTexture(1);
 
-//        RenderUI curs = renderer.addUI();
-//        curs.setScale(new Vector2(0.01f,0.006f));
-
         gun = renderer.addUIImg();
         gun.setScale(new Vector2(0.5f,0.5f));
         gun.setPosition(new Vector3(0.5f,-0.5f,0));
