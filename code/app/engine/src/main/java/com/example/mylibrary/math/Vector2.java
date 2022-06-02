@@ -1,7 +1,7 @@
 package com.example.mylibrary.math;
 
 
-public class Vector2 implements Cloneable{
+public final class Vector2 implements Cloneable{
     public float x;
     public float y;
     public Vector2(float x, float y){

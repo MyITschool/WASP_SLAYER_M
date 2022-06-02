@@ -41,8 +41,6 @@ public class Model {
     public final float[] vertexes_texture;
     public final float[] getVertexes_normalTexture;
 
-    public Vector4 color;
-
     public Vector3 minPoint = new Vector3(-1);
     public Vector3 maxPoint = new Vector3(1);
 
@@ -53,11 +51,10 @@ public class Model {
     private final HashMap<String, Integer> uniforms;
 
     public final Core core;
-    public Model(float[] vertexes, Vector4 color, Core core){
+    public Model(float[] vertexes, Core core){
         this.vertexes = vertexes;
-        this.color = color;
         this.core = core;
-        this.shaderProgram = core.getRenderer().shaderPrograms.get("color");
+        this.shaderProgram = core.getRenderer().getShaderProgram("color");
 
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
@@ -68,17 +65,45 @@ public class Model {
 
         genBuffer();
     }
-    public Model(float[] vertexes, float[] vertexes_normal, Vector4 color, Core core){
+    public Model(float[] vertexes, float[] vertexes_normal, Core core){
         this.vertexes = vertexes;
         this.vertexes_normal = vertexes_normal;
-        this.color = color;
         this.core = core;
-        this.shaderProgram = core.getRenderer().shaderPrograms.get("color_normals");
+        this.shaderProgram = core.getRenderer().getShaderProgram("color_normals");
 
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
 
         vertexes_texture = null;
+        getVertexes_normalTexture = null;
+
+        genBuffer();
+    }
+    public Model(float[] vertexes, float[] vertexes_texture, Core core, int texture){
+        this.vertexes = vertexes;
+        this.vertexes_texture = vertexes_texture;
+        this.core = core;
+        this.shaderProgram = core.getRenderer().getShaderProgram("texture");
+
+        attributs = shaderProgram.getAttributs();
+        uniforms = shaderProgram.getUniforms();
+
+        vertexes_normal = null;
+        getVertexes_normalTexture = null;
+
+        genBuffer();
+    }
+    public Model(float[] vertexes, float[] vertexes_normal, float[] vertexes_texture, Core core){
+        this.vertexes = vertexes;
+        this.vertexes_normal = vertexes_normal;
+        this.vertexes_texture = vertexes_texture;
+        this.core = core;
+        this.shaderProgram = core.getRenderer().getShaderProgram("texture_normals");
+
+        attributs = shaderProgram.getAttributs();
+        uniforms = shaderProgram.getUniforms();
+
+
         getVertexes_normalTexture = null;
 
         genBuffer();
@@ -93,34 +118,39 @@ public class Model {
 
         buffers.put("vPosition", new BufferData(mVertices, 3));
 
-        if(shaderProgram.name == "color_normals"){
+        if(shaderProgram.name == "color_normals" || shaderProgram.name == "texture_normals"){
             FloatBuffer mNormals = ByteBuffer.allocateDirect(vertexes_normal.length * BYTES_PER_FLOAT)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
             mNormals.put(vertexes_normal).position(0);
 
             buffers.put("vNormal", new BufferData(mNormals, 3));
         }
+
+        if(shaderProgram.name == "texture" || shaderProgram.name == "texture_normals"){
+            FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexes_texture.length * BYTES_PER_FLOAT)
+                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
+            mTexture.put(vertexes_texture).position(0);
+
+            buffers.put("vTexture", new BufferData(mTexture, 2));
+        }
     }
 
     public void setGeneralUniforms(){
         Renderer r = core.getRenderer();
-        if(shaderProgram.name == "color"){
+        if(shaderProgram.name == "color" || shaderProgram.name == "color_normals" || shaderProgram.name == "texture" || shaderProgram.name == "texture_normals"){
             glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getvPMatrix(), 0);
             glUniform1f(uniforms.get("far"), r.camera.getFar());
             glUniform4fv(uniforms.get("fog_color"), 1, r.fog_color.getArray(), 0);
         }
-        if(shaderProgram.name == "color_normals"){
-            glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getvPMatrix(), 0);
-            glUniform1f(uniforms.get("far"), r.camera.getFar());
-            glUniform4fv(uniforms.get("fog_color"), 1, r.fog_color.getArray(), 0);
+        if(shaderProgram.name == "color_normals" || shaderProgram.name == "texture_normals"){
             glUniform1f(uniforms.get("ambient"), r.ambient);
             glUniform3fv(uniforms.get("uViewPos"), 1, r.camera.getPosition().getArray(), 0);
             glUniform3fv(uniforms.get("global_light_color"), 1, r.global_light_color.getArray(), 0);
             glUniform3fv(uniforms.get("global_light_dir"), 1, r.global_light_dir.getArray(), 0);
 
             int j = 0;
-            for (int i = 0; i < r.lights.size(); i++){
-                j += r.lights.get(i).draw(new int[]{
+            for (int i = 0; i < r.getLightsArraySize(); i++){
+                j += r.getLight(i).draw(new int[]{
                         uniforms.get("uLight["+j+"]"),
                         uniforms.get("uLight["+(j+1)+"]"),
                         uniforms.get("uLight["+(j+2)+"]")

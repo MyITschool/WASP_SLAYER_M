@@ -1,6 +1,6 @@
 package com.example.mylibrary.math;
 
-public class Vector {
+public final class Vector {
 
     public static Vector4 div(Vector4 a, Vector4 b){
         Vector4 c = new Vector4(0);

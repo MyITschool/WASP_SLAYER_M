@@ -41,6 +41,15 @@ public class Core extends AppCompatActivity {
         }
     }
 
+    public void onResume(){
+        super.onResume();
+        scene.resume();
+    }
+    public void onPause(){
+        super.onPause();
+        scene.pause();
+    }
+
     public Scene getScene(){
         return scene;
     }

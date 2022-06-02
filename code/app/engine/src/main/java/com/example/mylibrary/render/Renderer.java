@@ -1,18 +1,33 @@
 package com.example.mylibrary.render;
 
 import static android.opengl.GLES10.GL_MULTISAMPLE;
+import static android.opengl.GLES20.GL_CLAMP_TO_EDGE;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.GL_LEQUAL;
+import static android.opengl.GLES20.GL_LINEAR;
+import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TEXTURE_MIN_FILTER;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_S;
+import static android.opengl.GLES20.GL_TEXTURE_WRAP_T;
+import static android.opengl.GLES20.glActiveTexture;
+import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearDepthf;
 import static android.opengl.GLES20.glDepthFunc;
 import static android.opengl.GLES20.glEnable;
+import static android.opengl.GLES20.glGenTextures;
+import static android.opengl.GLES20.glTexParameterf;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glViewport;
+import static android.opengl.GLUtils.texImage2D;
 
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 
 import com.example.mylibrary.core.Core;
@@ -23,6 +38,8 @@ import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 import com.example.mylibrary.model.Model;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,13 +53,13 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
     private final Core core;
 
-    public final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>();
+    private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>();
+    private final HashMap<String, Integer> textures = new HashMap<>();
 
     private final ArrayList<Model> models = new ArrayList<>();
     private final ArrayList<ArrayList<RenderObject>> obj = new ArrayList<>();
     private final ArrayList<Updated> updateds = new ArrayList<>();
-
-    public final ArrayList<Light> lights = new ArrayList<>();
+    private final ArrayList<Light> lights = new ArrayList<>();
 
     public Camera camera;
 
@@ -50,6 +67,13 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     public float ambient = 0;
     public Vector3 global_light_dir = new Vector3(0,1,0);
     public Vector3 global_light_color = new Vector3(1);
+
+    public ShaderProgram getShaderProgram(String key){
+        return shaderPrograms.get(key);
+    }
+    public void deleteShaderProgram(String key){
+        shaderPrograms.remove(key);
+    }
 
     public Renderer(Core core){
         super(core);
@@ -70,6 +94,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 core));
         String[] uniforms = new String[252+10];
         System.arraycopy(new String[]{"uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far"},0,uniforms,0,10);
+        //////////////////////////////////////////////////////////////////////////
         for (int i = 0; i < 252; i++){
             uniforms[10+i] = "uLight["+i+"]";
         }
@@ -77,7 +102,20 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 new String[]{"vPosition", "vNormal"},
                 uniforms,
                 core));
-
+        ///////////////////////////////////////////////////////////////////////////
+        shaderPrograms.put("texture", new ShaderProgram("texture","shaders/texture/vs.glsl","shaders/texture/fs.glsl",
+                new String[]{"vPosition", "vTexture"},
+                new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "uTexture"},
+                core));
+        ///////////////////////////////////////////////////////////////////////////
+        for (int i = 0; i < 252; i++){
+            uniforms[10+i] = "uLight["+i+"]";
+        }
+        shaderPrograms.put("texture_normals", new ShaderProgram("texture_normals","shaders/texture_normals/vs.glsl","shaders/texture_normals/fs.glsl",
+                new String[]{"vPosition", "vNormal", "vTexture"},
+                uniforms,
+                core));
+        ///////////////////////////////////////////////////////////////////////////
         glEnable(GL_MULTISAMPLE);
         glEnable(GL10.GL_BLEND);
         glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -144,18 +182,18 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
     public void addRenderObject(RenderObject renderObject){
 
-        int im = models.lastIndexOf(renderObject.model);
+        int im = models.lastIndexOf(renderObject.getModel());
         if(im != -1){
             obj.get(im).add(renderObject);
             return;
         }
-        models.add(renderObject.model);
+        models.add(renderObject.getModel());
         obj.add(new ArrayList<RenderObject>());
         obj.get(obj.size()-1).add(renderObject);
     }
 
     public void deleteRenderObject(RenderObject renderObject){
-        int im = models.lastIndexOf(renderObject.model);
+        int im = models.lastIndexOf(renderObject.getModel());
         obj.get(im).remove(renderObject);
         if(obj.get(im).size()==0){
             obj.remove(im);
@@ -178,6 +216,12 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     public void deleteLigth(Light light){
         lights.remove(light);
     }
+    public Light getLight(int i){
+        return lights.get(i);
+    }
+    public int getLightsArraySize(){
+        return lights.size();
+    }
 
     public void sortLigth(){
         Vector3 camera_position = camera.getPosition();
@@ -199,5 +243,50 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         lights.clear();
     }
 
+    public int getTexture(String key){
+        return textures.get(key);
+    }
+
+    public void loadTexture(String src, String key){
+        AssetManager assetManager = core.getAssets();
+
+        InputStream istr;
+
+        Bitmap bitmap;
+        try {
+            istr = assetManager.open(src);
+            bitmap = BitmapFactory.decodeStream(istr);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.out.println("не удалось загрузить bitmap: "+src);
+            return;
+        }
+
+        glActiveTexture(GL_TEXTURE0+textures.size());
+
+        int[] textures = new int[1];
+        glGenTextures(1, textures, 0);
+
+        glBindTexture(GL_TEXTURE_2D, textures[0]);
+
+        glTexParameterf(GL_TEXTURE_2D,
+                GL_TEXTURE_WRAP_S,
+                GL_CLAMP_TO_EDGE);
+
+        glTexParameterf(GL_TEXTURE_2D,
+                GL_TEXTURE_WRAP_T,
+                GL_CLAMP_TO_EDGE);
+
+        glTexParameterf(GL_TEXTURE_2D,
+                GL_TEXTURE_MIN_FILTER,
+                GL_LINEAR);
+
+        texImage2D(GL_TEXTURE_2D, 0, bitmap, 0);
+
+        assert bitmap != null;
+        bitmap.recycle();
+
+        this.textures.put(key, this.textures.size()-1);
+    }
 
 }

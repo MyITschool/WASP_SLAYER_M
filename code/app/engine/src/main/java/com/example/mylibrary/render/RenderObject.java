@@ -2,6 +2,8 @@ package com.example.mylibrary.render;
 
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDrawArrays;
+import static android.opengl.GLES20.glUniform1f;
+import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniform2fv;
 import static android.opengl.GLES20.glUniform4fv;
 import static android.opengl.GLES20.glUniformMatrix4fv;
@@ -18,17 +20,18 @@ import java.util.HashMap;
 
 public class RenderObject {
 
-    public final Model model;
+    private final Model model;
 
-    public final Vector4 color;
+    public Vector4 color = new Vector4(1);
+    public int texture = 0;
 
-    private Vector3 position = new Vector3(0);
-    private Vector3 rotate = new Vector3(0);
-    private Vector3 size = new Vector3(1);
+    protected Vector3 position = new Vector3(0);
+    protected Vector3 rotate = new Vector3(0);
+    protected Vector3 size = new Vector3(1);
 
-    private float[] modelMatrix = new float[16];
+    protected float[] modelMatrix = new float[16];
 
-    private final Renderer renderer;
+    protected final Renderer renderer;
 
     public boolean activity = true;
 
@@ -37,10 +40,18 @@ public class RenderObject {
     public RenderObject(Model model){
         this.model = model;
         this.renderer = model.core.getRenderer();
-        color = model.color.clone();
 
         genModelMat();
     }
+    public RenderObject(Model model, int texture){
+        this.model = model;
+        this.renderer = model.core.getRenderer();
+        this.texture=texture;
+
+        genModelMat();
+    }
+
+    public Model getModel(){return model;}
 
     public void setPosition(Vector3 position){
         this.position = position;
@@ -58,7 +69,7 @@ public class RenderObject {
     public Vector3 getRotate(){return rotate;}
     public Vector3 getSize(){return size;};
 
-    private void genModelMat(){
+    protected void genModelMat(){
         float[] modelMatrix = new float[16];
         float[] rotateMatrix = new float[16];
 
@@ -97,15 +108,17 @@ public class RenderObject {
     public void setUniforms(){
         HashMap<String, Integer> uniforms = model.shaderProgram.getUniforms();
         glUniformMatrix4fv(uniforms.get("uModelMatrix"), 1, false, modelMatrix, 0);
-        if(model.shaderProgram.name == "color" || model.shaderProgram.name == "color_normals"){
+        if(model.shaderProgram.name == "color" || model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals"){
             glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
         }
-        if(model.shaderProgram.name == "color_normals"){
+        if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals"){
             glUniform2fv(uniforms.get("specular"), 1, specular.getArray(), 0);
+        }else if(model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals"){
+            glUniform1i(uniforms.get("uTexture"), texture);
         }
     }
 
-    private boolean gp(Vector4 vm, float[] m){
+    protected boolean gp(Vector4 vm, float[] m){
         float[] vpos = vm.getArray();
 
         Matrix.multiplyMV(vpos, 0, m, 0, vpos, 0);

@@ -12,6 +12,5 @@ public abstract class Scene {
     public abstract void start();
     public abstract void resume();
     public abstract void pause();
-    public abstract void dispose();
 
 }

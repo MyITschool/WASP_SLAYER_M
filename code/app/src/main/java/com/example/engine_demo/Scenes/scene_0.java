@@ -3,7 +3,7 @@ package com.example.engine_demo.Scenes;
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.core.Scene;
 
-public class scene_0 extends Scene {
+public final class scene_0 extends Scene {
     public scene_0(Core core) {
         super(core);
     }
@@ -28,8 +28,4 @@ public class scene_0 extends Scene {
 
     }
 
-    @Override
-    public void dispose() {
-
-    }
 }

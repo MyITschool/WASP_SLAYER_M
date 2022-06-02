@@ -8,15 +8,15 @@ import com.example.mylibrary.math.Vector3;
 
 public class Camera {
 
-    private float[] projectionMatrix = new float[16];
-    private float[] vPMatrix = new float[16];
+    protected float[] projectionMatrix = new float[16];
+    protected float[] vPMatrix = new float[16];
 
-    private Vector3 cameraPos, cameraRot;
+    protected Vector3 cameraPos, cameraRot;
 
-    private Vector2Int res;
+    protected Vector2Int res;
 
-    private float FOV = 60;
-    private float far = 100;
+    protected float FOV = 60;
+    protected float far = 100;
 
     public float getFar(){return far;}
 
@@ -44,7 +44,7 @@ public class Camera {
         rotate();
     }
 
-    private void rotate(){
+    protected void rotate(){
 
         float[] vPMatrix = new float[16];
         float[] projectionMatrix = new float[16];
@@ -75,11 +75,11 @@ public class Camera {
         this.projectionMatrix = projectionMatrix;
     }
 
-    private void genVPMatrix(){
+    protected void genVPMatrix(){
         float ratio = (float) res.x / res.y;
         Matrix.perspectiveM(vPMatrix,0, FOV, ratio, 0.1f, far);
     }
-    private void genProjectionMatrix(){
+    protected void genProjectionMatrix(){
         float ratio = (float) res.x / res.y;
         Matrix.perspectiveM(projectionMatrix,0, FOV, ratio, 0.1f, far);
     }
@@ -102,7 +102,7 @@ public class Camera {
         return res;
     }
 
-    private final Core core;
+    protected final Core core;
     public Camera(Core core){
         this.core = core;
 
