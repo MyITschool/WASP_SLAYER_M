@@ -130,6 +130,7 @@ public class ModelLoader {
         }
         m.vt=arr;
 
+        System.out.println("max: "+m.maxPoint+" min: "+m.minPoint+" "+src);
 
         return m;
     }

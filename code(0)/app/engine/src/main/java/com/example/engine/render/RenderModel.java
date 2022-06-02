@@ -183,6 +183,7 @@ public class RenderModel {
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
             mTextureCoords.put(mTextureCoordsData).position(0);
         }
+
         if (material[2]>-1){
             mNormalTextureCoords = ByteBuffer.allocateDirect(mNormalTextureCoordsData.length * BYTES_PER_FLOAT)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -422,16 +423,14 @@ public class RenderModel {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVBOIds[1]);
     }
 
-    private boolean gp(Vector3 vm, float[] m){
-        float[] vpos = new float[4];
-        Vector3 v = vm.clone();
-        float[] va = v.getArray();
-        System.arraycopy(va, 0, vpos, 0, 3);
-        vpos[3]=1;
+    private boolean gp(Vector4 vm, float[] m){
+        float[] vpos = vm.getArray();
+
         Matrix.multiplyMV(vpos, 0, m, 0, vpos, 0);
 
         Vector4 p = new Vector4(vpos);
-        //return (vpos[0] >= 1 || vpos[0] <= -1 || vpos[1] >= 1 || vpos[1] <= -1 || vpos[2] >= 1 || vpos[2] <= -1);
+        //return (vpos[0] >= 1 || vpos[0] <= -1 || vpos[1] >= 1 || vpos[1] <= -1 || vpos[2] >= 1 || vpos[2] <= -1)
+
         return (-p.w <= p.x && p.x <= p.w) &&
                 (-p.w <= p.y && p.y <= p.w) &&
                 (0 <= p.z && p.z <= p.w);
@@ -447,25 +446,27 @@ public class RenderModel {
         float[] m = new float[16];
         Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
 
-        Vector3 v0 = tmodel.maxPoint.clone();
-        Vector3 v1 = tmodel.minPoint.clone();
-        Vector3 v2 = new Vector3(v1.x, v0.y, v0.z);
-        Vector3 v3 = new Vector3(v1.x, v1.y, v0.z);
-        Vector3 v4 = new Vector3(v0.x, v1.y, v0.z);
-        Vector3 v5 = new Vector3(v0.x, v0.y, v1.z);
-        Vector3 v6 = new Vector3(v0.x, v1.y, v1.z);
-        Vector3 v7 = new Vector3(v1.x, v0.y, v1.z);
+
+        Vector3 min = tmodel.minPoint;
+        Vector3 max = tmodel.maxPoint;
+
+        Vector4 v2 = new Vector4(max.x, min.y, min.z, 1);
+        Vector4 v3 = new Vector4(min.x, max.y, min.z, 1);
+        Vector4 v4 = new Vector4(max.x, max.y, min.z, 1);
+
+        Vector4 v5 = new Vector4(min.x, min.y, max.z, 1);
+        Vector4 v6 = new Vector4(max.x, min.y, max.z, 1);
+        Vector4 v7 = new Vector4(min.x, max.y, max.z, 1);
 
         float s = Math.max(Math.abs(objectSize.z), Math.max(Math.abs(objectSize.x), Math.abs(objectSize.y)));
 
         Vector3 ml = new Vector3(
-                Math.max(v0.x, Math.abs(v1.x)),
-                Math.max(v0.y, Math.abs(v1.y)),
-                Math.max(v0.z, Math.abs(v1.z))
+                Math.max(max.x, Math.abs(min.x)),
+                Math.max(max.y, Math.abs(min.y)),
+                Math.max(max.z, Math.abs(min.z))
         );
         float l = ml.length()*s*2;
-
-        return gp(v0, m) || gp(v1, m) || gp(v2, m) || gp(v3, m) ||
+        return gp(new Vector4(max.x, max.y, max.z, 1), m) || gp(new Vector4(min.x, min.y, min.z, 1), m) || gp(v2, m) || gp(v3, m) ||
                 gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
                 || Vector.sub(objectPos, cam_p).length() <= l + 3;
     }
