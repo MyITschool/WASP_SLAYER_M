@@ -92,9 +92,10 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 new String[]{"vPosition"},
                 new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color"},
                 core));
+        //////////////////////////////////////////////////////////////////////////
         String[] uniforms = new String[252+10];
         System.arraycopy(new String[]{"uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far"},0,uniforms,0,10);
-        //////////////////////////////////////////////////////////////////////////
+
         for (int i = 0; i < 252; i++){
             uniforms[10+i] = "uLight["+i+"]";
         }
@@ -108,11 +109,23 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "uTexture"},
                 core));
         ///////////////////////////////////////////////////////////////////////////
+        uniforms = new String[252+11];
+        System.arraycopy(new String[]{"uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uTexture"},0,uniforms,0,11);
         for (int i = 0; i < 252; i++){
-            uniforms[10+i] = "uLight["+i+"]";
+            uniforms[11+i] = "uLight["+i+"]";
         }
         shaderPrograms.put("texture_normals", new ShaderProgram("texture_normals","shaders/texture_normals/vs.glsl","shaders/texture_normals/fs.glsl",
                 new String[]{"vPosition", "vNormal", "vTexture"},
+                uniforms,
+                core));
+        ///////////////////////////////////////////////////////////////////////////
+        uniforms = new String[252+12];
+        System.arraycopy(new String[]{"uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uNormalTexture", "uTexture"},0,uniforms,0,12);
+        for (int i = 0; i < 252; i++){
+            uniforms[12+i] = "uLight["+i+"]";
+        }
+        shaderPrograms.put("texture_normalMap", new ShaderProgram("texture_normalMap","shaders/texture_normalMap/vs.glsl","shaders/texture_normalMap/fs.glsl",
+                new String[]{"vPosition", "vNormal", "vTexture", "vNormalTextureCoord", "vTangent"},
                 uniforms,
                 core));
         ///////////////////////////////////////////////////////////////////////////
@@ -286,7 +299,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         assert bitmap != null;
         bitmap.recycle();
 
-        this.textures.put(key, this.textures.size()-1);
+        this.textures.put(key, this.textures.size());
     }
 
 }

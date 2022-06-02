@@ -24,6 +24,7 @@ public class RenderObject {
 
     public Vector4 color = new Vector4(1);
     public int texture = 0;
+    public int normalTexture = 0;
 
     protected Vector3 position = new Vector3(0);
     protected Vector3 rotate = new Vector3(0);
@@ -47,6 +48,14 @@ public class RenderObject {
         this.model = model;
         this.renderer = model.core.getRenderer();
         this.texture=texture;
+
+        genModelMat();
+    }
+    public RenderObject(Model model, int texture, int normalTexture){
+        this.model = model;
+        this.renderer = model.core.getRenderer();
+        this.texture=texture;
+        this.normalTexture = normalTexture;
 
         genModelMat();
     }
@@ -107,14 +116,18 @@ public class RenderObject {
 
     public void setUniforms(){
         HashMap<String, Integer> uniforms = model.shaderProgram.getUniforms();
+
         glUniformMatrix4fv(uniforms.get("uModelMatrix"), 1, false, modelMatrix, 0);
-        if(model.shaderProgram.name == "color" || model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals"){
-            glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
-        }
-        if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals"){
+        glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
+
+        if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
             glUniform2fv(uniforms.get("specular"), 1, specular.getArray(), 0);
-        }else if(model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals"){
+        }
+        if(model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
             glUniform1i(uniforms.get("uTexture"), texture);
+        }
+        if(model.shaderProgram.name == "texture_normalMap"){
+            glUniform1i(uniforms.get("uNormalTexture"), normalTexture);
         }
     }
 
