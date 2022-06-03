@@ -13,8 +13,10 @@ import java.util.HashMap;
 
 public class RenderImg extends RenderObject{
 
+    protected final Core core;
     public RenderImg(String textureKey, Core core){
         super(core.getRenderer().UIModel, textureKey);
+        this.core=core;
     }
     public void setUniforms(){
         HashMap<String, Integer> uniforms = model.shaderProgram.getUniforms();

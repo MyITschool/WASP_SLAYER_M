@@ -52,6 +52,17 @@ public class UIModel extends Model{
         buffers.put("vTexture", new BufferData(mTexture, 2));
     }
 
+    public void genTextureBuffer(float[] vertexes_texture){
+        this.vertexes_texture=vertexes_texture;
+        int BYTES_PER_FLOAT = 4;
+
+        FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexes_texture.length * BYTES_PER_FLOAT)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mTexture.put(vertexes_texture).position(0);
+
+        buffers.get("vTexture").floatBuffer = mTexture;
+    }
+
     public void putShaderVariables(){
         setBuffers();
     }

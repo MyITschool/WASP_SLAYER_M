@@ -69,7 +69,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     private final ArrayList<Light> lights = new ArrayList<>();
 
     public Camera camera;
-    public Model UIModel;
+    public UIModel UIModel;
 
     public Vector4 fog_color = new Vector4(1);
     public float ambient = 0;

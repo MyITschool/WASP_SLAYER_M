@@ -10,6 +10,7 @@ import com.example.mylibrary.model.Model;
 import com.example.mylibrary.model.ModelLoader;
 import com.example.mylibrary.model.VertexesData;
 import com.example.mylibrary.render.Light;
+import com.example.mylibrary.render.RebdererText;
 import com.example.mylibrary.render.RenderImg;
 import com.example.mylibrary.render.RenderObject;
 import com.example.mylibrary.render.Renderer;
@@ -27,6 +28,7 @@ public final class Menu extends Scene implements Updated{
         renderer.loadTexture("textures/floor.png", "floor");
         renderer.loadTexture("textures/floor_normalmap.png", "floor_normalmap");
         renderer.loadTexture("textures/ui.png", "ui");
+        renderer.loadTexture("textures/font.png", "font");
 
         renderer.loadCubemap(new String[]{
                 "textures/skybox/r.png",
@@ -39,10 +41,11 @@ public final class Menu extends Scene implements Updated{
     }
 
     RenderObject renderObject;
+
+    RebdererText rebdererText;
+
     @Override
     public void start() {
-
-
         VertexesData vertexesData = modelLoader.loadModel("models/cube.obj", "cube");
         vertexesData.vertexes_normalTexture = vertexesData.vertexes_texture;
         Model model = new Model(vertexesData, core);
@@ -67,6 +70,10 @@ public final class Menu extends Scene implements Updated{
 
         renderer.addRenderObject(ui);
 
+        rebdererText = new RebdererText("font", "00", core);
+        rebdererText.setSize(new Vector3(0.3f,0.6f,1));
+        renderer.addRenderObject(rebdererText);
+
         Model model1 = new Model("sky", core);
         RenderObject renderObject1 = new RenderObject(model1);
         renderer.addRenderObject(renderObject1);
@@ -76,7 +83,6 @@ public final class Menu extends Scene implements Updated{
        // renderer.camera.rotateModeView = false;
         renderer.camera.setPosition(new Vector3(0,-2,-15));
         renderer.camera.setRotate(new Vector3(0,0,0));
-
     }
 
     @Override
@@ -98,5 +104,7 @@ public final class Menu extends Scene implements Updated{
 //        renderObject.setRotate(Vector.add(renderObject.getRotate(), new Vector3(0.1f,0,0)));
 //
         renderer.camera.setRotate(Vector.add(renderer.camera.getRotate(), new Vector3(0,0.1f,0)));
+
+        rebdererText.text = renderer.getLastFPS()+"";
     }
 }

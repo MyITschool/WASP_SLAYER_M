@@ -26,8 +26,8 @@ import java.util.Map;
 public class Model {
 
     class BufferData{
-        public final FloatBuffer floatBuffer;
-        public final int COORDS_PER_VERTEX;
+        public FloatBuffer floatBuffer;
+        public int COORDS_PER_VERTEX;
         public BufferData(FloatBuffer floatBuffer, int COORDS_PER_VERTEX){
             this.floatBuffer = floatBuffer;
             this.COORDS_PER_VERTEX = COORDS_PER_VERTEX;
