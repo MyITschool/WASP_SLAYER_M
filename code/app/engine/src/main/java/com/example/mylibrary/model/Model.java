@@ -1,11 +1,10 @@
 package com.example.mylibrary.model;
 
-import static android.opengl.GLES20.GL_ARRAY_BUFFER;
 import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.glBindBuffer;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glUniform1f;
+import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniform3fv;
 import static android.opengl.GLES20.glUniform4fv;
 import static android.opengl.GLES20.glUniformMatrix4fv;
@@ -13,8 +12,6 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.math.Vector3;
-import com.example.mylibrary.math.Vector4;
-import com.example.mylibrary.render.Light;
 import com.example.mylibrary.render.Renderer;
 import com.example.mylibrary.render.ShaderProgram;
 
@@ -37,21 +34,24 @@ public class Model {
         }
     }
 
-    public final float[] vertexes;
-    public final float[] vertexes_normal;
-    public final float[] vertexes_texture;
-    public final float[] vertexes_normalTexture;
+    protected float[] vertexes = null;
+    protected float[] vertexes_normal = null;
+    protected float[] vertexes_texture = null;
+    protected float[] vertexes_normalTexture = null;
+
+    public int getNumberPolygons(){return vertexes.length/3;}
 
     public Vector3 minPoint = new Vector3(-1);
     public Vector3 maxPoint = new Vector3(1);
 
     public final ShaderProgram shaderProgram;
 
-    public final HashMap<String, BufferData> buffers = new HashMap<>();
-    private final HashMap<String, Integer> attributs;
-    private final HashMap<String, Integer> uniforms;
-
+    protected final HashMap<String, BufferData> buffers = new HashMap<>();
+    protected HashMap<String, Integer> attributs;
+    protected HashMap<String, Integer> uniforms;
+    protected int texture;
     public final Core core;
+
     public Model(float[] vertexes, Core core){
         this.vertexes = vertexes;
         this.core = core;
@@ -121,6 +121,111 @@ public class Model {
 
         genBuffer();
     }
+    public Model(VertexesData vertexesData, Core core){
+        vertexes = vertexesData.vertexes;
+        vertexes_normal = vertexesData.vertexes_normal;
+        vertexes_texture = vertexesData.vertexes_texture;
+        vertexes_normalTexture = vertexesData.vertexes_normalTexture;
+
+        maxPoint = vertexesData.maxPoint;
+        minPoint = vertexesData.minPoint;
+
+        this.core = core;
+
+        String spn = "color";
+        if(vertexes_normal!=null)
+            spn = "color_normals";
+        if(vertexes_texture!=null&&vertexes_normal==null)
+            spn = "texture";
+        if(vertexes_texture!=null&&vertexes_normal!=null)
+            spn = "texture_normals";
+        if(vertexes_normalTexture!=null)
+            spn = "texture_normalMap";
+
+        shaderProgram = core.getRenderer().getShaderProgram(spn);
+
+        attributs = shaderProgram.getAttributs();
+        uniforms = shaderProgram.getUniforms();
+
+        genBuffer();
+    }
+    public Model(String cubeMapKey, Core core){
+        this.core = core;
+        texture = core.getRenderer().getTexture(cubeMapKey);
+
+        this.shaderProgram = core.getRenderer().getShaderProgram("sky");
+
+        attributs = shaderProgram.getAttributs();
+        uniforms = shaderProgram.getUniforms();
+
+        vertexes_normal = null;
+        vertexes_texture = null;
+        vertexes_normalTexture = null;
+
+        vertexes = new float[]{
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+
+                // Задняя грань
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+
+                1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+
+                // Верхняя грань
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f, -1.0f,
+
+                // Нижняя грань
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                // Правая грань
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+
+                // Левая грань
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f
+        };
+
+        genBuffer();
+    }
+    public Model(ShaderProgram shaderProgram, Core core){
+        this.shaderProgram=shaderProgram;
+        this.core=core;
+
+        attributs = shaderProgram.getAttributs();
+        uniforms = shaderProgram.getUniforms();
+    }
 
     protected void genBuffer(){
         int BYTES_PER_FLOAT = 4;
@@ -162,7 +267,6 @@ public class Model {
             buffers.put("vTangent", new BufferData(mTangent, 3));
         }
     }
-
     protected float[] genTangentData(){
         float[] mTangentData = new float[vertexes.length];
 
@@ -200,7 +304,7 @@ public class Model {
         return mTangentData;
     }
 
-    public void setGeneralUniforms(){
+    protected void setGeneralUniforms(){
         Renderer r = core.getRenderer();
         if(shaderProgram.name == "color" || shaderProgram.name == "color_normals" || shaderProgram.name == "texture" || shaderProgram.name == "texture_normals" || shaderProgram.name == "texture_normalMap"){
             glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getvPMatrix(), 0);
@@ -223,9 +327,12 @@ public class Model {
                 if(252-j+1<3)break;
             }
         }
+        if(shaderProgram.name == "sky"){
+            glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getProjectionMatrix(), 0);
+            glUniform1i(uniforms.get("skyBox"), texture);
+        }
     }
-
-    public void setBuffers(){
+    protected void setBuffers(){
         for (Map.Entry<String, Integer> entry : attributs.entrySet()) {
             int positionHandle = entry.getValue();
 
@@ -238,6 +345,10 @@ public class Model {
         }
     }
 
+    public void putShaderVariables(){
+        setBuffers();
+        setGeneralUniforms();
+    }
     public void disableAttributs(){
         for (Map.Entry<String, Integer> entry : attributs.entrySet()) {
             glDisableVertexAttribArray(entry.getValue());

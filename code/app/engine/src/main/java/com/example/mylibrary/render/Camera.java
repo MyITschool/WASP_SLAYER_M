@@ -43,7 +43,7 @@ public class Camera {
         this.cameraRot=cameraRot;
         rotate();
     }
-
+    public boolean rotateModeView = true;
     protected void rotate(){
 
         float[] vPMatrix = new float[16];
@@ -52,6 +52,26 @@ public class Camera {
         Matrix.perspectiveM(vPMatrix,0, FOV, ratio, 0.1f, far);
         Matrix.perspectiveM(projectionMatrix,0, FOV, ratio, 0.1f, far);
 
+        if(rotateModeView){
+
+
+            Matrix.translateM(vPMatrix,0,vPMatrix,0,cameraPos.x,cameraPos.y,cameraPos.z);
+
+            float[] matRotX = new float[16];
+            Matrix.setRotateM(matRotX, 0, cameraRot.x, 1,0,0);
+            float[] matRotY = new float[16];
+            Matrix.setRotateM(matRotY, 0, cameraRot.y, 0,1,0);
+            float[] matRotZ = new float[16];
+            Matrix.setRotateM(matRotZ, 0, cameraRot.z, 0,0,1);
+
+            Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotX,0);
+            Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotY,0);
+            Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotZ,0);
+
+            Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotX,0);
+            Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotY,0);
+            Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotZ,0);
+        }else {
 
             float[] matRotX = new float[16];
             Matrix.setRotateM(matRotX, 0, cameraRot.x, 1,0,0);
@@ -69,7 +89,7 @@ public class Camera {
             Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotX,0);
             Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotY,0);
             Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotZ,0);
-
+        }
 
         this.vPMatrix = vPMatrix;
         this.projectionMatrix = projectionMatrix;
@@ -112,7 +132,6 @@ public class Camera {
         this.res = new Vector2Int(1);
 
         genVPMatrix();
-
         genProjectionMatrix();
     }
 

@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class RenderObject {
 
-    private final Model model;
+    protected Model model;
 
     public Vector4 color = new Vector4(1);
     public int texture = 0;
@@ -32,7 +32,7 @@ public class RenderObject {
 
     protected float[] modelMatrix = new float[16];
 
-    protected final Renderer renderer;
+    protected Renderer renderer;
 
     public boolean activity = true;
 
@@ -44,18 +44,18 @@ public class RenderObject {
 
         genModelMat();
     }
-    public RenderObject(Model model, int texture){
+    public RenderObject(Model model, String textureKey){
         this.model = model;
         this.renderer = model.core.getRenderer();
-        this.texture=texture;
+        this.texture=renderer.getTexture(textureKey);
 
         genModelMat();
     }
-    public RenderObject(Model model, int texture, int normalTexture){
+    public RenderObject(Model model, String textureKey, String normalTextureKey){
         this.model = model;
         this.renderer = model.core.getRenderer();
-        this.texture=texture;
-        this.normalTexture = normalTexture;
+        this.texture= renderer.getTexture(textureKey);
+        this.normalTexture = renderer.getTexture(normalTextureKey);
 
         genModelMat();
     }
@@ -117,8 +117,10 @@ public class RenderObject {
     public void setUniforms(){
         HashMap<String, Integer> uniforms = model.shaderProgram.getUniforms();
 
-        glUniformMatrix4fv(uniforms.get("uModelMatrix"), 1, false, modelMatrix, 0);
-        glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
+        if(model.shaderProgram.name != "sky"){
+            glUniformMatrix4fv(uniforms.get("uModelMatrix"), 1, false, modelMatrix, 0);
+            glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
+        }
 
         if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
             glUniform2fv(uniforms.get("specular"), 1, specular.getArray(), 0);
@@ -179,9 +181,9 @@ public class RenderObject {
     }
 
     public void draw(){
-        if (!inCamera())return;
+        if (model.shaderProgram.name != "sky" && !inCamera())return;
         setUniforms();
 
-        glDrawArrays(GL_TRIANGLES, 0, model.vertexes.length/3);
+        glDrawArrays(GL_TRIANGLES, 0, model.getNumberPolygons());
     }
 }

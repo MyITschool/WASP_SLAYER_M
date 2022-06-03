@@ -19,8 +19,7 @@ void main(){
     fTextureCoord = vTexture;
     fNormalTextureCoord = vNormalTextureCoord;
 
-    vec4 position = uVPMatrix*uModelMatrix*vPosition;
-    z = position.z/far;
+    z = (uVPMatrix*uModelMatrix*vPosition).z/far;
 
     vec3 T = normalize(vec3(uModelMatrix * vec4(vTangent,   0.0)));
     vec3 N = normalize(uModelMatrix*vNormal).xyz;
@@ -28,5 +27,5 @@ void main(){
     mat3 TBN = mat3(T, B, N);
     fTBN = TBN;
 
-    gl_Position = position;
+    gl_Position = uVPMatrix*uModelMatrix*vPosition;
 }

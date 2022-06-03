@@ -6,6 +6,10 @@ import android.view.Window;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mylibrary.audio.AudioLoader;
+import com.example.mylibrary.event.TouchListener;
+import com.example.mylibrary.model.ModelLoader;
+import com.example.mylibrary.physics.Physics;
 import com.example.mylibrary.render.Renderer;
 
 public class Core extends AppCompatActivity {
@@ -13,8 +17,16 @@ public class Core extends AppCompatActivity {
     private Scene scene;
 
     private Renderer renderer;
+    private final ModelLoader modelLoader = new ModelLoader(this);
+    private final Physics physics = new Physics(this);
+    private TouchListener touchListener;
+    private AudioLoader audioLoader;
 
     public Renderer getRenderer(){return renderer;}
+    public ModelLoader getModelLoader(){return modelLoader;}
+    public Physics getPhysics(){return physics;}
+    public TouchListener getTouchListener(){return touchListener;}
+    public AudioLoader getAudioLoader(){return audioLoader;}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +37,9 @@ public class Core extends AppCompatActivity {
 
         scene = getScene();
         renderer = new Renderer(this);
+        audioLoader = new AudioLoader(this);
+        touchListener = new TouchListener(renderer);
+
         setContentView(renderer);
     }
     @Override
