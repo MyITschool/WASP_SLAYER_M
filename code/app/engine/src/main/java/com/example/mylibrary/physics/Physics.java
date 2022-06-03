@@ -10,6 +10,9 @@ import java.util.ArrayList;
 public final class Physics {
     private final Core core;
     private final Renderer renderer;
+
+    public float g = 9.8f;
+
     public Physics(Core core){
         this.core=core;
         renderer=core.getRenderer();
@@ -18,7 +21,6 @@ public final class Physics {
     private ArrayList<CubeCollider> cubeColliders = new ArrayList<>();
 
     public CubeCollider addCubeCollider(Vector3 pos, Vector3 size){
-        cubeColliders.add(new CubeCollider(pos, size));
         return cubeColliders.get(cubeColliders.size()-1);
     }
     public CubeCollider addCubeCollider(CubeCollider collider){

@@ -1,27 +1,18 @@
 package com.example.mylibrary.math;
 
-public final class Vector4 implements Cloneable{
-    public float x;
-    public float y;
-    public float z;
+public final class Vector4 extends Vector3 implements Cloneable{
     public float w;
 
     public Vector4(float x,float y,float z, float w){
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        super(x,y,z);
         this.w = w;
     }
     public Vector4(float i){
-        this.x = i;
-        this.y = i;
-        this.z = i;
+        super(i);
         this.w = i;
     }
     public Vector4(float[] arr){
-        this.x = arr[0];
-        this.y = arr[1];
-        this.z = arr[2];
+        super(arr);
         this.w = arr[3];
     }
 
@@ -55,10 +46,6 @@ public final class Vector4 implements Cloneable{
 
     @Override
     public Vector4 clone() {
-        try {
-            return (Vector4)super.clone();
-        }catch( CloneNotSupportedException ex ) {
-            throw new InternalError();
-        }
+        return (Vector4)super.clone();
     }
 }

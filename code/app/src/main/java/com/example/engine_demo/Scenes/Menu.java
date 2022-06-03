@@ -54,21 +54,15 @@ public final class Menu extends Scene implements Updated{
         renderObject.setSize(new Vector3(1f));
         renderer.addRenderObject(renderObject);
 
-        RenderObject renderObjec1t = new RenderObject(model,"floor","floor_normalmap");
-        renderObjec1t.setSize(new Vector3(1f));
-        renderObjec1t.setPosition(new Vector3(3,0,0));
-        renderer.addRenderObject(renderObjec1t);
-
 
         renderer.ambient = 0.01f;
         renderer.global_light_color = new Vector3(1f);
 
         renderer.addLigth(new Light(new Vector3(0,0,-2), new Vector3(1), 1));
 
-        RenderImg ui = new RenderImg("ui", core);
-        ui.setSize(new Vector3(0.3f));
-
-        renderer.addRenderObject(ui);
+//        RenderImg ui = new RenderImg("ui", core);
+//        ui.setSize(new Vector3(0.3f));
+//        renderer.addRenderObject(ui);
 
         rebdererText = new RebdererText("font", "00", core);
         rebdererText.setSize(new Vector3(0.3f,0.6f,1));
@@ -81,7 +75,7 @@ public final class Menu extends Scene implements Updated{
         renderer.addUpdated(this);
 
        // renderer.camera.rotateModeView = false;
-        renderer.camera.setPosition(new Vector3(0,-2,-15));
+        renderer.camera.setPosition(new Vector3(0,0,-6));
         renderer.camera.setRotate(new Vector3(0,0,0));
     }
 

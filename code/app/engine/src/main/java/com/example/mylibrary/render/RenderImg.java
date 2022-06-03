@@ -7,6 +7,9 @@ import static android.opengl.GLES20.glUniform4fv;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 
 import com.example.mylibrary.core.Core;
+import com.example.mylibrary.math.Vector;
+import com.example.mylibrary.math.Vector2;
+import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.model.Model;
 
 import java.util.HashMap;
@@ -18,6 +21,7 @@ public class RenderImg extends RenderObject{
         super(core.getRenderer().UIModel, textureKey);
         this.core=core;
     }
+
     public void setUniforms(){
         HashMap<String, Integer> uniforms = model.shaderProgram.getUniforms();
 

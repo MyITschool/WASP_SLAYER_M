@@ -31,6 +31,7 @@ import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.GLUtils.texImage2D;
 
+import android.annotation.SuppressLint;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -56,6 +57,7 @@ import java.util.HashMap;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+@SuppressLint("ViewConstructor")
 public final class Renderer extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private final Core core;

@@ -76,7 +76,7 @@ public class RenderObject {
     }
     public Vector3 getPosition(){return position;}
     public Vector3 getRotate(){return rotate;}
-    public Vector3 getSize(){return size;};
+    public Vector3 getSize(){return size;}
 
     protected void genModelMat(){
         float[] modelMatrix = new float[16];

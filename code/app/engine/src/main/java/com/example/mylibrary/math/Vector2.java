@@ -1,9 +1,10 @@
 package com.example.mylibrary.math;
 
 
-public final class Vector2 implements Cloneable{
+public class Vector2 implements Cloneable{
     public float x;
     public float y;
+
     public Vector2(float x, float y){
         this.x = x;
         this.y = y;
@@ -11,6 +12,10 @@ public final class Vector2 implements Cloneable{
     public Vector2(float i){
         this.x = i;
         this.y = i;
+    }
+    public Vector2(float[] arr){
+        x=arr[0];
+        y=arr[1];
     }
 
     public float length(){
