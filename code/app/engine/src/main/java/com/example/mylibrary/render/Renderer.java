@@ -202,17 +202,29 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (models.size() != 0){
+            int uii = -1;
             for(int i = 0; i < models.size(); i++){
                 Model model = models.get(i);
                 ShaderProgram shaderProgram = model.shaderProgram;
+                if(shaderProgram.name == "UI"){uii=i; continue;}
                 glUseProgram(shaderProgram.shaderProgram);
                 model.putShaderVariables();
-               // if(shaderProgram.name == "UI")glDisable(GL_DEPTH_TEST);
                 for (int j = 0; j < obj.get(i).size(); j++){
                     obj.get(i).get(j).draw();
                 }
                 model.disableAttributs();
-               // if(shaderProgram.name == "UI")glEnable(GL_DEPTH_TEST);
+            }
+            if(uii!=-1){
+                Model model = models.get(uii);
+                ShaderProgram shaderProgram = model.shaderProgram;
+                glUseProgram(shaderProgram.shaderProgram);
+                model.putShaderVariables();
+                glDisable(GL_DEPTH_TEST);
+                for (int j = 0; j < obj.get(uii).size(); j++){
+                    obj.get(uii).get(j).draw();
+                }
+                model.disableAttributs();
+                glEnable(GL_DEPTH_TEST);
             }
         }
     }
