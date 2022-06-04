@@ -4,6 +4,7 @@ attribute vec2 vTexture;
 
 uniform mat4 uVPMatrix;
 uniform mat4 uModelMatrix;
+uniform mat4 uRotMatrix;
 uniform float far;
 
 varying vec3 normal;
@@ -12,7 +13,7 @@ varying float z;
 varying vec2 fTextureCoord;
 
 void main(){
-    normal = normalize(uModelMatrix*vNormal).xyz;
+    normal = normalize(uRotMatrix*vNormal).xyz;
     fFragPos = (uModelMatrix*vPosition).xyz;
     fTextureCoord = vTexture;
 

@@ -72,7 +72,6 @@ public class Core extends AppCompatActivity {
     public void setScene(Scene scene){
         renderer.allClear();
         this.scene = scene;
-        scene.preload();
         scene.start();
     }
 

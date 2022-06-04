@@ -6,8 +6,9 @@ import com.example.mylibrary.math.Vector3;
 public final class CubeCollider implements Cloneable{
     public Vector3 pos;
     public Vector3 size;
+    public boolean activity = true;
     private int type = 0;
-    private Object obj;
+    private RigidBody rigidBody;
 
     public int getType(){
         return type;
@@ -16,11 +17,11 @@ public final class CubeCollider implements Cloneable{
         this.type=type;
     }
 
-    public Object getColliderObj(){
-        return obj;
+    public Object getColliderRigidBody(){
+        return rigidBody;
     }
-    public void setColliderObj(Object obj){
-        this.obj=obj;
+    public void setColliderRigidBody(RigidBody rigidBody){
+        this.rigidBody=rigidBody;
     }
 
     public CubeCollider(Vector3 pos, Vector3 size){
@@ -30,7 +31,7 @@ public final class CubeCollider implements Cloneable{
 
     @Override
     public String toString() {
-        return "pos: "+pos+", size: "+size+", type: "+type+", obj: "+obj;
+        return "pos: "+pos+", size: "+size+", type: "+type+", obj: "+rigidBody;
     }
 
     @Override

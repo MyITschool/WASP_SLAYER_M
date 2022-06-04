@@ -105,11 +105,11 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color"},
                 core));
         //////////////////////////////////////////////////////////////////////////
-        String[] uniforms = new String[252+10];
-        System.arraycopy(new String[]{"uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far"},0,uniforms,0,10);
+        String[] uniforms = new String[252+11];
+        System.arraycopy(new String[]{"uRotMatrix", "uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far"},0,uniforms,0,11);
 
         for (int i = 0; i < 252; i++){
-            uniforms[10+i] = "uLight["+i+"]";
+            uniforms[11+i] = "uLight["+i+"]";
         }
         shaderPrograms.put("color_normals", new ShaderProgram("color_normals","shaders/color_normals/vs.glsl","shaders/color_normals/fs.glsl",
                 new String[]{"vPosition", "vNormal"},
@@ -121,20 +121,20 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "uTexture"},
                 core));
         ///////////////////////////////////////////////////////////////////////////
-        uniforms = new String[252+11];
-        System.arraycopy(new String[]{"uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uTexture"},0,uniforms,0,11);
+        uniforms = new String[252+12];
+        System.arraycopy(new String[]{"uRotMatrix", "uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uTexture"},0,uniforms,0,12);
         for (int i = 0; i < 252; i++){
-            uniforms[11+i] = "uLight["+i+"]";
+            uniforms[12+i] = "uLight["+i+"]";
         }
         shaderPrograms.put("texture_normals", new ShaderProgram("texture_normals","shaders/texture_normals/vs.glsl","shaders/texture_normals/fs.glsl",
                 new String[]{"vPosition", "vNormal", "vTexture"},
                 uniforms,
                 core));
         ///////////////////////////////////////////////////////////////////////////
-        uniforms = new String[252+12];
-        System.arraycopy(new String[]{"uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uNormalTexture", "uTexture"},0,uniforms,0,12);
+        uniforms = new String[252+13];
+        System.arraycopy(new String[]{"uRotMatrix", "uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uNormalTexture", "uTexture"},0,uniforms,0,13);
         for (int i = 0; i < 252; i++){
-            uniforms[12+i] = "uLight["+i+"]";
+            uniforms[13+i] = "uLight["+i+"]";
         }
         shaderPrograms.put("texture_normalMap", new ShaderProgram("texture_normalMap","shaders/texture_normalMap/vs.glsl","shaders/texture_normalMap/fs.glsl",
                 new String[]{"vPosition", "vNormal", "vTexture", "vNormalTextureCoord", "vTangent"},
@@ -158,8 +158,6 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
         glClearColor(0,0,0,1);
 
-
-        core.getScene().preload();
         core.getScene().start();
     }
 
@@ -170,6 +168,8 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
         camera.setResolution(res);
         glViewport(0, 0, res.x, res.y);
+
+        core.getTouchListener().setResolution(i,i1);
     }
 
     private int upd = 0;

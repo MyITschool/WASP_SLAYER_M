@@ -6,6 +6,7 @@ attribute vec3 vTangent;
 
 uniform mat4 uVPMatrix;
 uniform mat4 uModelMatrix;
+uniform mat4 uRotMatrix;
 uniform float far;
 
 varying vec3 fFragPos;
@@ -22,7 +23,7 @@ void main(){
     z = (uVPMatrix*uModelMatrix*vPosition).z/far;
 
     vec3 T = normalize(vec3(uModelMatrix * vec4(vTangent,   0.0)));
-    vec3 N = normalize(uModelMatrix*vNormal).xyz;
+    vec3 N = normalize(uRotMatrix*vNormal).xyz;
     vec3 B = normalize(vec3(uModelMatrix * vec4(cross(N, T), 0.0)));
     mat3 TBN = mat3(T, B, N);
     fTBN = TBN;

@@ -11,7 +11,7 @@ public final class Physics {
     private final Core core;
     private final Renderer renderer;
 
-    public float g = 9.8f;
+    public Vector3 g = new Vector3(0,-9.8f,0);
 
     public Physics(Core core){
         this.core=core;
@@ -78,7 +78,6 @@ public final class Physics {
         Vector3 camr = renderer.camera.getRotate();
         Vector3 rd = new Vector3((float)Math.sin((camr.y)*Math.PI/180), (float)-Math.sin((camr.x)*Math.PI/180), (float)-Math.cos((camr.y)*Math.PI/180));
         Vector3 ro = renderer.camera.getPosition().clone();
-        ro.setXYZ(-ro.x, -ro.y, -ro.z);
         rd.norm();
         Ray r = new Ray(ro, rd);
 
@@ -102,16 +101,70 @@ public final class Physics {
             return false;
         return true;
     }
+    public boolean rayCastCamera(Hit hit, float minDepth, float maxDepth, CubeCollider collider){
+        Vector3 camr = renderer.camera.getRotate();
+        Vector3 rd = new Vector3((float)Math.sin((camr.y)*Math.PI/180), (float)-Math.sin((camr.x)*Math.PI/180), (float)-Math.cos((camr.y)*Math.PI/180));
+        Vector3 ro = renderer.camera.getPosition().clone();
+        rd.norm();
+        Ray r = new Ray(ro, rd);
 
-    public boolean rayCast(Hit hit, Vector3 ro, Vector3 rd, float minDepth, float maxDepth){
         float min = maxDepth;
 
         for(int i = 0; i < cubeColliders.size(); i++){
             CubeCollider c = cubeColliders.get(i);
-            Ray r = new Ray(ro, rd);
+            Brick b = new Brick(c.pos, Vector.add(c.pos, c.size));
+            boolean rc = IntersectRayBrick(r, b, minDepth, maxDepth);
+            if(rc&&collider!=c){
+                float dist = Vector.sub(ro, c.pos).length();
+                if(dist < min){
+                    min=dist;
+                    hit.distance=dist;
+                    hit.collider=c;
+                    hit.index=i;
+                }
+            }
+        }
+        if(min==maxDepth)
+            return false;
+        return true;
+    }
+
+    public boolean rayCast(Hit hit, Vector3 ro, Vector3 rd, float minDepth, float maxDepth){
+        float min = maxDepth;
+        Vector3 rdir = rd.clone();
+        rdir.norm();
+        Ray r = new Ray(ro, rdir);
+
+        for(int i = 0; i < cubeColliders.size(); i++){
+            CubeCollider c = cubeColliders.get(i);
             Brick b = new Brick(c.pos, Vector.add(c.pos, c.size));
             boolean rc = IntersectRayBrick(r, b, minDepth, maxDepth);
             if(rc){
+                float dist = Vector.sub(ro, c.pos).length();
+                if(dist < min){
+                    min=dist;
+                    hit.distance=dist;
+                    hit.collider=c;
+                    hit.index=i;
+                }
+            }
+        }
+
+        if(min==maxDepth)
+            return false;
+        return true;
+    }
+    public boolean rayCast(Hit hit, Vector3 ro, Vector3 rd, float minDepth, float maxDepth, CubeCollider collider){
+        float min = maxDepth;
+        Vector3 rdir = rd.clone();
+        rdir.norm();
+        Ray r = new Ray(ro, rdir);
+
+        for(int i = 0; i < cubeColliders.size(); i++){
+            CubeCollider c = cubeColliders.get(i);
+            Brick b = new Brick(c.pos, Vector.add(c.pos, c.size));
+            boolean rc = IntersectRayBrick(r, b, minDepth, maxDepth);
+            if(rc && collider != c){
                 float dist = Vector.sub(ro, c.pos).length();
                 if(dist < min){
                     min=dist;

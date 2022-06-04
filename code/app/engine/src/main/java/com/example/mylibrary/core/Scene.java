@@ -8,7 +8,6 @@ public abstract class Scene {
         this.core=core;
     }
 
-    public abstract void preload();
     public abstract void start();
     public abstract void resume();
     public abstract void pause();

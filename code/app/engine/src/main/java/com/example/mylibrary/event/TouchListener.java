@@ -79,7 +79,7 @@ public final class TouchListener implements View.OnTouchListener{
         }
     }
 
-    public Vector2 getTouchDown(Vector2 pos, Vector2 size){
+    public boolean getTouchDown(Vector2 pos, Vector2 size, Vector2 out){
         pos.x=(pos.x-size.x+1)/2*width;
         pos.y=(-pos.y-size.y+1)/2*height;
 
@@ -91,11 +91,12 @@ public final class TouchListener implements View.OnTouchListener{
                 float tx = touch[i*2];
                 float ty = touch[i*2+1];
                 if(tx>=pos.x&&tx<pos.x+size.x&& ty>=pos.y&&ty<=pos.y+size.y){
-                    return new Vector2(tx, ty);
+                    out.setXY(tx, ty);
+                    return true;
                 }
             }
         }
 
-        return new Vector2(-1);
+        return false;
     }
 }

@@ -10,6 +10,7 @@ import static android.opengl.GLES20.glUniformMatrix4fv;
 
 import android.opengl.Matrix;
 
+import com.example.mylibrary.core.GameObject;
 import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector2;
 import com.example.mylibrary.math.Vector3;
@@ -18,7 +19,7 @@ import com.example.mylibrary.model.Model;
 
 import java.util.HashMap;
 
-public class RenderObject {
+public class RenderObject extends GameObject {
 
     protected Model model;
 
@@ -26,15 +27,12 @@ public class RenderObject {
     public int texture = 0;
     public int normalTexture = 0;
 
-    protected Vector3 position = new Vector3(0);
-    protected Vector3 rotate = new Vector3(0);
     protected Vector3 size = new Vector3(1);
 
     protected float[] modelMatrix = new float[16];
+    protected float[] rotateMatrix = new float[16];
 
     protected Renderer renderer;
-
-    public boolean activity = true;
 
     public Vector2 specular = new Vector2(1, 32);
 
@@ -66,16 +64,14 @@ public class RenderObject {
         this.position = position;
         genModelMat();
     }
-    public void setRotate(Vector3 rotate){
-        this.rotate = rotate;
+    public void setRotate(Vector3 rotation){
+        this.rotation = rotation;
         genModelMat();
     }
     public void setSize(Vector3 size){
         this.size = size;
         genModelMat();
     }
-    public Vector3 getPosition(){return position;}
-    public Vector3 getRotate(){return rotate;}
     public Vector3 getSize(){return size;}
 
     protected void genModelMat(){
@@ -87,13 +83,13 @@ public class RenderObject {
         Matrix.translateM(modelMatrix, 0, modelMatrix,0, position.x,position.y,position.z);
         ////////////////////////////////////////////////////////////////////////////////
         float[] rotateMatrixX = new float[16];
-        Matrix.setRotateM(rotateMatrixX, 0, rotate.x, 1, 0, 0);
+        Matrix.setRotateM(rotateMatrixX, 0, rotation.x, 1, 0, 0);
 
         float[] rotateMatrixY = new float[16];
-        Matrix.setRotateM(rotateMatrixY, 0, rotate.y, 0, 1, 0);
+        Matrix.setRotateM(rotateMatrixY, 0, rotation.y, 0, 1, 0);
 
         float[] rotateMatrixZ = new float[16];
-        Matrix.setRotateM(rotateMatrixZ, 0, rotate.z, 0, 0, 1);
+        Matrix.setRotateM(rotateMatrixZ, 0, rotation.z, 0, 0, 1);
 
         Matrix.multiplyMM(modelMatrix, 0, modelMatrix, 0, rotateMatrixX, 0);
         Matrix.multiplyMM(modelMatrix, 0, modelMatrix, 0, rotateMatrixY, 0);
@@ -112,6 +108,7 @@ public class RenderObject {
         Matrix.scaleM(rotateMatrix, 0, rotateMatrix,0,1,1,1);
 
         this.modelMatrix = modelMatrix;
+        this.rotateMatrix = rotateMatrix;
     }
 
     public void setUniforms(){
@@ -124,6 +121,7 @@ public class RenderObject {
 
         if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
             glUniform2fv(uniforms.get("specular"), 1, specular.getArray(), 0);
+            glUniformMatrix4fv(uniforms.get("uRotMatrix"), 1, false, rotateMatrix, 0);
         }
         if(model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
             glUniform1i(uniforms.get("uTexture"), texture);

@@ -3,15 +3,15 @@ package com.example.mylibrary.render;
 import android.opengl.Matrix;
 
 import com.example.mylibrary.core.Core;
+import com.example.mylibrary.core.GameObject;
+import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector2Int;
 import com.example.mylibrary.math.Vector3;
 
-public class Camera {
+public class Camera extends GameObject {
 
     protected float[] projectionMatrix = new float[16];
     protected float[] vPMatrix = new float[16];
-
-    protected Vector3 cameraPos, cameraRot;
 
     protected Vector2Int res;
 
@@ -34,13 +34,13 @@ public class Camera {
         this.FOV = fov;
         rotate();
     }
-    public void setPosition(Vector3 cameraPos){
-        this.cameraPos=cameraPos;
+    public void setPosition(Vector3 position){
+        this.position= Vector.mul(position, -1);
         core.getRenderer().sortLigth();
         rotate();
     }
-    public void setRotate(Vector3 cameraRot){
-        this.cameraRot=cameraRot;
+    public void setRotate(Vector3 rotation){
+        this.rotation=rotation;
         rotate();
     }
     public boolean rotateModeView = true;
@@ -55,14 +55,14 @@ public class Camera {
         if(rotateModeView){
 
 
-            Matrix.translateM(vPMatrix,0,vPMatrix,0,cameraPos.x,cameraPos.y,cameraPos.z);
+            Matrix.translateM(vPMatrix,0,vPMatrix,0,position.x,position.y,position.z);
 
             float[] matRotX = new float[16];
-            Matrix.setRotateM(matRotX, 0, cameraRot.x, 1,0,0);
+            Matrix.setRotateM(matRotX, 0, rotation.x, 1,0,0);
             float[] matRotY = new float[16];
-            Matrix.setRotateM(matRotY, 0, cameraRot.y, 0,1,0);
+            Matrix.setRotateM(matRotY, 0, rotation.y, 0,1,0);
             float[] matRotZ = new float[16];
-            Matrix.setRotateM(matRotZ, 0, cameraRot.z, 0,0,1);
+            Matrix.setRotateM(matRotZ, 0, rotation.z, 0,0,1);
 
             Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotX,0);
             Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotY,0);
@@ -74,17 +74,17 @@ public class Camera {
         }else {
 
             float[] matRotX = new float[16];
-            Matrix.setRotateM(matRotX, 0, cameraRot.x, 1,0,0);
+            Matrix.setRotateM(matRotX, 0, rotation.x, 1,0,0);
             float[] matRotY = new float[16];
-            Matrix.setRotateM(matRotY, 0, cameraRot.y, 0,1,0);
+            Matrix.setRotateM(matRotY, 0, rotation.y, 0,1,0);
             float[] matRotZ = new float[16];
-            Matrix.setRotateM(matRotZ, 0, cameraRot.z, 0,0,1);
+            Matrix.setRotateM(matRotZ, 0, rotation.z, 0,0,1);
 
             Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotX,0);
             Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotY,0);
             Matrix.multiplyMM(vPMatrix,0,vPMatrix,0,matRotZ,0);
 
-            Matrix.translateM(vPMatrix,0,vPMatrix,0,cameraPos.x,cameraPos.y,cameraPos.z);
+            Matrix.translateM(vPMatrix,0,vPMatrix,0,position.x,position.y,position.z);
 
             Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotX,0);
             Matrix.multiplyMM(projectionMatrix,0,projectionMatrix,0,matRotY,0);
@@ -111,12 +111,6 @@ public class Camera {
     public float[] getvPMatrix(){
         return vPMatrix;
     }
-    public Vector3 getPosition(){
-        return cameraPos;
-    }
-    public Vector3 getRotate(){
-        return cameraRot;
-    }
 
     public Vector2Int getResolution(){
         return res;
@@ -125,9 +119,6 @@ public class Camera {
     protected final Core core;
     public Camera(Core core){
         this.core = core;
-
-        cameraPos = new Vector3(0);
-        cameraRot = new Vector3(0);
 
         this.res = new Vector2Int(1);
 
