@@ -31,6 +31,7 @@ public final class Menu extends Scene implements Updated{
 
     RebdererText rebdererText;
 
+    RigidBody rigidBody23;
     @Override
     public void start() {
         renderer.loadTexture("textures/floor.png", "floor");
@@ -59,26 +60,22 @@ public final class Menu extends Scene implements Updated{
         renderObject.setSize(new Vector3(1f));
         renderObject.setPosition(new Vector3(0,10,0));
         renderer.addRenderObject(renderObject);
-        // RigidBody rigidBody = new RigidBody(new CubeCollider(new Vector3(0,10,0), new Vector3(2)), renderObject, core);
 
-        /*renderObject = new RenderObject(model);
-        renderObject.setSize(new Vector3(1f));
-        renderObject.setPosition(new Vector3(3,11,0));
-        renderer.addRenderObject(renderObject);
-        RigidBody rigidBody2 = new RigidBody(new CubeCollider(new Vector3(3,11,0), new Vector3(1)), renderObject, core);
 
-        renderObject = new RenderObject(model);
-        renderObject.setSize(new Vector3(1f));
-        renderObject.setPosition(new Vector3(-3,12,0));
-        renderer.addRenderObject(renderObject);
-        RigidBody rigidBody3 = new RigidBody(new CubeCollider(new Vector3(-3,12,0), new Vector3(1)), renderObject, core);*/
+        RenderObject renderObject3 = new RenderObject(model);
+        renderObject3.setSize(new Vector3(1f));
+        renderObject3.setPosition(new Vector3(0,5,0));
+        renderer.addRenderObject(renderObject3);
+        rigidBody23 = new RigidBody(new CubeCollider(new Vector3(0,5,0), new Vector3(1)), renderObject3, core);
+        rigidBody23.activity=false;
+
 
         Model model1 = new Model(vertexesData1, core);
         RenderObject renderObject1 = new RenderObject(model1,"floor");
         renderObject1.setSize(new Vector3(5));
         renderObject1.setRotate(new Vector3(0,0,0));
         renderer.addRenderObject(renderObject1);
-        RigidBody rigidBody1 = new RigidBody(new CubeCollider(new Vector3(0,0,0), new Vector3(10,1f,10)), renderObject1, core);
+        RigidBody rigidBody1 = new RigidBody(new CubeCollider(new Vector3(0,0,0), new Vector3(5,0.1f,5)), renderObject1, core);
         rigidBody1.activity=false;
 
         rebdererText = new RebdererText("font", "00", core);
@@ -90,7 +87,7 @@ public final class Menu extends Scene implements Updated{
         renderer.addUpdated(this);
 
         //renderer.camera.rotateModeView = false;
-        renderer.camera.setPosition(new Vector3(0,2f,15));
+        renderer.camera.setPosition(new Vector3(0,4f,15));
         renderer.camera.setRotate(new Vector3(0,0,0));
     }
 
@@ -108,20 +105,14 @@ public final class Menu extends Scene implements Updated{
     float t = 0;
     @Override
     public void update(float dt) {
-//        t+=0.01f;
-//        renderer.global_light_dir.x = (float) Math.sin(t);
-//        renderer.global_light_dir.y = (float) Math.cos(t);
-//        renderObject.setRotate(Vector.add(renderObject.getRotate(), new Vector3(0.1f,0,0)));
-//
-       // renderer.camera.setRotate(Vector.add(renderer.camera.getRotate(), new Vector3(-10.0f*dt,0.0f,0)));
-//
 
         if(t==0&&touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0))){
-            rigidBody = new RigidBody(new CubeCollider(new Vector3(0,10,0), new Vector3(1)), renderObject, core);
+            rigidBody = new RigidBody(new CubeCollider(new Vector3(0,10,0), new Vector3(0.9f)), renderObject, core);
+            rigidBody23.activity=true;
             t=1;
         }
         if(t==1&&touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0))){
-            rigidBody.addVelocity(new Vector3(0,10*dt,0));
+           rigidBody.addVelocity(new Vector3(0,10*dt,0));
         }
 
         rebdererText.text = renderer.getLastFPS()+"";

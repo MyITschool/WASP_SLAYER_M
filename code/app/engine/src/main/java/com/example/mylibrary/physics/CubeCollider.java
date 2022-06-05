@@ -17,7 +17,7 @@ public final class CubeCollider implements Cloneable{
         this.type=type;
     }
 
-    public Object getColliderRigidBody(){
+    public RigidBody getColliderRigidBody(){
         return rigidBody;
     }
     public void setColliderRigidBody(RigidBody rigidBody){

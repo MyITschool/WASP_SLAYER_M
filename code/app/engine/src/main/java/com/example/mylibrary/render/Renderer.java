@@ -67,6 +67,10 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
     private final ArrayList<Model> models = new ArrayList<>();
     private final ArrayList<ArrayList<RenderObject>> obj = new ArrayList<>();
+
+    private final ArrayList<Model> UImodels = new ArrayList<>();
+    private final ArrayList<ArrayList<RenderObject>> UIobj = new ArrayList<>();
+
     private final ArrayList<Updated> updateds = new ArrayList<>();
     private final ArrayList<Light> lights = new ArrayList<>();
 
@@ -204,11 +208,9 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (models.size() != 0){
-            int uii = -1;
             for(int i = 0; i < models.size(); i++){
                 Model model = models.get(i);
                 ShaderProgram shaderProgram = model.shaderProgram;
-                if(shaderProgram.name == "UI"){uii=i; continue;}
                 glUseProgram(shaderProgram.shaderProgram);
                 model.putShaderVariables();
                 for (int j = 0; j < obj.get(i).size(); j++){
@@ -216,18 +218,20 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 }
                 model.disableAttributs();
             }
-            if(uii!=-1){
-                Model model = models.get(uii);
+        }
+        if (UImodels.size() != 0) {
+            glDisable(GL_DEPTH_TEST);
+            for (int i = 0; i < UImodels.size(); i++) {
+                Model model = UImodels.get(i);
                 ShaderProgram shaderProgram = model.shaderProgram;
                 glUseProgram(shaderProgram.shaderProgram);
                 model.putShaderVariables();
-                glDisable(GL_DEPTH_TEST);
-                for (int j = 0; j < obj.get(uii).size(); j++){
-                    obj.get(uii).get(j).draw();
+                for (int j = 0; j < UIobj.get(i).size(); j++) {
+                    UIobj.get(i).get(j).draw();
                 }
                 model.disableAttributs();
-                glEnable(GL_DEPTH_TEST);
             }
+            glEnable(GL_DEPTH_TEST);
         }
     }
     private void update(float l){
@@ -241,7 +245,6 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     public void deleteUpdated(Updated updated){
         updateds.remove(updated);
     }
-
 
     public void addRenderObject(RenderObject renderObject){
 
@@ -260,6 +263,26 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         if(obj.get(im).size()==0){
             obj.remove(im);
             models.remove(im);
+        }
+    }
+
+    public void addUI(RenderObject renderObject){
+
+        int im = UImodels.lastIndexOf(renderObject.getModel());
+        if(im != -1){
+            UIobj.get(im).add(renderObject);
+            return;
+        }
+        UImodels.add(renderObject.getModel());
+        UIobj.add(new ArrayList<RenderObject>());
+        UIobj.get(UIobj.size()-1).add(renderObject);
+    }
+    public void deleteUI(RenderObject renderObject){
+        int im = UImodels.lastIndexOf(renderObject.getModel());
+        UIobj.get(im).remove(renderObject);
+        if(UIobj.get(im).size()==0){
+            UIobj.remove(im);
+            UImodels.remove(im);
         }
     }
 

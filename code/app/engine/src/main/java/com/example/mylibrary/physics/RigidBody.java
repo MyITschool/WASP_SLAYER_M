@@ -7,19 +7,20 @@ import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.render.RenderObject;
 
-public class RigidBody implements Updated {
+public final class RigidBody implements Updated {
 
-    protected CubeCollider collider;
+    private CubeCollider collider;
 
     public float mass = 1;
-    public float drag = 2.6f;
+    public float drag = 0.0f;
+    public float elasticity = 0.5f;
     public boolean usGravity = true;
     public boolean activity = true;
 
-    protected Vector3 velocity = new Vector3(0);
+    private Vector3 velocity = new Vector3(0);
 
-    protected final Physics physics;
-    protected final GameObject gameObject;
+    private final Physics physics;
+    private final GameObject gameObject;
 
     public RigidBody(CubeCollider collider, GameObject gameObject, Core core){
         physics = core.getPhysics();
@@ -31,7 +32,6 @@ public class RigidBody implements Updated {
 
         core.getRenderer().addUpdated(this);
     }
-
     public RigidBody(GameObject gameObject, Core core){
         physics = core.getPhysics();
         this.gameObject = gameObject;
@@ -39,7 +39,7 @@ public class RigidBody implements Updated {
         core.getRenderer().addUpdated(this);
     }
 
-    protected void setColliders(CubeCollider collider){
+    public void setColliders(CubeCollider collider){
         physics.deleteCubeCollider(this.collider);
         this.collider.setColliderRigidBody(null);
 
@@ -56,24 +56,32 @@ public class RigidBody implements Updated {
         this.velocity = Vector.add(this.velocity,velocity);
     }
     public Vector3 getVelocity(){return velocity;}
+    public void setForce(Vector3 force){
+        this.velocity=Vector.div(force, mass);
+    }
+    public void addForce(Vector3 force){
+        this.velocity=Vector.add(velocity, Vector.div(force, mass));
+    }
+    public Vector3 getForce(){return Vector.mul(velocity, mass);}
 
     @Override
     public void update(float dt) {
-
         if(activity && gameObject.activity){
+
             if(usGravity){
                 velocity=Vector.add(velocity, Vector.mul(physics.g, dt));
             }
+
             if (drag>0){
-                Vector3 ddm = Vector.mul(Vector.mul(Vector.mul(velocity, velocity), drag/mass),
+                Vector3 ddm = Vector.mul(Vector.mul(Vector.mul(velocity, velocity), drag),
                         Vector.div(velocity, Vector.abs(velocity)));
 
                 Vector3 v = Vector.abs(velocity);
                 Vector3 df = Vector.abs(ddm);
 
                 velocity.setXYZ((velocity.x == 0 && v.x < df.x) ? 0 : velocity.x-ddm.x,
-                        velocity.y == 0 ? 0 : velocity.y-ddm.y,
-                        velocity.z == 0 ? 0 : velocity.z-ddm.z);
+                        (velocity.y == 0 && v.y < df.y) ? 0 : velocity.y-ddm.y,
+                        (velocity.z == 0 && v.z < df.z) ? 0 : velocity.z-ddm.z);
             }
 
             Vector3 v_dir = velocity.clone();
@@ -81,26 +89,22 @@ public class RigidBody implements Updated {
 
             collider.pos=Vector.add(collider.pos,velocity);
 
-            if(!physics.testCollisionCube(collider)){
-                Hit hit = new Hit();
-                if (physics.rayCast(hit,  gameObject.getPosition(), velocity, 0, velocity.length(), collider)) {
-                    v_dir = Vector.mul(v_dir, hit.distance);
-                    collider.pos=Vector.sub(collider.pos,velocity);
-                    velocity=v_dir;
-                    collider.pos=Vector.add(collider.pos,velocity);
+            Collision collision = new Collision();
+
+            if(physics.testCollisionCube(collider, collision)){
+                collider.pos=Vector.sub(collider.pos,velocity);
+                if(velocity.length() < 0.4f) {
+                    velocity.setXYZ(0, 0, 0);
+                }else {
+                    RigidBody rbc = collision.collider.getColliderRigidBody();
+                    if(rbc != null && rbc.activity){
+                        rbc.addForce(Vector.mul(Vector.mul(velocity,1-elasticity), mass));
+                    }
+                    velocity = Vector.mul(velocity,-elasticity);
                 }
             }else {
-                collider.pos=Vector.sub(collider.pos,velocity);
-                velocity.setXYZ(0,0,0);
+                gameObject.setPosition(Vector.add(velocity, gameObject.getPosition()));
             }
-
-            if(physics.testCollisionCube(collider)){
-                velocity.setXYZ(0,dt,0);
-                collider.pos=Vector.sub(collider.pos, velocity);
-            }
-
-            gameObject.setPosition(Vector.add(velocity, gameObject.getPosition()));
-
         }
 
     }

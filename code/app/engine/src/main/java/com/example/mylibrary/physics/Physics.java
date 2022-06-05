@@ -20,9 +20,7 @@ public final class Physics {
 
     private ArrayList<CubeCollider> cubeColliders = new ArrayList<>();
 
-    public CubeCollider addCubeCollider(Vector3 pos, Vector3 size){
-        return cubeColliders.get(cubeColliders.size()-1);
-    }
+
     public CubeCollider addCubeCollider(CubeCollider collider){
         cubeColliders.add(collider);
         return cubeColliders.get(cubeColliders.size()-1);
@@ -36,25 +34,31 @@ public final class Physics {
     }
 
     public boolean testCollisionCube(CubeCollider collider){
-        float[] cube = new float[]{collider.pos.x-collider.size.x/2, collider.pos.y-collider.size.y/2, collider.pos.z-collider.size.z/2,
-                collider.pos.x+collider.size.x/2, collider.pos.y+collider.size.y/2, collider.pos.z+collider.size.z/2,};
-
         for (int i = 0; i < cubeColliders.size(); i++){
             CubeCollider ge = cubeColliders.get(i);
-            float[] cube1 = new float[]{ge.pos.x-ge.size.x/2, ge.pos.y-ge.size.y/2, ge.pos.z-ge.size.z/2,
-                    ge.pos.x+ge.size.x/2, ge.pos.y+ge.size.y/2, ge.pos.z+ge.size.z/2,};
-            if (ge != collider && CubeInters(cube, cube1))
+            if (ge != collider && CubeInters(collider, ge))
                 return true;
+        }
+
+        return false;
+    }
+    public boolean testCollisionCube(CubeCollider collider, Collision collision){
+        for (int i = 0; i < cubeColliders.size(); i++){
+            CubeCollider ge = cubeColliders.get(i);
+            if (ge != collider && CubeInters(collider, ge)){
+                collision.collider=ge;
+                return true;
+            }
         }
 
         return false;
     }
 
     public boolean CubeInters(CubeCollider collider, CubeCollider collider1) {
-        float[] cube0 = new float[]{collider.pos.x-collider.size.x/2, collider.pos.y-collider.size.y/2, collider.pos.z-collider.size.z/2,
-                collider.pos.x+collider.size.x/2, collider.pos.y+collider.size.y/2, collider.pos.z+collider.size.z/2,};
-        float[] cube1 = new float[]{collider1.pos.x-collider1.size.x/2, collider1.pos.y-collider1.size.y/2, collider1.pos.z-collider1.size.z/2,
-                collider1.pos.x+collider1.size.x/2, collider1.pos.y+collider1.size.y/2, collider1.pos.z+collider1.size.z/2,};
+        float[] cube0 = new float[]{collider.pos.x-collider.size.x, collider.pos.y-collider.size.y, collider.pos.z-collider.size.z,
+                collider.pos.x+collider.size.x, collider.pos.y+collider.size.y, collider.pos.z+collider.size.z};
+        float[] cube1 = new float[]{collider1.pos.x-collider1.size.x, collider1.pos.y-collider1.size.y, collider1.pos.z-collider1.size.z,
+                collider1.pos.x+collider1.size.x, collider1.pos.y+collider1.size.y, collider1.pos.z+collider1.size.z};
         for (int i = 0; i < 3; ++i)
             if (!Inters(cube0[i], cube0[i + 3], cube1[i], cube1[i + 3]))
                 return false;
