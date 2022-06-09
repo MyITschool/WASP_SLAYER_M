@@ -30,7 +30,7 @@ public class RenderObject extends GameObject {
     protected float[] modelMatrix = new float[16];
     protected float[] rotateMatrix = new float[16];
 
-    protected Renderer renderer;
+    protected final Renderer renderer;
 
     public Vector2 specular = new Vector2(1, 32);
 

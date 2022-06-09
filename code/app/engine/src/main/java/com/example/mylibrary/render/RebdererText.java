@@ -54,7 +54,7 @@ public class RebdererText extends RenderImg{
         setPosition(ip);
         setScale(isc);
 
-        core.getRenderer().UIModel.genTextureBuffer(new float[]{
+        renderer.UIModel.genTextureBuffer(new float[]{
                 0,1,
                 1,1,
                 1,0,
@@ -89,7 +89,7 @@ public class RebdererText extends RenderImg{
 
         setPosition(new Vector3(posX+scaleX*i, p.y, p.z));
 
-        core.getRenderer().UIModel.genTextureBuffer(mTextureCoordsData);
+        renderer.UIModel.genTextureBuffer(mTextureCoordsData);
         model.putShaderVariables();
     }
 }

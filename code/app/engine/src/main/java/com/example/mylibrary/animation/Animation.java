@@ -11,6 +11,11 @@ public final class Animation implements Updated {
     private GameObject gameObject;
     private final Renderer renderer;
 
+    private boolean play = false;
+
+    private int activeKey = 0;
+    private float playTime = 0;
+
     public Animation(Key[] keys, GameObject gameObject, Core core){
         this.keys = keys;
         this.gameObject= gameObject;
@@ -22,14 +27,17 @@ public final class Animation implements Updated {
         this.renderer= renderer;
     }
 
+    public void restart(){
+        play=true;
+    }
     public void play(){
-
+        play=true;
     }
     public void pause(){
-
+        play=false;
     }
     public void stop(){
-
+        play=false;
     }
 
     @Override
