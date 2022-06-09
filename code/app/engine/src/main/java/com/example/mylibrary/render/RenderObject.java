@@ -117,12 +117,6 @@ public class RenderObject extends GameObject {
         if(model.shaderProgram.name != "sky"){
             glUniformMatrix4fv(uniforms.get("uModelMatrix"), 1, false, modelMatrix, 0);
             glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
-
-            if(renderer.getShadowCamera()!=null){
-                glUniform1i(uniforms.get("softShadow"), 1);
-                glUniform1f(uniforms.get("bias"), renderer.bias);
-                glUniform1i(uniforms.get("shadowMap"), renderer.getTexture("zBuffer"));
-            }
         }
 
         if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){

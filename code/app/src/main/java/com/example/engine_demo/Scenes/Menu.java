@@ -104,25 +104,16 @@ public final class Menu extends Scene implements Updated{
         renderer.addUpdated(this);
 
         //renderer.camera.rotateModeView = false;
-        renderer.camera.setPosition(new Vector3(0,4f,15));
-        renderer.camera.setRotate(new Vector3(0,-45,0));
+        renderer.camera.setPosition(new Vector3(0,4f,15));//0,4f,15
+        renderer.camera.setRotate(new Vector3(0,-45,0));//0,-45,0
 
 
         Camera shadowCamera = new Camera(core);
-        Vector2Int res = new Vector2Int(800,600);
+        Vector2Int res = new Vector2Int(800*2,600*2);
         shadowCamera.setResolution(res);
-        shadowCamera.setPosition(new Vector3(0,4f,15));
-        shadowCamera.setRotate(new Vector3(0,-45,0));
+        shadowCamera.setPosition(new Vector3(0,8f,35));
+        shadowCamera.setRotate(new Vector3(15,45,0));
         renderer.addShadow(res, "zBuffer", shadowCamera);
-
-
-        //System.out.println(renderer.getTexture("zBuffer"));
-
-
-        RenderImg ri = new RenderImg("zBuffer", core);
-      //  ri.setSize(new Vector3(0.3f));
-        // renderer.addUI(ri);
-
     }
 
     @Override

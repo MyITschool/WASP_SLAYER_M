@@ -310,6 +310,13 @@ public class Model {
             glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getvPMatrix(), 0);
             glUniform1f(uniforms.get("far"), r.camera.getFar());
             glUniform4fv(uniforms.get("fog_color"), 1, r.fog_color.getArray(), 0);
+
+            if(r.getShadowCamera()!=null){
+                glUniform1i(uniforms.get("softShadow"), 1);
+                glUniform1f(uniforms.get("bias"), r.bias);
+                glUniform1i(uniforms.get("shadowMap"), r.getTexture("zBuffer"));
+                glUniformMatrix4fv(uniforms.get("depthMVP"), 1, false, r.getShadowCamera().getvPMatrix(), 0);
+            }
         }
         if(shaderProgram.name == "color_normals" || shaderProgram.name == "texture_normals" || shaderProgram.name == "texture_normalMap"){
             glUniform1f(uniforms.get("ambient"), r.ambient);
