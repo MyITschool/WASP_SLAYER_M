@@ -26,12 +26,12 @@ public class RebdererText extends RenderImg{
     public void draw(){
         if(!activity)return;
 
-        Vector3 isc = getSize().clone();
+        Vector3 isc = getScale().clone();
         Vector3 ip = getPosition().clone();
         float scaleX = isc.x*2/text.length();
         float posX = ip.x-scaleX*text.length()/4;
 
-        setSize(new Vector3(scaleX, isc.y, 1));
+        setScale(new Vector3(scaleX, isc.y, 1));
 
         for (int i = 0; i < text.length(); i++){
             drawChar(i, scaleX, posX);
@@ -41,7 +41,7 @@ public class RebdererText extends RenderImg{
         }
 
         setPosition(ip);
-        setSize(isc);
+        setScale(isc);
 
         core.getRenderer().UIModel.genTextureBuffer(new float[]{
                 0,1,

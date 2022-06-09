@@ -90,7 +90,7 @@ vec4 getSumLigth(vec3 normal){
 }
 
 void main(){
-    vec3 normal = normalize(fTBN * normalize(texture2D(uNormalTexture, fNormalTextureCoord).rgb * 2.0 - 1.0));
+    vec3 normal = -normalize(fTBN * normalize(texture2D(uNormalTexture, fNormalTextureCoord).rgb * 2.0 - 1.0));
 
     float diff = max(dot(normal, global_light_dir), 0.0);
 

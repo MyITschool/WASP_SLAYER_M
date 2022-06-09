@@ -366,14 +366,11 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         });
     }
 
-    public void allClear(){
+    public void clear(){
         models.clear();
         obj.clear();
         updateds.clear();
         lights.clear();
-
-        fbo=-1;
-        shadowCamera=null;
     }
 
     public int getTexture(String key){

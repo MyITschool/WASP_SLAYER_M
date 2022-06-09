@@ -37,8 +37,7 @@ public final class Menu extends Scene implements Updated{
     @Override
     public void start() {
         renderer.loadTexture("textures/floor.png", "floor");
-        renderer.loadTexture("textures/floor_normalmap1.png", "floor_normalmap");
-        renderer.loadTexture("textures/ui.png", "ui");
+        renderer.loadTexture("textures/floor_normalmap.png", "floor_normalmap");
         renderer.loadTexture("textures/font.png", "font");
 
         renderer.loadCubemap(new String[]{
@@ -68,14 +67,14 @@ public final class Menu extends Scene implements Updated{
         Model modelS = new Model(vertexesData2, core);
 
         renderObject = new RenderObject(modelS);
-        renderObject.setSize(new Vector3(1f));
+        renderObject.setScale(new Vector3(1f));
         renderObject.setPosition(new Vector3(0,10,0));
         renderer.addRenderObject(renderObject);
         renderObject.color=new Vector4(0.1f,0.1f,0.1f,1);
 
         Model model = new Model(vertexesData, core);
         RenderObject renderObject3 = new RenderObject(model);
-        renderObject3.setSize(new Vector3(1f));
+        renderObject3.setScale(new Vector3(1f));
         renderObject3.setPosition(new Vector3(0,5,0));
         renderObject3.color=new Vector4(0,0,1,1);
         renderer.addRenderObject(renderObject3);
@@ -86,13 +85,13 @@ public final class Menu extends Scene implements Updated{
 
         Model model1 = new Model(vertexesData1, core);
         RenderObject renderObject1 = new RenderObject(model1,"floor", "floor_normalmap");
-        renderObject1.setSize(new Vector3(10));
+        renderObject1.setScale(new Vector3(10));
         renderer.addRenderObject(renderObject1);
         RigidBody rigidBody1 = new RigidBody(new CubeCollider(new Vector3(0,0,0), new Vector3(10,0.1f,10)), renderObject1, core);
         rigidBody1.activity=false;
 
         rebdererText = new RebdererText("font", "00", core);
-        rebdererText.setSize(new Vector3(0.1f,0.2f,1));
+        rebdererText.setScale(new Vector3(0.1f,0.2f,1));
         rebdererText.setPosition(new Vector3(-0.8f,0.8f,0));
         renderer.addUI(rebdererText);
 

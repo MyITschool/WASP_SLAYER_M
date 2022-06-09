@@ -70,7 +70,8 @@ public class Core extends AppCompatActivity {
     }
 
     public void setScene(Scene scene){
-        renderer.allClear();
+        renderer.clear();
+        physics.clear();
         this.scene = scene;
         scene.start();
     }

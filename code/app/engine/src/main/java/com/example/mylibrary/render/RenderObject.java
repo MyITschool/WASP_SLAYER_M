@@ -27,8 +27,6 @@ public class RenderObject extends GameObject {
     public int texture = 0;
     public int normalTexture = 0;
 
-    protected Vector3 size = new Vector3(1);
-
     protected float[] modelMatrix = new float[16];
     protected float[] rotateMatrix = new float[16];
 
@@ -70,11 +68,10 @@ public class RenderObject extends GameObject {
         this.rotation = rotation;
         genModelMat();
     }
-    public void setSize(Vector3 size){
-        this.size = size;
+    public void setScale(Vector3 scale){
+        this.scale = scale;
         genModelMat();
     }
-    public Vector3 getSize(){return size;}
 
     protected void genModelMat(){
         float[] modelMatrix = new float[16];
@@ -97,7 +94,7 @@ public class RenderObject extends GameObject {
         Matrix.multiplyMM(modelMatrix, 0, modelMatrix, 0, rotateMatrixY, 0);
         Matrix.multiplyMM(modelMatrix, 0, modelMatrix, 0, rotateMatrixZ, 0);
 
-        Matrix.scaleM(modelMatrix, 0, modelMatrix,0,size.x,size.y,size.z);
+        Matrix.scaleM(modelMatrix, 0, modelMatrix,0,scale.x,scale.y,scale.z);
 
         /////////////////////////////////////////////////////////////////////////////////
         Matrix.setIdentityM(rotateMatrix, 0);
@@ -165,7 +162,7 @@ public class RenderObject extends GameObject {
         Vector4 v6 = new Vector4(max.x, min.y, max.z, 1);
         Vector4 v7 = new Vector4(min.x, max.y, max.z, 1);
 
-        float s = Math.max(Math.abs(size.z), Math.max(Math.abs(size.x), Math.abs(size.y)));
+        float s = Math.max(Math.abs(scale.z), Math.max(Math.abs(scale.x), Math.abs(scale.y)));
 
         Vector3 ml = new Vector3(
                 Math.max(max.x, Math.abs(min.x)),
