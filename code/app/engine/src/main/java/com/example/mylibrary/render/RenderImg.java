@@ -16,10 +16,11 @@ import java.util.HashMap;
 
 public class RenderImg extends RenderObject{
 
-    protected final Core core;
     public RenderImg(String textureKey, Core core){
         super(core.getRenderer().UIModel, textureKey);
-        this.core=core;
+    }
+    public RenderImg(String textureKey, Renderer renderer){
+        super(renderer.UIModel, textureKey);
     }
 
     public void setUniforms(){

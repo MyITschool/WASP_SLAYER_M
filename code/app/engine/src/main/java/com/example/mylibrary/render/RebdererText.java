@@ -22,6 +22,17 @@ public class RebdererText extends RenderImg{
         super(textureKey, core);
         this.text = text;
     }
+    public RebdererText(String textureKey, String text, Renderer renderer) {
+        super(textureKey, renderer);
+        this.text = text;
+    }
+    //////////////////////////////////////////////////////////
+    public RebdererText(String textureKey, Core core) {
+        super(textureKey, core);
+    }
+    public RebdererText(String textureKey, Renderer renderer) {
+        super(textureKey, renderer);
+    }
 
     public void draw(){
         if(!activity)return;
