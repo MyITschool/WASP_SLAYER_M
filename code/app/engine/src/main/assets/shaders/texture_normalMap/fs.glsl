@@ -10,12 +10,17 @@ uniform vec4 fog_color;
 uniform vec2 specular;
 uniform sampler2D uTexture;
 uniform sampler2D uNormalTexture;
+uniform sampler2D shadowMap;
+uniform int softShadow;
+uniform float bias;
 
 varying vec3 fFragPos;
 varying float z;
 varying vec2 fTextureCoord;
 varying vec2 fNormalTextureCoord;
 varying mat3 fTBN;
+varying float far_f;
+varying vec4 fShadowCoord;
 
 vec4 getSumLigth(vec3 normal){
     vec3 sumCol = vec3(0.0);
@@ -85,7 +90,7 @@ vec4 getSumLigth(vec3 normal){
 }
 
 void main(){
-    vec3 normal = -normalize(fTBN * normalize(texture2D(uNormalTexture, fNormalTextureCoord).rgb * 2.0 - 1.0));
+    vec3 normal = normalize(fTBN * normalize(texture2D(uNormalTexture, fNormalTextureCoord).rgb * 2.0 - 1.0));
 
     float diff = max(dot(normal, global_light_dir), 0.0);
 
@@ -96,6 +101,19 @@ void main(){
     float specular = specular.x * spec;
 
     vec4 col = color*((diff+specular)*vec4(global_light_color, 1.0)+ambient+getSumLigth(normal));
+
+    if(softShadow>0){
+        vec2 projCoords = fShadowCoord.xy / fShadowCoord.w;
+        projCoords = projCoords.xy * 0.5 + 0.5;
+
+        float sc = texture2D(shadowMap, projCoords.xy).x;
+
+        float currentDepth = fShadowCoord.z/far_f;
+
+        if(currentDepth - bias >= sc){
+            col.xyz*=0.5;
+        }
+    }
 
     col = pow(col, vec4(vec3(1.0/2.2), 1.0));
 

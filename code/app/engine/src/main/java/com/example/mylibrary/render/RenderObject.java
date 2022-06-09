@@ -36,17 +36,19 @@ public class RenderObject extends GameObject {
 
     public Vector2 specular = new Vector2(1, 32);
 
+    protected HashMap<String, Integer> uniforms;
+
     public RenderObject(Model model){
         this.model = model;
         this.renderer = model.core.getRenderer();
-
+        uniforms = model.shaderProgram.getUniforms();
         genModelMat();
     }
     public RenderObject(Model model, String textureKey){
         this.model = model;
         this.renderer = model.core.getRenderer();
         this.texture=renderer.getTexture(textureKey);
-
+        uniforms = model.shaderProgram.getUniforms();
         genModelMat();
     }
     public RenderObject(Model model, String textureKey, String normalTextureKey){
@@ -54,7 +56,7 @@ public class RenderObject extends GameObject {
         this.renderer = model.core.getRenderer();
         this.texture= renderer.getTexture(textureKey);
         this.normalTexture = renderer.getTexture(normalTextureKey);
-
+        uniforms = model.shaderProgram.getUniforms();
         genModelMat();
     }
 
@@ -111,12 +113,16 @@ public class RenderObject extends GameObject {
         this.rotateMatrix = rotateMatrix;
     }
 
-    public void setUniforms(){
-        HashMap<String, Integer> uniforms = model.shaderProgram.getUniforms();
-
+    protected void setUniforms(){
         if(model.shaderProgram.name != "sky"){
             glUniformMatrix4fv(uniforms.get("uModelMatrix"), 1, false, modelMatrix, 0);
             glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
+
+            if(renderer.getShadowCamera()!=null){
+                glUniform1i(uniforms.get("softShadow"), 1);
+                glUniform1f(uniforms.get("bias"), renderer.bias);
+                glUniform1i(uniforms.get("shadowMap"), renderer.getTexture("zBuffer"));
+            }
         }
 
         if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
@@ -143,13 +149,13 @@ public class RenderObject extends GameObject {
                 (0 <= p.z && p.z <= p.w);
     }
 
-    public boolean inCamera(){
-        Vector3 cam_p = Vector.mul(renderer.camera.getPosition(), -1);
-        if (Vector.sub(position, cam_p).length() > renderer.camera.getFar() || !activity){
+    public boolean inCamera(Camera camera){
+        Vector3 cam_p = Vector.mul(camera.getPosition(), -1);
+        if (Vector.sub(position, cam_p).length() > camera.getFar() || !activity){
             return false;
         }
 
-        float[] cm = renderer.camera.getvPMatrix();
+        float[] cm = camera.getvPMatrix();
         float[] m = new float[16];
         Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
 
@@ -179,8 +185,15 @@ public class RenderObject extends GameObject {
     }
 
     public void draw(){
-        if (model.shaderProgram.name != "sky" && !inCamera())return;
-        setUniforms();
+        if (!inCamera(renderer.camera) || !activity)return;
+        if(model.shaderProgram.name != "sky")
+            setUniforms();
+
+        glDrawArrays(GL_TRIANGLES, 0, model.getNumberPolygons());
+    }
+    public void drawInBuff(int adrMM){
+        if (!inCamera(renderer.getShadowCamera()) || !activity || model.shaderProgram.name == "sky")return;
+        glUniformMatrix4fv(adrMM, 1, false, modelMatrix, 0);
 
         glDrawArrays(GL_TRIANGLES, 0, model.getNumberPolygons());
     }

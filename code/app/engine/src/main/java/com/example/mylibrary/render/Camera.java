@@ -39,6 +39,9 @@ public class Camera extends GameObject {
         core.getRenderer().sortLigth();
         rotate();
     }
+    public Vector3 getPosition(){
+        return Vector.mul(position, -1);
+    }
     public void setRotate(Vector3 rotation){
         this.rotation=rotation;
         rotate();

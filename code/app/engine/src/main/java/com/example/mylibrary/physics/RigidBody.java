@@ -12,8 +12,8 @@ public final class RigidBody implements Updated {
     private CubeCollider collider;
 
     public float mass = 1;
-    public float drag = 0.0f;
-    public float elasticity = 0.5f;
+    public float drag = 0.01f;
+    public float elasticity = 0.1f;
     public boolean usGravity = true;
     public boolean activity = true;
 
@@ -66,12 +66,11 @@ public final class RigidBody implements Updated {
 
     @Override
     public void update(float dt) {
-        if(activity && gameObject.activity){
 
-            if(usGravity){
+        if(activity && gameObject.activity){
+            if (usGravity){
                 velocity=Vector.add(velocity, Vector.mul(physics.g, dt));
             }
-
             if (drag>0){
                 Vector3 ddm = Vector.mul(Vector.mul(Vector.mul(velocity, velocity), drag),
                         Vector.div(velocity, Vector.abs(velocity)));
@@ -83,29 +82,21 @@ public final class RigidBody implements Updated {
                         (velocity.y == 0 && v.y < df.y) ? 0 : velocity.y-ddm.y,
                         (velocity.z == 0 && v.z < df.z) ? 0 : velocity.z-ddm.z);
             }
+            Vector3 step = Vector.mul(velocity, dt);
 
-            Vector3 v_dir = velocity.clone();
-            v_dir.norm();
-
-            collider.pos=Vector.add(collider.pos,velocity);
+            collider.pos = Vector.add(collider.pos, step);
 
             Collision collision = new Collision();
-
             if(physics.testCollisionCube(collider, collision)){
-                collider.pos=Vector.sub(collider.pos,velocity);
-                if(velocity.length() < 0.4f) {
-                    velocity.setXYZ(0, 0, 0);
-                }else {
-                    RigidBody rbc = collision.collider.getColliderRigidBody();
-                    if(rbc != null && rbc.activity){
-                        rbc.addForce(Vector.mul(Vector.mul(velocity,1-elasticity), mass));
-                    }
-                    velocity = Vector.mul(velocity,-elasticity);
+                collider.pos = Vector.sub(collider.pos, step);
+                RigidBody rb = collision.collider.getColliderRigidBody();
+                if(rb!=null&&rb.activity){
+                    rb.addForce( Vector.mul(Vector.mul(velocity, 1-elasticity), mass) );
                 }
+                velocity = Vector.mul(velocity, -elasticity);
             }else {
-                gameObject.setPosition(Vector.add(velocity, gameObject.getPosition()));
+                gameObject.setPosition(Vector.add(step, gameObject.getPosition()));
             }
         }
-
     }
 }

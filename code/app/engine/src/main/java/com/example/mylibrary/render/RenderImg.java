@@ -30,6 +30,7 @@ public class RenderImg extends RenderObject{
         glUniform1i(uniforms.get("uTexture"), texture);
     }
     public void draw(){
+        if(!activity)return;
         setUniforms();
 
         glDrawArrays(GL_TRIANGLES, 0, model.getNumberPolygons());

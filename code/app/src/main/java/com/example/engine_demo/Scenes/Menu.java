@@ -6,6 +6,7 @@ import com.example.mylibrary.core.Updated;
 import com.example.mylibrary.event.TouchListener;
 import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector2;
+import com.example.mylibrary.math.Vector2Int;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 import com.example.mylibrary.model.Model;
@@ -13,6 +14,7 @@ import com.example.mylibrary.model.ModelLoader;
 import com.example.mylibrary.model.VertexesData;
 import com.example.mylibrary.physics.CubeCollider;
 import com.example.mylibrary.physics.RigidBody;
+import com.example.mylibrary.render.Camera;
 import com.example.mylibrary.render.Light;
 import com.example.mylibrary.render.RebdererText;
 import com.example.mylibrary.render.RenderImg;
@@ -35,7 +37,7 @@ public final class Menu extends Scene implements Updated{
     @Override
     public void start() {
         renderer.loadTexture("textures/floor.png", "floor");
-        renderer.loadTexture("textures/floor_normalmap.png", "floor_normalmap");
+        renderer.loadTexture("textures/floor_normalmap1.png", "floor_normalmap");
         renderer.loadTexture("textures/ui.png", "ui");
         renderer.loadTexture("textures/font.png", "font");
 
@@ -49,46 +51,78 @@ public final class Menu extends Scene implements Updated{
         }, "sky");
         renderer.ambient = 0.01f;
         renderer.global_light_color = new Vector3(1f);
+        renderer.global_light_dir = new Vector3(-1,1,1);
+        renderer.global_light_dir.norm();
 
         VertexesData vertexesData = modelLoader.loadModel("models/cube.obj", "cube");
         vertexesData.vertexes_texture=null;
+        vertexesData.vertexes_normal=vertexesData.vertexes;
+        VertexesData vertexesData2 = modelLoader.loadModel("models/sphere.obj", "sphere");
+        vertexesData2.vertexes_texture=null;
+        vertexesData2.vertexes_normal=vertexesData2.vertexes;
+
         VertexesData vertexesData1 = modelLoader.loadModel("models/plane.obj", "plane");
+        vertexesData1.vertexes_normalTexture=vertexesData1.vertexes_texture;
+        //vertexesData1.vertexes_normal=vertexesData1.vertexes;
 
-        Model model = new Model(vertexesData, core);
+        Model modelS = new Model(vertexesData2, core);
 
-        renderObject = new RenderObject(model);
+        renderObject = new RenderObject(modelS);
         renderObject.setSize(new Vector3(1f));
         renderObject.setPosition(new Vector3(0,10,0));
         renderer.addRenderObject(renderObject);
+        renderObject.color=new Vector4(0.1f,0.1f,0.1f,1);
 
-
+        Model model = new Model(vertexesData, core);
         RenderObject renderObject3 = new RenderObject(model);
         renderObject3.setSize(new Vector3(1f));
         renderObject3.setPosition(new Vector3(0,5,0));
+        renderObject3.color=new Vector4(0,0,1,1);
         renderer.addRenderObject(renderObject3);
         rigidBody23 = new RigidBody(new CubeCollider(new Vector3(0,5,0), new Vector3(1)), renderObject3, core);
+        rigidBody23.elasticity=0.1f;
         rigidBody23.activity=false;
 
 
         Model model1 = new Model(vertexesData1, core);
-        RenderObject renderObject1 = new RenderObject(model1,"floor");
-        renderObject1.setSize(new Vector3(5));
-        renderObject1.setRotate(new Vector3(0,0,0));
+        RenderObject renderObject1 = new RenderObject(model1,"floor", "floor_normalmap");
+        renderObject1.setSize(new Vector3(10));
         renderer.addRenderObject(renderObject1);
-        RigidBody rigidBody1 = new RigidBody(new CubeCollider(new Vector3(0,0,0), new Vector3(5,0.1f,5)), renderObject1, core);
+        RigidBody rigidBody1 = new RigidBody(new CubeCollider(new Vector3(0,0,0), new Vector3(10,0.1f,10)), renderObject1, core);
         rigidBody1.activity=false;
 
         rebdererText = new RebdererText("font", "00", core);
         rebdererText.setSize(new Vector3(0.1f,0.2f,1));
         rebdererText.setPosition(new Vector3(-0.8f,0.8f,0));
-        renderer.addRenderObject(rebdererText);
+        renderer.addUI(rebdererText);
 
+
+        Model skyM = new Model("sky", core);
+        RenderObject skyRO = new RenderObject(skyM);
+        renderer.addRenderObject(skyRO);
 
         renderer.addUpdated(this);
 
         //renderer.camera.rotateModeView = false;
         renderer.camera.setPosition(new Vector3(0,4f,15));
-        renderer.camera.setRotate(new Vector3(0,0,0));
+        renderer.camera.setRotate(new Vector3(0,-45,0));
+
+
+        Camera shadowCamera = new Camera(core);
+        Vector2Int res = new Vector2Int(800,600);
+        shadowCamera.setResolution(res);
+        shadowCamera.setPosition(new Vector3(0,4f,15));
+        shadowCamera.setRotate(new Vector3(0,-45,0));
+        renderer.addShadow(res, "zBuffer", shadowCamera);
+
+
+        //System.out.println(renderer.getTexture("zBuffer"));
+
+
+        RenderImg ri = new RenderImg("zBuffer", core);
+      //  ri.setSize(new Vector3(0.3f));
+        // renderer.addUI(ri);
+
     }
 
     @Override
@@ -109,10 +143,12 @@ public final class Menu extends Scene implements Updated{
         if(t==0&&touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0))){
             rigidBody = new RigidBody(new CubeCollider(new Vector3(0,10,0), new Vector3(0.9f)), renderObject, core);
             rigidBody23.activity=true;
+            rigidBody23.elasticity=0.1f;
+            rigidBody.elasticity=0.7f;
             t=1;
         }
         if(t==1&&touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0))){
-           rigidBody.addVelocity(new Vector3(0,10*dt,0));
+           rigidBody23.addVelocity(new Vector3(0,30*dt,0));
         }
 
         rebdererText.text = renderer.getLastFPS()+"";

@@ -24,6 +24,7 @@ public class RebdererText extends RenderImg{
     }
 
     public void draw(){
+        if(!activity)return;
 
         Vector3 isc = getSize().clone();
         Vector3 ip = getPosition().clone();
@@ -51,6 +52,7 @@ public class RebdererText extends RenderImg{
                 1,0,
                 0,0
         });
+        model.putShaderVariables();
     }
 
     protected void drawChar(int i, float scaleX, float posX){

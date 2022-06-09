@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class Model {
 
-    class BufferData{
+    protected class BufferData{
         public FloatBuffer floatBuffer;
         public int COORDS_PER_VERTEX;
         public BufferData(FloatBuffer floatBuffer, int COORDS_PER_VERTEX){
@@ -331,6 +331,9 @@ public class Model {
             glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getProjectionMatrix(), 0);
             glUniform1i(uniforms.get("skyBox"), texture);
         }
+        if(r.getShadowCamera()!=null&&shaderProgram.name != "sky"&&shaderProgram.name != "UI"){
+
+        }
     }
     protected void setBuffers(){
         for (Map.Entry<String, Integer> entry : attributs.entrySet()) {
@@ -349,6 +352,18 @@ public class Model {
         setBuffers();
         setGeneralUniforms();
     }
+
+    public void setZbufferAtr(HashMap<String, Integer> attributs){
+        int positionHandle = attributs.get("vPosition");
+
+        BufferData bufferData = buffers.get("vPosition");
+
+        glVertexAttribPointer(positionHandle, bufferData.COORDS_PER_VERTEX,
+                GL_FLOAT, false,
+                bufferData.COORDS_PER_VERTEX*4, bufferData.floatBuffer);
+        glEnableVertexAttribArray(positionHandle);
+    }
+
     public void disableAttributs(){
         for (Map.Entry<String, Integer> entry : attributs.entrySet()) {
             glDisableVertexAttribArray(entry.getValue());
