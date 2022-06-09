@@ -135,7 +135,7 @@ public final class Menu extends Scene implements Updated{
             rigidBody = new RigidBody(new CubeCollider(new Vector3(0,10,0), new Vector3(0.9f)), renderObject, core);
             rigidBody23.activity=true;
             rigidBody23.elasticity=0.1f;
-            rigidBody.elasticity=0.7f;
+            rigidBody.elasticity=0.9f;
             t=1;
         }
         if(t==1&&touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0))){

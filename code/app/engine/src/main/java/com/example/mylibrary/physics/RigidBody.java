@@ -12,7 +12,7 @@ public final class RigidBody implements Updated {
     private CubeCollider collider;
 
     public float mass = 1;
-    public float drag = 0.01f;
+    public float drag = 0.001f;
     public float elasticity = 0.1f;
     public boolean usGravity = true;
     public boolean activity = true;
