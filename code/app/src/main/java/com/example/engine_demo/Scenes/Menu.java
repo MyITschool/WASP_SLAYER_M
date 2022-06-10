@@ -31,8 +31,6 @@ public final class Menu extends Scene implements Updated{
     Renderer renderer = core.getRenderer();
     ModelLoader modelLoader = core.getModelLoader();
 
-    RenderObject renderObject;
-
     RebdererText rebdererText;
 
     RigidBody rigidBody23;
@@ -67,7 +65,7 @@ public final class Menu extends Scene implements Updated{
 
         Model modelS = new Model(vertexesData2, core);
 
-        renderObject = new RenderObject(modelS);
+        RenderObject renderObject = new RenderObject(modelS);
         renderObject.setScale(new Vector3(1f));
         renderObject.setPosition(new Vector3(0,10,0));
         renderer.addRenderObject(renderObject);
@@ -114,7 +112,7 @@ public final class Menu extends Scene implements Updated{
         shadowCamera.setResolution(res);
         shadowCamera.setPosition(new Vector3(0,8f,35));
         shadowCamera.setRotate(new Vector3(15,45,0));
-        renderer.addShadow(res, "zBuffer", shadowCamera);
+        renderer.addShadow(res, shadowCamera);
 
 
         Key[] keys = new Key[]{
@@ -129,7 +127,7 @@ public final class Menu extends Scene implements Updated{
                         new Vector4(-1,-0.5f,0,0),
                         1)
         };
-        Animation animation = new Animation(keys, renderObject3, core);
+        Animation animation = new Animation(keys, renderObject, core);
         animation.play();
 
         renderer.addUpdated(this);

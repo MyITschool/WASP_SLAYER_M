@@ -88,6 +88,8 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     public Vector3 global_light_dir = new Vector3(0,1,0);
     public Vector3 global_light_color = new Vector3(1);
 
+    public int softShadow = 1;
+
     public ShaderProgram getShaderProgram(String key){
         return shaderPrograms.get(key);
     }
@@ -452,14 +454,14 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         this.textures.put(key, this.textures.size());
     }
 
-    public void addShadow(Vector2Int res, String textureKey, Camera shadowCamera){
+    public void addShadow(Vector2Int res, Camera shadowCamera){
         if(fbo!=-1){
             System.out.println("fbo уже есть");
             return;
         }
         this.shadowCamera=shadowCamera;
         fbo = GLUtil.createFrameBuffer(res.x, res.y, textures.size() )[1];
-        textures.put(textureKey, textures.size());
+        textures.put("zBuffer", textures.size());
     }
     public void setShadowCamera(Camera shadowCamera){
         if(fbo==-1){

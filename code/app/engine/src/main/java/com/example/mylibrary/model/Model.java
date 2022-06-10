@@ -312,7 +312,7 @@ public class Model {
             glUniform4fv(uniforms.get("fog_color"), 1, r.fog_color.getArray(), 0);
 
             if(r.getShadowCamera()!=null){
-                glUniform1i(uniforms.get("softShadow"), 1);
+                glUniform1i(uniforms.get("softShadow"), r.softShadow);
                 glUniform1f(uniforms.get("bias"), r.bias);
                 glUniform1i(uniforms.get("shadowMap"), r.getTexture("zBuffer"));
                 glUniformMatrix4fv(uniforms.get("depthMVP"), 1, false, r.getShadowCamera().getvPMatrix(), 0);
