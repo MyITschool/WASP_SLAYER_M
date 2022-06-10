@@ -1,5 +1,7 @@
 package com.example.engine_demo.Scenes;
 
+import static com.example.mylibrary.math.Func.randomInt;
+
 import com.example.mylibrary.animation.Animation;
 import com.example.mylibrary.animation.Key;
 import com.example.mylibrary.core.Core;
@@ -87,10 +89,34 @@ public final class Menu extends Scene implements Updated{
 
         Model model1 = new Model(vertexesData1, core);
         RenderObject renderObject1 = new RenderObject(model1,"floor", "floor_normalmap");
-        renderObject1.setScale(new Vector3(10));
+        renderObject1.setScale(new Vector3(30));
+        renderObject1.setPosition(new Vector3(-15,0,-15));
         renderer.addRenderObject(renderObject1);
-        RigidBody rigidBody1 = new RigidBody(new CubeCollider(new Vector3(0,0,0), new Vector3(10,0.1f,10)), renderObject1, core);
+        RigidBody rigidBody1 = new RigidBody(new CubeCollider(new Vector3(-15,0,-15), new Vector3(30,0.1f,30)), renderObject1, core);
         rigidBody1.activity=false;
+
+        /*Key[] keys = new Key[]{
+                new Key(new Vector3(0,0,0),
+                        new Vector3(180,360,0),
+                        new Vector3(1,0,0),
+                        new Vector4(1,0.5f,0,0),
+                        1),
+                new Key(new Vector3(0,0,0),
+                        new Vector3(-180,360,0),
+                        new Vector3(-1,0,0),
+                        new Vector4(-1,-0.5f,0,0),
+                        1)
+        };
+        for(int i = 0; i < 200; i++){
+            RenderObject nros = new RenderObject(modelS);
+            nros.color=new Vector4(randomInt(0,100)/100.f,randomInt(0,100)/100.f,randomInt(0,100)/100.f, 1);
+            Vector3 pos = new Vector3(randomInt(-30,30),randomInt(1,30),randomInt(-30,30));
+            nros.setPosition(pos);
+            renderer.addRenderObject(nros);
+            RigidBody nrb = new RigidBody(new CubeCollider(pos, new Vector3(1)), nros, core);
+            Animation animation = new Animation(keys, nros, core);
+            animation.play();
+        }*/
 
         rebdererText = new RebdererText("font", "00", core);
         rebdererText.setScale(new Vector3(0.1f,0.2f,1));
@@ -103,10 +129,11 @@ public final class Menu extends Scene implements Updated{
         renderer.addRenderObject(skyRO);
 
         //renderer.camera.rotateModeView = false;
-        renderer.camera.setPosition(new Vector3(0,4f,15));//0,4f,15
-        renderer.camera.setRotate(new Vector3(0,-45,0));//0,-45,0
+        renderer.camera.setPosition(new Vector3(-15,4f,15));//0,4f,15
+        renderer.camera.setRotate(new Vector3(0,0,0));//0,-45,0
 
 
+        renderer.softShadow=5;
         Camera shadowCamera = new Camera(core);
         Vector2Int res = new Vector2Int(800*2,600*2);
         shadowCamera.setResolution(res);
@@ -114,21 +141,6 @@ public final class Menu extends Scene implements Updated{
         shadowCamera.setRotate(new Vector3(15,45,0));
         renderer.addShadow(res, shadowCamera);
 
-
-        Key[] keys = new Key[]{
-                new Key(new Vector3(0,0,0),
-                        new Vector3(0,360,0),
-                        new Vector3(1,0,0),
-                        new Vector4(1,0.5f,0,0),
-                        1),
-                new Key(new Vector3(0,0,0),
-                        new Vector3(0,360,0),
-                        new Vector3(-1,0,0),
-                        new Vector4(-1,-0.5f,0,0),
-                        1)
-        };
-        Animation animation = new Animation(keys, renderObject, core);
-        animation.play();
 
         renderer.addUpdated(this);
     }

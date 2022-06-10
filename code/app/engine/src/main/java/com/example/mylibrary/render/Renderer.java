@@ -120,7 +120,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         shaderPrograms.put("color", new ShaderProgram("color","shaders/color/vs.glsl","shaders/color/fs.glsl",
                 new String[]{"vPosition"},
-                new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "shadowMap", "softShadow", "bias", "depthMVP"},
+                new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "shadowMap", "softShadow", "bias", "depthMVP", "ambient"},
                 core));
         //////////////////////////////////////////////////////////////////////////
         String[] uniforms = new String[252+15];
@@ -136,7 +136,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         ///////////////////////////////////////////////////////////////////////////
         shaderPrograms.put("texture", new ShaderProgram("texture","shaders/texture/vs.glsl","shaders/texture/fs.glsl",
                 new String[]{"vPosition", "vTexture"},
-                new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "uTexture", "shadowMap", "softShadow", "bias", "depthMVP"},
+                new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "uTexture", "shadowMap", "softShadow", "bias", "depthMVP", "ambient"},
                 core));
         ///////////////////////////////////////////////////////////////////////////
         uniforms = new String[252+16];

@@ -111,7 +111,7 @@ void main(){
     }
 
 
-    col = pow(col, vec4(vec3(1.0/2.2), 1.0));
+    col = pow(col, vec4(vec3(0.4545), 1.0));
 
     gl_FragColor = col*(vec4(vec3(1.0-z), 1.0))+fog_color*(vec4(vec3(z), 1.0));
 }
