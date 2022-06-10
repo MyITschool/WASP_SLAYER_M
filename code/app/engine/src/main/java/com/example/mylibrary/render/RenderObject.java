@@ -23,7 +23,6 @@ public class RenderObject extends GameObject {
 
     protected Model model;
 
-    public Vector4 color = new Vector4(1);
     public int texture = 0;
     public int normalTexture = 0;
 

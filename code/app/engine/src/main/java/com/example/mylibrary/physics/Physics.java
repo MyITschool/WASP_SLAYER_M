@@ -45,7 +45,7 @@ public final class Physics {
     public boolean testCollisionCube(CubeCollider collider, Collision collision){
         for (int i = 0; i < cubeColliders.size(); i++){
             CubeCollider ge = cubeColliders.get(i);
-            if (ge != collider && CubeInters(collider, ge)){
+            if (ge.activity && ge != collider && CubeInters(collider, ge)){
                 collision.collider=ge;
                 return true;
             }
@@ -79,7 +79,7 @@ public final class Physics {
     }
 
     public boolean rayCastCamera(Hit hit, float minDepth, float maxDepth){
-        Vector3 camr = renderer.camera.getRotate();
+        Vector3 camr = renderer.camera.getRotation();
         Vector3 rd = new Vector3((float)Math.sin((camr.y)*Math.PI/180), (float)-Math.sin((camr.x)*Math.PI/180), (float)-Math.cos((camr.y)*Math.PI/180));
         Vector3 ro = renderer.camera.getPosition().clone();
         rd.norm();
@@ -106,7 +106,7 @@ public final class Physics {
         return true;
     }
     public boolean rayCastCamera(Hit hit, float minDepth, float maxDepth, CubeCollider collider){
-        Vector3 camr = renderer.camera.getRotate();
+        Vector3 camr = renderer.camera.getRotation();
         Vector3 rd = new Vector3((float)Math.sin((camr.y)*Math.PI/180), (float)-Math.sin((camr.x)*Math.PI/180), (float)-Math.cos((camr.y)*Math.PI/180));
         Vector3 ro = renderer.camera.getPosition().clone();
         rd.norm();

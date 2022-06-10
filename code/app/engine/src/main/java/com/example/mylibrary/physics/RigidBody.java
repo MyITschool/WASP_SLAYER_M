@@ -12,7 +12,7 @@ public final class RigidBody implements Updated {
     private CubeCollider collider;
 
     public float mass = 1;
-    public float drag = 0.001f;
+    public float drag = 0.05f;
     public float elasticity = 0.1f;
     public boolean usGravity = true;
     public boolean activity = true;
@@ -72,7 +72,7 @@ public final class RigidBody implements Updated {
                 velocity=Vector.add(velocity, Vector.mul(physics.g, dt));
             }
             if (drag>0){
-                Vector3 ddm = Vector.mul(Vector.mul(Vector.mul(velocity, velocity), drag),
+                Vector3 ddm = Vector.mul(Vector.mul(Vector.mul(velocity, velocity), drag*dt),
                         Vector.div(velocity, Vector.abs(velocity)));
 
                 Vector3 v = Vector.abs(velocity);
@@ -89,14 +89,53 @@ public final class RigidBody implements Updated {
             Collision collision = new Collision();
             if(physics.testCollisionCube(collider, collision)){
                 collider.pos = Vector.sub(collider.pos, step);
+               // RigidBody rb = collision.collider.getColliderRigidBody();
+                //if(rb!=null&&rb.activity){
+                   // rb.addForce( Vector.mul(Vector.mul(velocity, 1-elasticity), mass) );
+                //}
+               // velocity = Vector.mul(velocity, -elasticity);
+                //velocity.setXYZ(0,0,0);
                 RigidBody rb = collision.collider.getColliderRigidBody();
                 if(rb!=null&&rb.activity){
                     rb.addForce( Vector.mul(Vector.mul(velocity, 1-elasticity), mass) );
                 }
-                velocity = Vector.mul(velocity, -elasticity);
-            }else {
+                ///////////////////////////////////////////////////////////
+                Vector3 ls = new Vector3(0);
+                Vector3 stepX = new Vector3(step.x,0,0);
+                collider.pos = Vector.add(collider.pos, stepX);
+                if(physics.testCollisionCube(collider, collision)){
+                    velocity.x = velocity.x*-elasticity;
+                    ls.x=step.x*-elasticity;
+                }else {
+                    ls.x=step.x;
+                }
+                collider.pos = Vector.sub(collider.pos, stepX);
+                ////////////////////////////////////////////////////////////
+                Vector3 stepY = new Vector3(0,step.y,0);
+                collider.pos = Vector.add(collider.pos, stepY);
+                if(physics.testCollisionCube(collider, collision)){
+                    velocity.y = velocity.y*-elasticity;
+                    ls.y=step.y*-elasticity;
+                }else {
+                    ls.y=step.y;
+                }
+                collider.pos = Vector.sub(collider.pos, stepY);
+                ////////////////////////////////////////////////////////////
+                Vector3 stepZ = new Vector3(0,0,step.z);
+                collider.pos = Vector.add(collider.pos, stepZ);
+                if(physics.testCollisionCube(collider, collision)){
+                    velocity.z = velocity.z*-elasticity;
+                    ls.z=step.z*-elasticity;
+                }else {
+                    ls.z=step.z;
+                }
+                collider.pos = Vector.sub(collider.pos, stepZ);
+                ////////////////////////////////////////////////////////////
+                step=ls;
+                collider.pos = Vector.add(collider.pos, step);
+            }//else {
                 gameObject.setPosition(Vector.add(step, gameObject.getPosition()));
-            }
+            //}
         }
     }
 }

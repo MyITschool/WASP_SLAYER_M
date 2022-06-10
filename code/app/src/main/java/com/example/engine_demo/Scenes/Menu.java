@@ -1,5 +1,7 @@
 package com.example.engine_demo.Scenes;
 
+import com.example.mylibrary.animation.Animation;
+import com.example.mylibrary.animation.Key;
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.core.Scene;
 import com.example.mylibrary.core.Updated;
@@ -62,7 +64,6 @@ public final class Menu extends Scene implements Updated{
 
         VertexesData vertexesData1 = modelLoader.loadModel("models/plane.obj", "plane");
         vertexesData1.vertexes_normalTexture=vertexesData1.vertexes_texture;
-        //vertexesData1.vertexes_normal=vertexesData1.vertexes;
 
         Model modelS = new Model(vertexesData2, core);
 
@@ -71,6 +72,9 @@ public final class Menu extends Scene implements Updated{
         renderObject.setPosition(new Vector3(0,10,0));
         renderer.addRenderObject(renderObject);
         renderObject.color=new Vector4(0.1f,0.1f,0.1f,1);
+        rigidBody = new RigidBody(new CubeCollider(new Vector3(0,10,0), new Vector3(0.9f)), renderObject, core);
+        rigidBody.elasticity=0.7f;
+        rigidBody.activity=false;
 
         Model model = new Model(vertexesData, core);
         RenderObject renderObject3 = new RenderObject(model);
@@ -100,8 +104,6 @@ public final class Menu extends Scene implements Updated{
         RenderObject skyRO = new RenderObject(skyM);
         renderer.addRenderObject(skyRO);
 
-        renderer.addUpdated(this);
-
         //renderer.camera.rotateModeView = false;
         renderer.camera.setPosition(new Vector3(0,4f,15));//0,4f,15
         renderer.camera.setRotate(new Vector3(0,-45,0));//0,-45,0
@@ -113,6 +115,24 @@ public final class Menu extends Scene implements Updated{
         shadowCamera.setPosition(new Vector3(0,8f,35));
         shadowCamera.setRotate(new Vector3(15,45,0));
         renderer.addShadow(res, "zBuffer", shadowCamera);
+
+
+        Key[] keys = new Key[]{
+                new Key(new Vector3(0,0,0),
+                        new Vector3(0,360,0),
+                        new Vector3(1,0,0),
+                        new Vector4(1,0.5f,0,0),
+                        1),
+                new Key(new Vector3(0,0,0),
+                        new Vector3(0,360,0),
+                        new Vector3(-1,0,0),
+                        new Vector4(-1,-0.5f,0,0),
+                        1)
+        };
+        Animation animation = new Animation(keys, renderObject3, core);
+        animation.play();
+
+        renderer.addUpdated(this);
     }
 
     @Override
@@ -131,14 +151,12 @@ public final class Menu extends Scene implements Updated{
     public void update(float dt) {
 
         if(t==0&&touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0))){
-            rigidBody = new RigidBody(new CubeCollider(new Vector3(0,10,0), new Vector3(0.9f)), renderObject, core);
             rigidBody23.activity=true;
-            rigidBody23.elasticity=0.1f;
-            rigidBody.elasticity=0.9f;
+            rigidBody.activity=true;
             t=1;
         }
         if(t==1&&touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0))){
-           rigidBody23.addVelocity(new Vector3(0,30*dt,0));
+           rigidBody.addVelocity(new Vector3(0,30*dt,0));
         }
 
         rebdererText.text = renderer.getLastFPS()+"";
