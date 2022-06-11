@@ -277,7 +277,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
             }
         }
         if (UImodels.size() != 0) {
-            glDisable(GL_DEPTH_TEST);
+            //glDisable(GL_DEPTH_TEST);
             for (int i = 0; i < UImodels.size(); i++) {
                 Model model = UImodels.get(i);
                 ShaderProgram shaderProgram = model.shaderProgram;
@@ -288,7 +288,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 }
                 model.disableAttributs();
             }
-            glEnable(GL_DEPTH_TEST);
+            //glEnable(GL_DEPTH_TEST);
         }
     }
     private void update(float l){
