@@ -1,14 +1,9 @@
 package com.example.engine_demo.Scenes;
 
-import static com.example.mylibrary.math.Func.randomInt;
-
-import com.example.mylibrary.animation.Animation;
-import com.example.mylibrary.animation.Key;
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.core.Scene;
 import com.example.mylibrary.core.Updated;
 import com.example.mylibrary.event.TouchListener;
-import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector2;
 import com.example.mylibrary.math.Vector2Int;
 import com.example.mylibrary.math.Vector3;
@@ -16,17 +11,15 @@ import com.example.mylibrary.math.Vector4;
 import com.example.mylibrary.model.Model;
 import com.example.mylibrary.model.ModelLoader;
 import com.example.mylibrary.model.VertexesData;
-import com.example.mylibrary.physics.CubeCollider;
-import com.example.mylibrary.physics.RigidBody;
+import com.example.mylibrary.physics.physics3D.CubeCollider;
+import com.example.mylibrary.physics.physics3D.RigidBody;
 import com.example.mylibrary.render.Camera;
-import com.example.mylibrary.render.Light;
 import com.example.mylibrary.render.RebdererText;
-import com.example.mylibrary.render.RenderImg;
 import com.example.mylibrary.render.RenderObject;
 import com.example.mylibrary.render.Renderer;
 
-public final class Tests extends Scene implements Updated{
-    public Tests(Core core) {
+public final class Tests3D extends Scene implements Updated{
+    public Tests3D(Core core) {
         super(core);
     }
 
@@ -38,18 +31,6 @@ public final class Tests extends Scene implements Updated{
     RigidBody rigidBody23;
     @Override
     public void start() {
-        renderer.loadTexture("textures/floor.png", "floor");
-        renderer.loadTexture("textures/floor_normalmap.png", "floor_normalmap");
-        renderer.loadTexture("textures/font.png", "font");
-
-        renderer.loadCubemap(new String[]{
-                "textures/skybox/r.png",
-                "textures/skybox/l.png",
-                "textures/skybox/d.png",
-                "textures/skybox/u.png",
-                "textures/skybox/f.png",
-                "textures/skybox/b.png"
-        }, "sky");
         renderer.ambient = 0.01f;
         renderer.global_light_color = new Vector3(1f);
         renderer.global_light_dir = new Vector3(-1,1,1);
@@ -57,14 +38,14 @@ public final class Tests extends Scene implements Updated{
 
         renderer.camera.setFar(100);
 
-        VertexesData vertexesData = modelLoader.loadModel("models/cube.obj", "cube");
+        VertexesData vertexesData = modelLoader.getVertexesData("cube");
         vertexesData.vertexes_texture=null;
         vertexesData.vertexes_normal=vertexesData.vertexes;
-        VertexesData vertexesData2 = modelLoader.loadModel("models/sphere.obj", "sphere");
+        VertexesData vertexesData2 = modelLoader.getVertexesData("sphere");
         vertexesData2.vertexes_texture=null;
         vertexesData2.vertexes_normal=vertexesData2.vertexes;
 
-        VertexesData vertexesData1 = modelLoader.loadModel("models/plane.obj", "plane");
+        VertexesData vertexesData1 = modelLoader.getVertexesData("plane");
         vertexesData1.vertexes_normalTexture=vertexesData1.vertexes_texture;
 
         Model modelS = new Model(vertexesData2, core);
@@ -107,9 +88,8 @@ public final class Tests extends Scene implements Updated{
         RenderObject skyRO = new RenderObject(skyM);
         renderer.addRenderObject(skyRO);
 
-        //renderer.camera.rotateModeView = false;
-        renderer.camera.setPosition(new Vector3(0,4f,15));//0,4f,15
-        renderer.camera.setRotate(new Vector3(0,-45,0));//0,-45,0
+        renderer.camera.setPosition(new Vector3(0,4f,15));
+        renderer.camera.setRotate(new Vector3(0,-45,0));
 
 
         renderer.softShadow=5;
@@ -135,7 +115,7 @@ public final class Tests extends Scene implements Updated{
     }
     RigidBody rigidBody;
     TouchListener touchListener = core.getTouchListener();
-    float t = 0;
+    byte t = 0;
     @Override
     public void update(float dt) {
 

@@ -131,20 +131,20 @@ public final class ModelLoader {
         }
         m.vertexes_texture=arr;
 
-        addModel(m, key);
+        addVertexesData(m, key);
 
         return m;
     }
-    public VertexesData getModel(String key){
+    public VertexesData getVertexesData(String key){
         return models.get(key);
     }
-    public void addModel(VertexesData model, String key){
-        models.put(key, model);
+    public void addVertexesData(VertexesData vertexesData, String key){
+        models.put(key, vertexesData);
     }
-    public void deleteModel(String key){
+    public void deleteVertexesData(String key){
         models.remove(key);
     }
-    public void clearModels(){
+    public void clearVertexesData(){
         models.clear();
     }
 }

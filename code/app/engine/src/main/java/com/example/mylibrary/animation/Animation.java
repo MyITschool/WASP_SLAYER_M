@@ -8,6 +8,8 @@ import com.example.mylibrary.render.Renderer;
 
 public final class Animation implements Updated {
 
+    public boolean loop = false;
+
     private Key[] keys;
     private GameObject gameObject;
     private final Renderer renderer;
@@ -58,12 +60,15 @@ public final class Animation implements Updated {
             playTime+=dt;
 
             if(playTime>=ak.time){
-                // playTime - ak.time
-                // dt - (playTime - ak.time)
                 setFrame(dt - (playTime - ak.time));
                 //////////////////////////////////////////
                 activeKey++;
-                if(activeKey==keys.length)activeKey=0;
+                if(activeKey==keys.length){
+                    if (loop)
+                        activeKey=0;
+                    else
+                        stop();
+                }
                 playTime-=ak.time;
 
                 setKey(keys[activeKey]);

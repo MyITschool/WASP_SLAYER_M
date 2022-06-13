@@ -1,6 +1,5 @@
-package com.example.mylibrary.physics;
+package com.example.mylibrary.physics.physics3D;
 
-import com.example.mylibrary.core.Core;
 import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.render.Renderer;
@@ -8,27 +7,25 @@ import com.example.mylibrary.render.Renderer;
 import java.util.ArrayList;
 
 public final class Physics {
-    private final Core core;
     private final Renderer renderer;
 
     public Vector3 g = new Vector3(0,-9.8f,0);
 
-    public Physics(Core core){
-        this.core=core;
-        renderer=core.getRenderer();
+    public Physics(Renderer renderer){
+        this.renderer=renderer;
     }
 
-    private ArrayList<CubeCollider> cubeColliders = new ArrayList<>();
+    private final ArrayList<CubeCollider> cubeColliders = new ArrayList<>();
 
 
-    public CubeCollider addCubeCollider(CubeCollider collider){
+    public void addCubeCollider(CubeCollider collider){
         cubeColliders.add(collider);
-        return cubeColliders.get(cubeColliders.size()-1);
     }
     public void deleteCubeCollider(CubeCollider collider){
         cubeColliders.remove(collider);
     }
     public CubeCollider getCubeCollider(int i){return cubeColliders.get(i);}
+
     public void clear(){
         cubeColliders.clear();
     }
@@ -185,20 +182,14 @@ public final class Physics {
     }
 
     public boolean IntersectRayBrick(Ray ray, Brick brick, double t_near, double t_far) {
-
-// check whether initial point is inside the parallelepiped
         if ( ray.start[0] >= brick.min_point[0] && ray.start[0] <= brick.max_point[0] &&
                 ray.start[1] >= brick.min_point[1] && ray.start[1] <= brick.max_point[1] &&
                 ray.start[2] >= brick.min_point[2] && ray.start[2] <= brick.max_point[2] ) {
             return true;
         }
 
-// ray parameter
-//        double t_near = std::numeric_limits::min(),
-//                t_far = std::numeric_limits::max();
         double t1, t2;
 
-// directions loop
         for (int i = 0; i < 3; i++) {
             if ( Math.abs(ray.direction[i]) >= Math.ulp(.0)){//std::numeric_limits::epsilon() ) {
                 t1 = (brick.min_point[i] - ray.start[i]) / ray.direction[i];
@@ -218,12 +209,12 @@ public final class Physics {
                     return false;
                 if (t_far < 0.0)
                     return false;
-            } // if
+            }
             else {
                 if ( ray.start[i] < brick.min_point[i] || ray.start[i] > brick.max_point[i] )
                     return false;
             }
-        } // for
+        }
         return (t_near <= t_far && t_far >=0);
     }
 

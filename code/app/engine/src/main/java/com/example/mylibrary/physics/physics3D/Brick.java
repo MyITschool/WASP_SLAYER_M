@@ -1,4 +1,4 @@
-package com.example.mylibrary.physics;
+package com.example.mylibrary.physics.physics3D;
 
 
 import com.example.mylibrary.math.Vector3;

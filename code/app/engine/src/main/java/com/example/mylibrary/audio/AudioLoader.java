@@ -7,7 +7,6 @@ import android.media.AudioManager;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public final class AudioLoader {
 

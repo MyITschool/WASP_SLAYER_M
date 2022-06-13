@@ -1,4 +1,4 @@
-package com.example.mylibrary.physics;
+package com.example.mylibrary.physics.physics3D;
 
 public final class Hit {
     public float distance;

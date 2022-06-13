@@ -2,11 +2,7 @@ package com.example.mylibrary.render;
 
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDrawArrays;
-
-import android.opengl.GLES20;
-
 import com.example.mylibrary.core.Core;
-import com.example.mylibrary.math.Vector2;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 

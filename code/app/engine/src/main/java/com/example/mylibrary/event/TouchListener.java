@@ -3,7 +3,9 @@ package com.example.mylibrary.event;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.mylibrary.math.Func;
 import com.example.mylibrary.math.Vector2;
+import com.example.mylibrary.math.Vector2Int;
 
 public final class TouchListener implements View.OnTouchListener{
 
@@ -91,7 +93,8 @@ public final class TouchListener implements View.OnTouchListener{
                 float tx = touch[i*2];
                 float ty = touch[i*2+1];
                 if(tx>=pos.x&&tx<pos.x+size.x&& ty>=pos.y&&ty<=pos.y+size.y){
-                    out.setXY(tx, ty);
+                    Vector2 t = Func.canvasToGlCoord(new Vector2(tx,ty), new Vector2Int(width,height));
+                    out.setXY(t.x, t.y);
                     return true;
                 }
             }

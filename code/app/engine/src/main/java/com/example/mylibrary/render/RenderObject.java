@@ -2,7 +2,6 @@ package com.example.mylibrary.render;
 
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glUniform1f;
 import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glUniform2fv;
 import static android.opengl.GLES20.glUniform4fv;

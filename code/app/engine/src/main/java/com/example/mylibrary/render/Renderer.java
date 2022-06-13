@@ -70,6 +70,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>();
     private final HashMap<String, Integer> textures = new HashMap<>();
+    private final ArrayList<Integer> deleteTextures = new ArrayList<>();
 
     private final ArrayList<Model> models = new ArrayList<>();
     private final ArrayList<ArrayList<RenderObject>> obj = new ArrayList<>();
@@ -378,6 +379,10 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     public int getTexture(String key){
         return textures.get(key);
     }
+    public void deleteTexture(String key) {
+        deleteTextures.add(textures.get(key));
+        textures.remove(key);
+    }
     public void loadTexture(String src, String key){
         AssetManager assetManager = core.getAssets();
 
@@ -393,7 +398,12 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
             return;
         }
 
-        glActiveTexture(GL_TEXTURE0+textures.size());
+        if(deleteTextures.size()!=0){
+            glActiveTexture(GL_TEXTURE0+deleteTextures.get(0));
+        }else {
+            glActiveTexture(GL_TEXTURE0+textures.size());
+        }
+
 
         int[] textures = new int[1];
         glGenTextures(1, textures, 0);
@@ -417,10 +427,20 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         assert bitmap != null;
         bitmap.recycle();
 
-        this.textures.put(key, this.textures.size());
+        if(deleteTextures.size()!=0){
+            this.textures.put(key, deleteTextures.get(0));
+            deleteTextures.remove(0);
+        }else {
+            this.textures.put(key, this.textures.size());
+        }
+
     }
     public void loadCubemap(String[] src, String key){
-        glActiveTexture(GL_TEXTURE0+textures.size());
+        if(deleteTextures.size()!=0){
+            glActiveTexture(GL_TEXTURE0+deleteTextures.get(0));
+        }else {
+            glActiveTexture(GL_TEXTURE0+textures.size());
+        }
 
         final int[] textureObjectIds = new int[1];
         glGenTextures(1, textureObjectIds, 0);
@@ -451,7 +471,12 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         }
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureObjectIds[0]);
 
-        this.textures.put(key, this.textures.size());
+        if(deleteTextures.size()!=0){
+            this.textures.put(key, deleteTextures.get(0));
+            deleteTextures.remove(0);
+        }else {
+            this.textures.put(key, this.textures.size());
+        }
     }
 
     public void addShadow(Vector2Int res, Camera shadowCamera){

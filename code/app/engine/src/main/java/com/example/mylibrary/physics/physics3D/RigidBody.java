@@ -1,11 +1,10 @@
-package com.example.mylibrary.physics;
+package com.example.mylibrary.physics.physics3D;
 
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.core.GameObject;
 import com.example.mylibrary.core.Updated;
 import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector3;
-import com.example.mylibrary.render.RenderObject;
 
 public final class RigidBody implements Updated {
 
@@ -89,12 +88,7 @@ public final class RigidBody implements Updated {
             Collision collision = new Collision();
             if(physics.testCollisionCube(collider, collision)){
                 collider.pos = Vector.sub(collider.pos, step);
-               // RigidBody rb = collision.collider.getColliderRigidBody();
-                //if(rb!=null&&rb.activity){
-                   // rb.addForce( Vector.mul(Vector.mul(velocity, 1-elasticity), mass) );
-                //}
-               // velocity = Vector.mul(velocity, -elasticity);
-                //velocity.setXYZ(0,0,0);
+
                 RigidBody rb = collision.collider.getColliderRigidBody();
                 if(rb!=null&&rb.activity){
                     rb.addForce( Vector.mul(Vector.mul(velocity, 1-elasticity), mass) );
@@ -133,9 +127,9 @@ public final class RigidBody implements Updated {
                 ////////////////////////////////////////////////////////////
                 step=ls;
                 collider.pos = Vector.add(collider.pos, step);
-            }//else {
-                gameObject.setPosition(Vector.add(step, gameObject.getPosition()));
-            //}
+            }
+
+            gameObject.setPosition(Vector.add(step, gameObject.getPosition()));
         }
     }
 }

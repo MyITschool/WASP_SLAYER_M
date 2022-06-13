@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mylibrary.audio.AudioLoader;
 import com.example.mylibrary.event.TouchListener;
 import com.example.mylibrary.model.ModelLoader;
-import com.example.mylibrary.physics.Physics;
+import com.example.mylibrary.physics.physics3D.Physics;
 import com.example.mylibrary.render.Renderer;
 
 public class Core extends AppCompatActivity {
@@ -18,7 +18,7 @@ public class Core extends AppCompatActivity {
 
     private Renderer renderer;
     private final ModelLoader modelLoader = new ModelLoader(this);
-    private final Physics physics = new Physics(this);
+    private final Physics physics = new Physics(renderer);
     private TouchListener touchListener;
     private AudioLoader audioLoader;
 
