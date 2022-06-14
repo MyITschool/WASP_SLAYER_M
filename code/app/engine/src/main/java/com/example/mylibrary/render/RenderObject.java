@@ -139,8 +139,8 @@ public class RenderObject extends GameObject {
     }
 
     public boolean inCamera(Camera camera){
-        Vector3 cam_p = Vector.mul(camera.getPosition(), -1);
-        if (Vector.sub(position, cam_p).length() > camera.getFar() || !activity){
+        //Vector3 cam_p = Vector.mul(camera.getPosition(), -1);
+        if (Vector.sub(position, camera.getPosition()).length() > camera.getFar()){
             return false;
         }
 
@@ -160,17 +160,8 @@ public class RenderObject extends GameObject {
         Vector4 v6 = new Vector4(max.x, min.y, max.z, 1);
         Vector4 v7 = new Vector4(min.x, max.y, max.z, 1);
 
-        float s = Math.max(Math.abs(scale.z), Math.max(Math.abs(scale.x), Math.abs(scale.y)));
-
-        Vector3 ml = new Vector3(
-                Math.max(max.x, Math.abs(min.x)),
-                Math.max(max.y, Math.abs(min.y)),
-                Math.max(max.z, Math.abs(min.z))
-        );
-        float l = ml.length()*s*2;
         return gp(new Vector4(max.x, max.y, max.z, 1), m) || gp(new Vector4(min.x, min.y, min.z, 1), m) || gp(v2, m) || gp(v3, m) ||
-                gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m)
-                || Vector.sub(position, cam_p).length() <= l;
+                gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m);
     }
 
     public void draw(){

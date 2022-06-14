@@ -5,6 +5,8 @@ import com.example.mylibrary.core.GameObject;
 import com.example.mylibrary.core.Updated;
 import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector3;
+import com.example.mylibrary.render.Camera;
+import com.example.mylibrary.render.Renderer;
 
 public final class RigidBody implements Updated {
 
@@ -21,8 +23,11 @@ public final class RigidBody implements Updated {
     private final Physics physics;
     private final GameObject gameObject;
 
+    private final Camera camera;
+
     public RigidBody(CubeCollider collider, GameObject gameObject, Core core){
         physics = core.getPhysics();
+        camera = core.getRenderer().camera;
         this.collider = collider;
         this.gameObject = gameObject;
         collider.setColliderRigidBody(this);
@@ -34,7 +39,7 @@ public final class RigidBody implements Updated {
     public RigidBody(GameObject gameObject, Core core){
         physics = core.getPhysics();
         this.gameObject = gameObject;
-
+        camera = core.getRenderer().camera;
         core.getRenderer().addUpdated(this);
     }
 
@@ -66,7 +71,7 @@ public final class RigidBody implements Updated {
     @Override
     public void update(float dt) {
 
-        if(activity && gameObject.activity){
+        if(activity && gameObject.activity && Vector.sub(collider.pos, camera.getPosition()).length() < camera.getFar()){
             if (usGravity){
                 velocity=Vector.add(velocity, Vector.mul(physics.g, dt));
             }

@@ -88,12 +88,14 @@ public final class Tests3D extends Scene implements Updated{
         RenderObject skyRO = new RenderObject(skyM);
         renderer.addRenderObject(skyRO);
 
+        renderer.camera.rotateModeView = false;
         renderer.camera.setPosition(new Vector3(0,4f,15));
         renderer.camera.setRotate(new Vector3(0,-45,0));
 
 
         renderer.softShadow=5;
         Camera shadowCamera = new Camera(core);
+        shadowCamera.rotateModeView = false;
         Vector2Int res = new Vector2Int(800*2,600*2);
         shadowCamera.setResolution(res);
         shadowCamera.setPosition(new Vector3(0,8f,35));

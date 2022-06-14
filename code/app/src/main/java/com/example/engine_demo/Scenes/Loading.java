@@ -17,6 +17,10 @@ public final class Loading extends Scene {
     public void start() {
         renderer.loadTexture("textures/tests/floor.png", "floor");
         renderer.loadTexture("textures/tests/floor_normalmap.png", "floor_normalmap");
+
+        renderer.loadTexture("textures/tests/wall.png", "wall");
+        renderer.loadTexture("textures/tests/NormalMapWall.png", "wall_normalmap");
+
         renderer.loadTexture("textures/font.png", "font");
 
         renderer.loadCubemap(new String[]{
@@ -32,7 +36,7 @@ public final class Loading extends Scene {
         modelLoader.loadModel("models/sphere.obj", "sphere");
         modelLoader.loadModel("models/plane.obj", "plane");
 
-        core.setScene(new Tests3D(core));
+        core.setScene(new GraphicsTest(core));
     }
 
     @Override

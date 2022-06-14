@@ -69,7 +69,7 @@ vec4 getSumLigth(vec3 normal){
 
             float distance = length(l_pos.xyz - fFragPos);
 
-            vec3 l_dir_p = -normalize(fFragPos - l_pos.xyz);
+            vec3 l_dir_p = normalize(fFragPos - l_pos.xyz);
 
             float diffuse = max(dot(normal, l_dir_p), 0.0);
 
@@ -92,7 +92,7 @@ vec4 getSumLigth(vec3 normal){
 void main(){
     vec3 normal = -normalize(fTBN * normalize(texture2D(uNormalTexture, fNormalTextureCoord).rgb * 2.0 - 1.0));
 
-    float diff = max(dot(normal, global_light_dir), 0.0);
+    float diff = max(dot(normal, global_light_dir), ambient);
 
     vec3 viewDir = normalize(uViewPos - fFragPos);
     vec3 reflectDir = reflect(normal, -global_light_dir);

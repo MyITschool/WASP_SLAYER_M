@@ -371,7 +371,9 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
     public void clear(){
         models.clear();
+        UImodels.clear();
         obj.clear();
+        UIobj.clear();
         updateds.clear();
         lights.clear();
     }
