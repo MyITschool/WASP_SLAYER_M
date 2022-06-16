@@ -36,6 +36,8 @@ public final class Loading extends Scene {
         modelLoader.loadModel("models/sphere.obj", "sphere");
         modelLoader.loadModel("models/plane.obj", "plane");
 
+        core.getAudioLoader().addAudio("audio/bg_m.mp3", "bg");
+
         core.setScene(new GraphicsTest(core));
     }
 

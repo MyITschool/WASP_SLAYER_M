@@ -41,6 +41,8 @@ public final class PhysicsTest extends Scene implements Updated {
         renderer.global_light_dir = new Vector3(0,1,0);
         renderer.global_light_dir.norm();
 
+        core.getAudioLoader().getAudio("bg").play(true, new Vector2(1));
+
         VertexesData vertexesDataPlane = modelLoader.getVertexesData("plane");
         vertexesDataPlane.vertexes_normalTexture=vertexesDataPlane.vertexes_texture;
 
