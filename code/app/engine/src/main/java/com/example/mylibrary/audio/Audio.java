@@ -11,13 +11,14 @@ import java.io.IOException;
 
 public final class Audio {
 
+    // плеер
     private final MediaPlayer mMediaPlayer;
+    // статус проигрывания
     private boolean mIsPrepared;
+    // громкость
     private Vector2 volume = new Vector2(0);
-    private final AssetFileDescriptor assetFileDescriptor;
 
     public Audio(AssetFileDescriptor assetFileDescriptor) {
-        this.assetFileDescriptor = assetFileDescriptor;
         mIsPrepared = false;
         mMediaPlayer = new MediaPlayer();
         try {
@@ -34,6 +35,7 @@ public final class Audio {
         mIsPrepared = true;
     }
 
+    // начать проигрывать
     public void play(boolean looping, Vector2 volume) {
         if (mMediaPlayer.isPlaying()) {
             return;
@@ -53,23 +55,24 @@ public final class Audio {
             mMediaPlayer.start();
         }
     }
-    public void setVolume(Vector2 volume){
-        this.volume=volume;
-        mMediaPlayer.setVolume(volume.x, volume.y);
-    }
-    public Vector2 getVolume(){
-        return volume;
-    }
+    // остановить проигрывание
     public void stop() {
         mMediaPlayer.stop();
         synchronized (this) {
             mIsPrepared = false;
         }
     }
-    public AssetFileDescriptor getAssetFileDescriptor(){
-        return assetFileDescriptor;
+    // установить громкость
+    public void setVolume(Vector2 volume){
+        this.volume=volume;
+        mMediaPlayer.setVolume(volume.x, volume.y);
+    }
+    // получить громкость
+    public Vector2 getVolume(){
+        return volume;
     }
 
+    // уничтожить
     public void dispose() {
         mMediaPlayer.stop();
         mMediaPlayer.release();

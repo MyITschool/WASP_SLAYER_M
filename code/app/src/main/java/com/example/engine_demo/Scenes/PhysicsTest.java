@@ -7,7 +7,6 @@ import com.example.mylibrary.event.TouchListener;
 import com.example.mylibrary.math.Func;
 import com.example.mylibrary.math.Vector;
 import com.example.mylibrary.math.Vector2;
-import com.example.mylibrary.math.Vector2Int;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 import com.example.mylibrary.model.Model;
@@ -88,7 +87,7 @@ public final class PhysicsTest extends Scene implements Updated {
         renderer.softShadow=5;
         Camera shadowCamera = new Camera(core);
         shadowCamera.rotateModeView = false;
-        Vector2Int res = new Vector2Int(800*2,600*2);
+        Vector2 res = new Vector2(800*2,600*2);
         shadowCamera.setResolution(res);
         shadowCamera.setPosition(new Vector3(0,100f,0));
         shadowCamera.setRotate(new Vector3(90,0,0));

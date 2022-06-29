@@ -3,6 +3,18 @@ package com.example.mylibrary.math;
 public final class Vector {
     private Vector(){}
 
+    /*
+        Vector - работа с векторами
+
+        div - деление
+        mul - умнодение
+        abs - модуль
+        sub - вычитание
+        add - сложение
+        dot - скалярное произведение
+    */
+
+
     public static Vector4 div(Vector4 a, Vector4 b){
         Vector4 c = new Vector4(0);
         if (a.x==0||b.x==0) {

@@ -5,27 +5,30 @@ import android.view.View;
 
 import com.example.mylibrary.math.Func;
 import com.example.mylibrary.math.Vector2;
-import com.example.mylibrary.math.Vector2Int;
+
+import java.util.Arrays;
 
 public final class TouchListener implements View.OnTouchListener{
 
+    // касания
     private float[] touch = new float[20];
+    // количество касаний
     private int pointerCount = 0;
+    // есть ли нажатия
     private boolean isTouch = false;
-
-    private int width;
-    private int height;
+    // разрешение экрана
+    private Vector2 res = new Vector2(0);
 
     public TouchListener(View view){
         view.setOnTouchListener(this);
-        touchArr(pointerCount);
+        Arrays.fill(touch, -1);
+    }
+    // установка разрешения
+    public void setResolution(Vector2 res){
+        this.res=res;
     }
 
-    public void setResolution(int width, int height){
-        this.width=width;
-        this.height=height;
-    }
-
+    // событие нажатия
     @Override
     public boolean onTouch(View view, MotionEvent event) {
 
@@ -71,26 +74,20 @@ public final class TouchListener implements View.OnTouchListener{
         }
     }
 
-    private void touchArr(int pointerCount){
-        for (int i = pointerCount; i < 10; i++){
-            touch[i*2]=-1;
-            touch[i*2+1]=-1;
-        }
-    }
-
+    // проверка нажатия
     public boolean getTouchDown(Vector2 pos, Vector2 size, Vector2 out){
-        pos.x=(pos.x-size.x+1)/2*width;
-        pos.y=(-pos.y-size.y+1)/2*height;
+        pos.x=(pos.x-size.x+1)/2*res.x;
+        pos.y=(-pos.y-size.y+1)/2* res.y;
 
-        size.x*=width;
-        size.y*=height;
+        size.x*= res.x;
+        size.y*= res.y;
 
         if (isTouch){
             for (int i = 0; i < pointerCount;i++){
                 float tx = touch[i*2];
                 float ty = touch[i*2+1];
                 if(tx>=pos.x&&tx<pos.x+size.x&& ty>=pos.y&&ty<=pos.y+size.y){
-                    Vector2 t = Func.canvasToGlCoord(new Vector2(tx,ty), new Vector2Int(width,height));
+                    Vector2 t = Func.canvasToGlCoord(new Vector2(tx,ty), res);
                     out.setXY(t.x, t.y);
                     return true;
                 }

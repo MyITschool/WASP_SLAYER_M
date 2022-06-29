@@ -11,14 +11,14 @@ import java.util.HashMap;
 public final class AudioLoader {
 
     private final AssetManager mAssetManager;
+    // загруженные аудио
+    private final HashMap<String, Audio> audios = new HashMap<>();
 
     public AudioLoader(Activity activity) {
         activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         mAssetManager = activity.getAssets();
     }
-
-    private final HashMap<String, Audio> audios = new HashMap<>();
-
+    // загрузить аудио
     public Audio addAudio(String src, String key) {
         try {
             AssetFileDescriptor assetFileDescriptor = mAssetManager.openFd(src);
@@ -29,15 +29,15 @@ public final class AudioLoader {
             throw new RuntimeException("Не возможно загрузить музыку");
         }
     }
-
+    // получить аудио
     public Audio getAudio(String key){
         return audios.get(key);
     }
-
+    // удалить аудио
     public void deleteAudio(String key){
         audios.remove(key);
     }
-
+    // удалить все аудио
     public void clear(){
         audios.clear();
     }

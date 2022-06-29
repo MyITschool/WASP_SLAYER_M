@@ -10,6 +10,7 @@ public final class Key {
     public final Vector4 deltaColor;
     public final float time;
 
+    //         изменение позиции,       изменение поворота,  изменение масштаба, изменение цвета,    время в с
     public Key(Vector3 deltaPosition, Vector3 deltaRotation, Vector3 deltaScale, Vector4 deltaColor, float time){
         this.deltaPosition = deltaPosition;
         this.deltaRotation = deltaRotation;

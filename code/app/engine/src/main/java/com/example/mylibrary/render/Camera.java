@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.core.GameObject;
 import com.example.mylibrary.math.Vector;
-import com.example.mylibrary.math.Vector2Int;
+import com.example.mylibrary.math.Vector2;
 import com.example.mylibrary.math.Vector3;
 
 public class Camera extends GameObject {
@@ -13,7 +13,7 @@ public class Camera extends GameObject {
     protected float[] projectionMatrix = new float[16];
     protected float[] vPMatrix = new float[16];
 
-    protected Vector2Int res;
+    protected Vector2 res;
 
     protected float FOV = 60;
     protected float far = 100;
@@ -26,7 +26,7 @@ public class Camera extends GameObject {
     }
 
 
-    public void setResolution(Vector2Int res){
+    public void setResolution(Vector2 res){
         this.res = res;
         rotate();
     }
@@ -115,7 +115,7 @@ public class Camera extends GameObject {
         return vPMatrix;
     }
 
-    public Vector2Int getResolution(){
+    public Vector2 getResolution(){
         return res;
     }
 
@@ -123,7 +123,7 @@ public class Camera extends GameObject {
     public Camera(Core core){
         this.core = core;
 
-        this.res = new Vector2Int(1);
+        this.res = new Vector2(1);
 
         genVPMatrix();
         genProjectionMatrix();

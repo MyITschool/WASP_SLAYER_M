@@ -45,17 +45,15 @@ import android.opengl.GLSurfaceView;
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.core.Updated;
 import com.example.mylibrary.math.Vector;
-import com.example.mylibrary.math.Vector2Int;
+import com.example.mylibrary.math.Vector2;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 import com.example.mylibrary.model.Model;
-import com.example.mylibrary.model.ModelLoader;
 import com.example.mylibrary.model.UIModel;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -103,9 +101,9 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         shaderPrograms.remove(key);
     }
 
-    private Vector2Int res = new Vector2Int(1);
+    private Vector2 res = new Vector2(1);
 
-    public Vector2Int getRes(){return res.clone();}
+    public Vector2 getRes(){return res.clone();}
 
     private Camera shadowCamera;
     private int fbo = -1;
@@ -218,9 +216,9 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         res.y=i1;
 
         camera.setResolution(res);
-        glViewport(0, 0, res.x, res.y);
+        glViewport(0, 0, i, i1);
 
-        core.getTouchListener().setResolution(i,i1);
+        core.getTouchListener().setResolution(res);
     }
 
     private int upd = 0;
@@ -250,14 +248,14 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         glClear(GL_COLOR_BUFFER_BIT);
 
         if(shadowCamera!=null){
-            Vector2Int sRes = shadowCamera.getResolution();
+            Vector2 sRes = shadowCamera.getResolution();
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-            glViewport(0, 0, sRes.x, sRes.y);
+            glViewport(0, 0, (int) sRes.x, (int)sRes.y);
             drawZBuffer();
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, res.x, res.y);
+        glViewport(0, 0, (int)res.x, (int)res.y);
         drawRenderObject();
     }
     private void drawZBuffer(){
@@ -509,13 +507,13 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         }
     }
 
-    public void addShadow(Vector2Int res, Camera shadowCamera){
+    public void addShadow(Vector2 res, Camera shadowCamera){
         if(fbo!=-1){
             logger.log(Level.WARNING, "fbo уже есть");
             return;
         }
         this.shadowCamera=shadowCamera;
-        fbo = GLUtil.createFrameBuffer(res.x, res.y, textures.size() )[1];
+        fbo = GLUtil.createFrameBuffer((int)res.x, (int)res.y, textures.size() )[1];
         textures.put(zBufferS, textures.size());
     }
     public void setShadowCamera(Camera shadowCamera){

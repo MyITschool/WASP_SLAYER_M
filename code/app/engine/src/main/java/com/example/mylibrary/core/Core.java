@@ -14,18 +14,28 @@ import com.example.mylibrary.render.Renderer;
 
 public class Core extends AppCompatActivity {
 
+    // активная сцена
     private Scene scene;
-
+    // отрисовщик
     private Renderer renderer;
+    // загрузчик 3Д моделий
     private final ModelLoader modelLoader = new ModelLoader(this);
+    // физика
     private final Physics physics = new Physics(renderer);
+    // слушатель нажатий
     private TouchListener touchListener;
+    // загрузчик аудио
     private AudioLoader audioLoader;
 
+    // получить отрисовщик
     public Renderer getRenderer(){return renderer;}
+    // получить загрузчик 3Д моделей
     public ModelLoader getModelLoader(){return modelLoader;}
+    // получить физику
     public Physics getPhysics(){return physics;}
+    // получить слушатель нажатий
     public TouchListener getTouchListener(){return touchListener;}
+    // получить загрузчик аудио
     public AudioLoader getAudioLoader(){return audioLoader;}
 
     @Override
@@ -67,10 +77,12 @@ public class Core extends AppCompatActivity {
         scene.pause();
     }
 
+    // получить активную сцену
     public Scene getScene(){
         return scene;
     }
 
+    // установить сцену
     public void setScene(Scene scene){
         renderer.clear();
         physics.clear();
