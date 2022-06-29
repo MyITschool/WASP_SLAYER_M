@@ -1,0 +1,10 @@
+
+e
+java:S1104"OMake pos a static final constant or non-public and provide accessors if needed.(â€À»
+k
+java:S1104"PMake size a static final constant or non-public and provide accessors if needed.(ÚôûÂúÿÿÿÿ
+o
+java:S1104	"TMake activity a static final constant or non-public and provide accessors if needed.(¹Ñ™¥ùÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(™˜à«
+i
+java:S2975&"SRemove this "clone" implementation; use a copy constructor or copy factory instead.(»ÒÂè

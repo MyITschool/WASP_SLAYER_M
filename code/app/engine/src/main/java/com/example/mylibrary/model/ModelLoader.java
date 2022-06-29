@@ -9,9 +9,13 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class ModelLoader {
     private final Core core;
+
+    private Logger logger = Logger.getLogger(ModelLoader.class.getName());
 
     private final HashMap<String, VertexesData> models = new HashMap<>();
 
@@ -30,8 +34,7 @@ public final class ModelLoader {
 
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(
-                    new InputStreamReader(core.getAssets().open(src), StandardCharsets.UTF_8));
+            reader = new BufferedReader(new InputStreamReader(core.getAssets().open(src), StandardCharsets.UTF_8));
 
             String mLine;
             while ((mLine = reader.readLine()) != null) {
@@ -73,13 +76,13 @@ public final class ModelLoader {
 
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            logger.log(Level.WARNING, "ошибка загрузки модели", e);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                    logger.log(Level.WARNING, "ошибка загрузки модели", e);
                 }
             }
         }

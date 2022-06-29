@@ -54,10 +54,8 @@ public final class Audio {
         }
     }
     public void setVolume(Vector2 volume){
-        synchronized (this){
-            this.volume=volume;
-            mMediaPlayer.setVolume(volume.x, volume.y);
-        }
+        this.volume=volume;
+        mMediaPlayer.setVolume(volume.x, volume.y);
     }
     public Vector2 getVolume(){
         return volume;

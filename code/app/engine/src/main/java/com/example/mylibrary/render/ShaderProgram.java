@@ -28,19 +28,19 @@ public final class ShaderProgram {
 
     private void genAttributsUniforms(String[] attributs, String[] uniforms){
 
-        for(int i = 0; i < attributs.length; i++){
-            this.attributs.put(attributs[i], glGetAttribLocation(shaderProgram, attributs[i]));
+        for (String attribut : attributs) {
+            this.attributs.put(attribut, glGetAttribLocation(shaderProgram, attribut));
         }
-        for(int i = 0; i < uniforms.length; i++){
-            this.uniforms.put(uniforms[i], glGetUniformLocation(shaderProgram, uniforms[i]));
+        for (String uniform : uniforms) {
+            this.uniforms.put(uniform, glGetUniformLocation(shaderProgram, uniform));
         }
 
     }
 
-    public HashMap getAttributs(){
+    public HashMap<String, Integer> getAttributs(){
         return attributs;
     }
-    public HashMap getUniforms(){
+    public HashMap<String, Integer> getUniforms(){
         return uniforms;
     }
 

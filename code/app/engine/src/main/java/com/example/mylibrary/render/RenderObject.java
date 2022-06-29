@@ -109,19 +109,20 @@ public class RenderObject extends GameObject {
     }
 
     protected void setUniforms(){
+        final String texture_normalMapS = "texture_normalMap";
         if(model.shaderProgram.name != "sky"){
             glUniformMatrix4fv(uniforms.get("uModelMatrix"), 1, false, modelMatrix, 0);
             glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
         }
 
-        if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
+        if(model.shaderProgram.name == "color_normals" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == texture_normalMapS){
             glUniform2fv(uniforms.get("specular"), 1, specular.getArray(), 0);
             glUniformMatrix4fv(uniforms.get("uRotMatrix"), 1, false, rotateMatrix, 0);
         }
-        if(model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == "texture_normalMap"){
+        if(model.shaderProgram.name == "texture" || model.shaderProgram.name == "texture_normals" || model.shaderProgram.name == texture_normalMapS){
             glUniform1i(uniforms.get("uTexture"), texture);
         }
-        if(model.shaderProgram.name == "texture_normalMap"){
+        if(model.shaderProgram.name == texture_normalMapS){
             glUniform1i(uniforms.get("uNormalTexture"), normalTexture);
         }
     }
@@ -139,7 +140,6 @@ public class RenderObject extends GameObject {
     }
 
     public boolean inCamera(Camera camera){
-        //Vector3 cam_p = Vector.mul(camera.getPosition(), -1);
         if (Vector.sub(position, camera.getPosition()).length() > camera.getFar()){
             return false;
         }
@@ -165,7 +165,8 @@ public class RenderObject extends GameObject {
     }
 
     public void draw(){
-        if (!inCamera(renderer.camera) || !activity)return;
+        if(!activity)return;
+        if (!inCamera(renderer.camera) && model.shaderProgram.name != "sky")return;
         if(model.shaderProgram.name != "sky")
             setUniforms();
 

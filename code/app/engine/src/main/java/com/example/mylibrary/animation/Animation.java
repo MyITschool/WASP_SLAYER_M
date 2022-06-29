@@ -11,7 +11,7 @@ public final class Animation implements Updated {
     public boolean loop = false;
 
     private Key[] keys;
-    private GameObject gameObject;
+    public GameObject gameObject;
     private final Renderer renderer;
 
     private boolean play = false;
@@ -29,6 +29,10 @@ public final class Animation implements Updated {
         this.keys = keys;
         this.gameObject= gameObject;
         this.renderer= renderer;
+    }
+    public void setKeys(Key[] keys){
+        this.keys = keys;
+        setKey(keys[0]);
     }
 
     public void restart(){

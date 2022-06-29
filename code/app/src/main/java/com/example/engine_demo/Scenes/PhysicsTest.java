@@ -101,12 +101,12 @@ public final class PhysicsTest extends Scene implements Updated {
 
     @Override
     public void resume() {
-
+        // TODO не нужен
     }
 
     @Override
     public void pause() {
-
+        // TODO не нужен
     }
 
     private final Physics physics = core.getPhysics();

@@ -56,10 +56,12 @@ public class Core extends AppCompatActivity {
         }
     }
 
+    @Override
     public void onResume(){
         super.onResume();
         scene.resume();
     }
+    @Override
     public void onPause(){
         super.onPause();
         scene.pause();

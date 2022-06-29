@@ -40,7 +40,9 @@ public final class TouchListener implements View.OnTouchListener{
                         touch[i*2]=event.getX(i);
                         touch[i*2+1]=event.getY(i);
                     }
+                    break;
                 case MotionEvent.ACTION_POINTER_DOWN: // последующие касания
+                case MotionEvent.ACTION_POINTER_UP: // прерывания касаний
                     pointerCount = event.getPointerCount();
                     for (int i = 0; i < pointerCount; i++){
                         touch[i*2]=event.getX(i);
@@ -55,12 +57,6 @@ public final class TouchListener implements View.OnTouchListener{
                         touch[i*2+1]=event.getY(i);
                     }
                     isTouch = false;
-                case MotionEvent.ACTION_POINTER_UP: // прерывания касаний
-                    pointerCount = event.getPointerCount();
-                    for (int i = 0; i < pointerCount; i++){
-                        touch[i*2]=event.getX(i);
-                        touch[i*2+1]=event.getY(i);
-                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     for (int i = 0; i < pointerCount; i++){
@@ -68,6 +64,7 @@ public final class TouchListener implements View.OnTouchListener{
                         touch[i*2+1]=event.getY(i);
                     }
                     break;
+
             }
 
             return true;

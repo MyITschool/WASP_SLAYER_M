@@ -49,6 +49,7 @@ import com.example.mylibrary.math.Vector2Int;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 import com.example.mylibrary.model.Model;
+import com.example.mylibrary.model.ModelLoader;
 import com.example.mylibrary.model.UIModel;
 
 import java.io.IOException;
@@ -59,6 +60,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -67,6 +70,8 @@ import javax.microedition.khronos.opengles.GL10;
 public final class Renderer extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private final Core core;
+
+    private Logger logger = Logger.getLogger(Renderer.class.getName());
 
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>();
     private final HashMap<String, Integer> textures = new HashMap<>();
@@ -106,6 +111,8 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     private int fbo = -1;
     public float bias = 0.005f;
 
+    public boolean logFPS = true;
+
     public Renderer(Core core){
         super(core);
         this.core = core;
@@ -117,63 +124,82 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         setRenderer(this);
     }
 
+    private final String uVPMatrixS = "uVPMatrix";
+    private final String zBufferS = "zBuffer";
+    private final String uModelMatrixS = "uModelMatrix";
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        shaderPrograms.put("color", new ShaderProgram("color","shaders/color/vs.glsl","shaders/color/fs.glsl",
-                new String[]{"vPosition"},
-                new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "shadowMap", "softShadow", "bias", "depthMVP", "ambient"},
+        final String fog_colorS = "fog_color";
+        final String shadowMapS = "shadowMap";
+        final String softShadowS = "softShadow";
+        final String depthMVPS = "depthMVP";
+        final String ambientS = "ambient";
+        final String uRotMatrixS = "uRotMatrix";
+        final String global_light_dirS = "global_light_dir";
+        final String global_light_colorS = "global_light_color";
+        final String uViewPosS = "uViewPos";
+        final String specularS = "specular";
+        final String uLightS = "uLight[";
+        final String vNormalS = "vNormal";
+        final String vTextureS = "vTexture";
+        final String uTextureS = "uTexture";
+        final String colorS = "color";
+        final String vPositionS = "vPosition";
+        shaderPrograms.put(colorS, new ShaderProgram(colorS,"shaders/color/vs.glsl","shaders/color/fs.glsl",
+                new String[]{vPositionS},
+                new String[]{uVPMatrixS, uModelMatrixS, colorS, "far", fog_colorS, shadowMapS, softShadowS, "bias", depthMVPS, ambientS},
                 core));
         //////////////////////////////////////////////////////////////////////////
         String[] uniforms = new String[252+15];
-        System.arraycopy(new String[]{"uRotMatrix", "uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "shadowMap", "softShadow", "bias", "depthMVP"},0,uniforms,0,15);
+        System.arraycopy(new String[]{uRotMatrixS, uVPMatrixS, uModelMatrixS, colorS, global_light_dirS, global_light_colorS, uViewPosS, ambientS, fog_colorS, specularS, "far", shadowMapS, softShadowS, "bias", depthMVPS},0,uniforms,0,15);
 
         for (int i = 0; i < 252; i++){
-            uniforms[15+i] = "uLight["+i+"]";
+            uniforms[15+i] = uLightS+i+"]";
         }
         shaderPrograms.put("color_normals", new ShaderProgram("color_normals","shaders/color_normals/vs.glsl","shaders/color_normals/fs.glsl",
-                new String[]{"vPosition", "vNormal"},
+                new String[]{vPositionS, vNormalS},
                 uniforms,
                 core));
         ///////////////////////////////////////////////////////////////////////////
         shaderPrograms.put("texture", new ShaderProgram("texture","shaders/texture/vs.glsl","shaders/texture/fs.glsl",
-                new String[]{"vPosition", "vTexture"},
-                new String[]{"uVPMatrix", "uModelMatrix", "color", "far", "fog_color", "uTexture", "shadowMap", "softShadow", "bias", "depthMVP", "ambient"},
+                new String[]{vPositionS, vTextureS},
+                new String[]{uVPMatrixS, uModelMatrixS, colorS, "far", fog_colorS, uTextureS, shadowMapS, softShadowS, "bias", depthMVPS, ambientS},
                 core));
         ///////////////////////////////////////////////////////////////////////////
         uniforms = new String[252+16];
-        System.arraycopy(new String[]{"uRotMatrix", "uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uTexture", "shadowMap", "softShadow", "bias", "depthMVP"},0,uniforms,0,16);
+        System.arraycopy(new String[]{uRotMatrixS, uVPMatrixS, uModelMatrixS, colorS, global_light_dirS, global_light_colorS, uViewPosS, ambientS, fog_colorS, specularS, "far", uTextureS, shadowMapS, softShadowS, "bias", depthMVPS},0,uniforms,0,16);
         for (int i = 0; i < 252; i++){
-            uniforms[16+i] = "uLight["+i+"]";
+            uniforms[16+i] = uLightS+i+"]";
         }
         shaderPrograms.put("texture_normals", new ShaderProgram("texture_normals","shaders/texture_normals/vs.glsl","shaders/texture_normals/fs.glsl",
-                new String[]{"vPosition", "vNormal", "vTexture"},
+                new String[]{vPositionS, vNormalS, vTextureS},
                 uniforms,
                 core));
         ///////////////////////////////////////////////////////////////////////////
         uniforms = new String[252+17];
-        System.arraycopy(new String[]{"uRotMatrix", "uVPMatrix", "uModelMatrix", "color", "global_light_dir", "global_light_color", "uViewPos", "ambient", "fog_color", "specular", "far", "uNormalTexture", "uTexture", "shadowMap", "softShadow", "bias", "depthMVP"},0,uniforms,0,17);
+        System.arraycopy(new String[]{uRotMatrixS, uVPMatrixS, uModelMatrixS, colorS, global_light_dirS, global_light_colorS, uViewPosS, ambientS, fog_colorS, specularS, "far", "uNormalTexture", uTextureS, shadowMapS, softShadowS, "bias", depthMVPS},0,uniforms,0,17);
         for (int i = 0; i < 252; i++){
-            uniforms[17+i] = "uLight["+i+"]";
+            uniforms[17+i] = uLightS+i+"]";
         }
         shaderPrograms.put("texture_normalMap", new ShaderProgram("texture_normalMap","shaders/texture_normalMap/vs.glsl","shaders/texture_normalMap/fs.glsl",
-                new String[]{"vPosition", "vNormal", "vTexture", "vNormalTextureCoord", "vTangent"},
+                new String[]{vPositionS, vNormalS, vTextureS, "vNormalTextureCoord", "vTangent"},
                 uniforms,
                 core));
         ///////////////////////////////////////////////////////////////////////////
         shaderPrograms.put("sky", new ShaderProgram("sky","shaders/sky/vs.glsl","shaders/sky/fs.glsl",
-                new String[]{"vPosition"},
-                new String[]{"uVPMatrix", "skyBox"},
+                new String[]{vPositionS},
+                new String[]{uVPMatrixS, "skyBox"},
                 core));
         ///////////////////////////////////////////////////////////////////////////
         shaderPrograms.put("UI", new ShaderProgram("UI","shaders/UI/vs.glsl","shaders/UI/fs.glsl",
-                new String[]{"vPosition", "vTexture"},
-                new String[]{"uTexture", "color", "uModelMatrix"},
+                new String[]{vPositionS, vTextureS},
+                new String[]{uTextureS, colorS, uModelMatrixS},
                 core));
         UIModel = new UIModel(core);
         ///////////////////////////////////////////////////////////////////////////
-        shaderPrograms.put("zBuffer", new ShaderProgram("zBuffer","shaders/zBuffer/vs.glsl","shaders/zBuffer/fs.glsl",
-                new String[]{"vPosition"},
-                new String[]{"uVPMatrix","uModelMatrix","far"},
+        shaderPrograms.put(zBufferS, new ShaderProgram(zBufferS,"shaders/zBuffer/vs.glsl","shaders/zBuffer/fs.glsl",
+                new String[]{vPositionS},
+                new String[]{uVPMatrixS,uModelMatrixS,"far"},
                 core));
         UIModel = new UIModel(core);
         ///////////////////////////////////////////////////////////////////////////
@@ -207,13 +233,16 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     long lt = System.currentTimeMillis();
     @Override
     public void onDrawFrame(GL10 gl10) {
-        upd++;
-        if(System.currentTimeMillis()-timer>1000){
-            System.out.println("Render: "+upd+"FPS");
-            fps=upd;
-            upd=0;
-            timer+=System.currentTimeMillis()-timer;
+        if(logFPS){
+            upd++;
+            if(System.currentTimeMillis()-timer>1000){
+                logger.info(upd+"FPS");
+                fps=upd;
+                upd=0;
+                timer+=System.currentTimeMillis()-timer;
+            }
         }
+
         long t = System.currentTimeMillis();
         update((float)(t-lt)/1000.f);
         lt=t;
@@ -233,7 +262,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     }
     private void drawZBuffer(){
         if (models.size() != 0){
-            ShaderProgram shaderProgram = shaderPrograms.get("zBuffer");
+            ShaderProgram shaderProgram = shaderPrograms.get(zBufferS);
             glUseProgram(shaderProgram.shaderProgram);
             glClearDepthf(1.0f);
             glEnable(GL_DEPTH_TEST);
@@ -241,9 +270,9 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             HashMap<String,Integer> u = shaderProgram.getUniforms();
-            int adrMM = u.get("uModelMatrix");
+            int adrMM = u.get(uModelMatrixS);
             glUniform1f(u.get("far"), shadowCamera.getFar());
-            glUniformMatrix4fv(u.get("uVPMatrix"), 1, false, shadowCamera.getvPMatrix(), 0);
+            glUniformMatrix4fv(u.get(uVPMatrixS), 1, false, shadowCamera.getvPMatrix(), 0);
 
             HashMap<String, Integer> attributs = shaderProgram.getAttributs();
 
@@ -278,7 +307,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
             }
         }
         if (UImodels.size() != 0) {
-            //glDisable(GL_DEPTH_TEST);
+            glDisable(GL_DEPTH_TEST);
             for (int i = 0; i < UImodels.size(); i++) {
                 Model model = UImodels.get(i);
                 ShaderProgram shaderProgram = model.shaderProgram;
@@ -289,7 +318,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 }
                 model.disableAttributs();
             }
-            //glEnable(GL_DEPTH_TEST);
+            glEnable(GL_DEPTH_TEST);
         }
     }
     private void update(float l){
@@ -395,8 +424,8 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
             istr = assetManager.open(src);
             bitmap = BitmapFactory.decodeStream(istr);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.out.println("не удалось загрузить bitmap: "+src);
+
+            logger.log(Level.WARNING,"не удалось загрузить bitmap: "+src, e);
             return;
         }
 
@@ -462,8 +491,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 istr = assetManager.open(src[i]);
                 bitmap = BitmapFactory.decodeStream(istr);
             } catch (IOException e) {
-                System.out.println(e.getMessage());
-                System.out.println("не удалось загрузить bitmap: "+i+" "+src[i]);
+                logger.log(Level.WARNING, "не удалось загрузить bitmap: "+i+" "+src[i], e);
                 continue;
             }
 
@@ -483,16 +511,16 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
 
     public void addShadow(Vector2Int res, Camera shadowCamera){
         if(fbo!=-1){
-            System.out.println("fbo уже есть");
+            logger.log(Level.WARNING, "fbo уже есть");
             return;
         }
         this.shadowCamera=shadowCamera;
         fbo = GLUtil.createFrameBuffer(res.x, res.y, textures.size() )[1];
-        textures.put("zBuffer", textures.size());
+        textures.put(zBufferS, textures.size());
     }
     public void setShadowCamera(Camera shadowCamera){
         if(fbo==-1){
-            System.err.println("нет fbo");
+            logger.log(Level.WARNING, "нет fbo");
             return;
         }
         this.shadowCamera=shadowCamera;

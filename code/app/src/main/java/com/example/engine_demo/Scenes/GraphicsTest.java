@@ -49,7 +49,6 @@ public final class GraphicsTest extends Scene implements Updated {
 
         Model modelPlaneColor = new Model(vertexesDataCube.vertexes, core);
         RenderObject cubeColorRO = new RenderObject(modelPlaneColor);
-       // cubeColorRO.activity = false;
         renderer.addRenderObject(cubeColorRO);
         testsRO[0] = cubeColorRO;
 
@@ -94,12 +93,12 @@ public final class GraphicsTest extends Scene implements Updated {
 
     @Override
     public void resume() {
-
+        // TODO не нужен
     }
 
     @Override
     public void pause() {
-
+        // TODO не нужен
     }
 
     float t = 0;
@@ -115,7 +114,7 @@ public final class GraphicsTest extends Scene implements Updated {
         if(touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0)) && cd <= 0){
             if (i!=3) testsRO[i].activity=false;
             i++;
-            if(i>=5){core.setScene(new PhysicsTest(core));return;}
+            if(i>=5){core.setScene(new AnimScene(core));return;}
             testsRO[i].activity=true;
             cd=0.5f;
         }

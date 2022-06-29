@@ -63,7 +63,7 @@ public class RebdererText extends RenderImg{
     }
 
     protected void drawChar(int i, float scaleX, float posX){
-        char c = text.charAt(i);
+        byte c = (byte)text.charAt(i);
         int x = c & 0b1111;
         int y = c >> 4;
         Vector4 rct = new Vector4(x*charSize);

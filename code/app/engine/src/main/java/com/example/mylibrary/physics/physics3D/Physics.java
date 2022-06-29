@@ -191,13 +191,13 @@ public final class Physics {
         double t1, t2;
 
         for (int i = 0; i < 3; i++) {
-            if ( Math.abs(ray.direction[i]) >= Math.ulp(.0)){//std::numeric_limits::epsilon() ) {
+            if ( Math.abs(ray.direction[i]) >= Math.ulp(.0)){
                 t1 = (brick.min_point[i] - ray.start[i]) / ray.direction[i];
                 t2 = (brick.max_point[i] - ray.start[i]) / ray.direction[i];
 
                 if (t1 > t2){
                     double tmp = t1;
-                    t1 = t2;    //std::swap(t1, t2);
+                    t1 = t2;
                     t2 = tmp;
                 }
                 if (t1 > t_near)
@@ -216,12 +216,5 @@ public final class Physics {
             }
         }
         return (t_near <= t_far && t_far >=0);
-    }
-
-    public void printCubeColliders(){
-        for (int i = 0; i < cubeColliders.size();i++){
-            System.out.println(cubeColliders.get(i).pos.x+"|"+cubeColliders.get(i).pos.y+"|"+cubeColliders.get(i).pos.z+
-                    " || "+cubeColliders.get(i).size.x+"|"+cubeColliders.get(i).size.y+"|"+cubeColliders.get(i).size.z);
-        }
     }
 }

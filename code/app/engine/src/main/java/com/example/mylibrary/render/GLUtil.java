@@ -2,13 +2,13 @@ package com.example.mylibrary.render;
 
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.glActiveTexture;
-import static android.opengl.GLES32.GL_COMPILE_STATUS;
-import static android.opengl.GLES32.glCompileShader;
-import static android.opengl.GLES32.glShaderSource;
+import static android.opengl.GLES20.GL_COMPILE_STATUS;
+import static android.opengl.GLES20.glCompileShader;
+import static android.opengl.GLES20.glShaderSource;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.opengl.GLES32;
+import android.opengl.GLES20;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -17,6 +17,8 @@ import java.io.InputStream;
 
 public final class GLUtil
 {
+    private GLUtil(){}
+    final static String sl = "ESShader";
     public static int[] createFrameBuffer(int width, int height, int lastTextureIndex) {
 
         glActiveTexture(GL_TEXTURE0+lastTextureIndex);
@@ -72,7 +74,7 @@ public final class GLUtil
             return shaderSource;
         }
 
-        InputStream is = null;
+        InputStream is;
         byte [] buffer;
 
         try
@@ -105,13 +107,15 @@ public final class GLUtil
         return shaderSource;
     }
 
-
+    
     public static int loadShader ( int type, String shaderSrc )
     {
+        
+        
         int shader;
         int[] compiled = new int[1];
 
-        shader = GLES32.glCreateShader ( type );
+        shader = GLES20.glCreateShader ( type );
 
         if ( shader == 0 )
         {
@@ -122,12 +126,12 @@ public final class GLUtil
 
         glCompileShader ( shader );
 
-        GLES32.glGetShaderiv ( shader, GL_COMPILE_STATUS, compiled, 0 );
+        GLES20.glGetShaderiv ( shader, GL_COMPILE_STATUS, compiled, 0 );
 
         if ( compiled[0] == 0 )
         {
-            Log.e ( "ESShader", GLES32.glGetShaderInfoLog ( shader ) );
-            GLES32.glDeleteShader ( shader );
+            Log.e ( sl, GLES20.glGetShaderInfoLog ( shader ) );
+            GLES20.glDeleteShader ( shader );
             return 0;
         }
 
@@ -141,46 +145,46 @@ public final class GLUtil
         int programObject;
         int[] linked = new int[1];
 
-        vertexShader = loadShader ( GLES32.GL_VERTEX_SHADER, vertShaderSrc );
+        vertexShader = loadShader ( GLES20.GL_VERTEX_SHADER, vertShaderSrc );
 
         if ( vertexShader == 0 )
         {
             return 0;
         }
 
-        fragmentShader = loadShader ( GLES32.GL_FRAGMENT_SHADER, fragShaderSrc );
+        fragmentShader = loadShader ( GLES20.GL_FRAGMENT_SHADER, fragShaderSrc );
 
         if ( fragmentShader == 0 )
         {
-            GLES32.glDeleteShader ( vertexShader );
+            GLES20.glDeleteShader ( vertexShader );
             return 0;
         }
 
 
-        programObject = GLES32.glCreateProgram();
+        programObject = GLES20.glCreateProgram();
 
         if ( programObject == 0 )
         {
             return 0;
         }
 
-        GLES32.glAttachShader ( programObject, vertexShader );
-        GLES32.glAttachShader ( programObject, fragmentShader );
+        GLES20.glAttachShader ( programObject, vertexShader );
+        GLES20.glAttachShader ( programObject, fragmentShader );
 
-        GLES32.glLinkProgram ( programObject );
+        GLES20.glLinkProgram ( programObject );
 
-        GLES32.glGetProgramiv ( programObject, GLES32.GL_LINK_STATUS, linked, 0 );
+        GLES20.glGetProgramiv ( programObject, GLES20.GL_LINK_STATUS, linked, 0 );
 
         if ( linked[0] == 0 )
         {
-            Log.e ( "ESShader", "Error linking program:" );
-            Log.e ( "ESShader", GLES32.glGetProgramInfoLog ( programObject ) );
-            GLES32.glDeleteProgram ( programObject );
+            Log.e ( sl, "Error linking program:" );
+            Log.e ( sl, GLES20.glGetProgramInfoLog ( programObject ) );
+            GLES20.glDeleteProgram ( programObject );
             return 0;
         }
 
-        GLES32.glDeleteShader ( vertexShader );
-        GLES32.glDeleteShader ( fragmentShader );
+        GLES20.glDeleteShader ( vertexShader );
+        GLES20.glDeleteShader ( fragmentShader );
 
         return programObject;
     }

@@ -43,11 +43,11 @@ public final class Loading extends Scene {
 
     @Override
     public void resume() {
-
+        // TODO не нужен
     }
 
     @Override
     public void pause() {
-
+        // TODO не нужен
     }
 }

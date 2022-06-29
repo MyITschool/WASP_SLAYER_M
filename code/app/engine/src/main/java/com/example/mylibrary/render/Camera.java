@@ -58,7 +58,7 @@ public class Camera extends GameObject {
         if(rotateModeView){
 
 
-            //Matrix.translateM(vPMatrix,0,vPMatrix,0,position.x,position.y,position.z);
+            Matrix.translateM(vPMatrix,0,vPMatrix,0,position.x,position.y,position.z);
 
             float[] matRotX = new float[16];
             Matrix.setRotateM(matRotX, 0, rotation.x, 1,0,0);

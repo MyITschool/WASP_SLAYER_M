@@ -1,6 +1,7 @@
 package com.example.mylibrary.math;
 
 public final class Func {
+    private Func(){}
     public static int randomInt(int min, int max){
         return min + (int) (Math.random() * max);
     }

@@ -304,6 +304,7 @@ public class Model {
         return mTangentData;
     }
 
+
     protected void setGeneralUniforms(){
         Renderer r = core.getRenderer();
         if(shaderProgram.name == "color" || shaderProgram.name == "color_normals" || shaderProgram.name == "texture" || shaderProgram.name == "texture_normals" || shaderProgram.name == "texture_normalMap"){
@@ -333,13 +334,14 @@ public class Model {
                 });
                 if(252-j+1<3)break;
             }
+            if(r.getLightsArraySize() == 0){
+                    glUniform4fv(uniforms.get("uLight["+0+"]"), 1, new float[]{0,0,0,0}, 0);
+                glUniform4fv(uniforms.get("uLight["+1+"]"), 1, new float[]{0,0,0,0}, 0);
+            }
         }
         if(shaderProgram.name == "sky"){
             glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getProjectionMatrix(), 0);
             glUniform1i(uniforms.get("skyBox"), texture);
-        }
-        if(r.getShadowCamera()!=null&&shaderProgram.name != "sky"&&shaderProgram.name != "UI"){
-
         }
     }
     protected void setBuffers(){
