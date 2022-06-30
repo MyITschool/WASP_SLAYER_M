@@ -1,0 +1,12 @@
+
+k
+java:S1104"PMake mass a static final constant or non-public and provide accessors if needed.(ÖÁªÕşÿÿÿÿ
+f
+java:S1104"PMake drag a static final constant or non-public and provide accessors if needed.(©¿×Ù
+l
+java:S1104"VMake elasticity a static final constant or non-public and provide accessors if needed.(›»„§
+k
+java:S1104"UMake usGravity a static final constant or non-public and provide accessors if needed.(ÛÒ’
+v
+java:S1104"TMake activity a static final constant or non-public and provide accessors if needed.(¹Ñ™¥ùÿÿÿÿ8ƒÿü›0
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(™˜à«

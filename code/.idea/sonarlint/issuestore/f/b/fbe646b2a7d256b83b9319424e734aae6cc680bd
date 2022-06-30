@@ -1,0 +1,9 @@
+
+ˆ
+java:S1319)"mThe return type of this method should be an interface such as "Map" rather than the implementation "HashMap".(åÜÎúÿÿÿÿ
+ˆ
+java:S1319,"mThe return type of this method should be an interface such as "Map" rather than the implementation "HashMap".(³ï‡®ùÿÿÿÿ
+f	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(£Àè
+f	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(£Àè
+7
+java:S1700"Rename field "shaderProgram"(×òÄõûÿÿÿÿ
