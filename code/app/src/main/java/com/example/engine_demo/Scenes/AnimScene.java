@@ -40,12 +40,15 @@ public final class AnimScene extends Scene implements Updated {
         renderer.addRenderObject(cubeColorNormalRO);
         RenderObject ROb = cubeColorNormalRO;
 
+        // массив ключей анимации
         Key[] animKeys = new Key[]{
                 new Key(new Vector3(2), new Vector3(360,360,360), new Vector3(2), new Vector4(-0.4f,-0.1f,-0.8f,0), 1),
                 new Key(new Vector3(-2), new Vector3(-360,-360,-360), new Vector3(-2), new Vector4(0.4f,0.1f,0.8f,0), 1)
         };
+        // создание анимации
         Animation animation = new Animation(animKeys, ROb, renderer);
         animation.loop = true;
+        // включение
         animation.play();
 
 

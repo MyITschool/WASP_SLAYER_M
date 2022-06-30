@@ -32,16 +32,20 @@ public final class GraphicsTest extends Scene implements Updated {
 
     @Override
     public void start() {
+        // настройка освещения
         renderer.ambient = 0.05f;
         renderer.global_light_color = new Vector3(0f);
         renderer.global_light_dir = new Vector3(-1,1,1);
         renderer.global_light_dir.norm();
         renderer.camera.setFar(100);
 
+        // получение вершин
         VertexesData vertexesDataCube = modelLoader.getVertexesData("cube");
         VertexesData vertexesDataSphere = modelLoader.getVertexesData("sphere");
 
+        // создание модели
         Model modelSphereColor = new Model(vertexesDataSphere.vertexes, core);
+        // создание 3Д объекта
         lightRO = new RenderObject(modelSphereColor);
         lightRO.setScale(new Vector3(0.1f));
         lightRO.setPosition(new Vector3(0,0,4));
@@ -76,18 +80,22 @@ public final class GraphicsTest extends Scene implements Updated {
         renderer.addRenderObject(skyRO);
         testsRO[4] = skyRO;
 
+        // создание и установка доп. света
         light = new Light(new Vector3(0,0,4), new Vector3(1), 4, renderer);
         renderer.addLigth(light);
 
+        // UI
         fpsRT = new RebdererText("font", "00", core);
         fpsRT.setScale(new Vector3(0.2f,0.2f,1));
         fpsRT.setPosition(new Vector3(-0.8f,0.8f,0));
         renderer.addUI(fpsRT);
 
+        // настройка камеры
         renderer.camera.rotateModeView = false;
         renderer.camera.setPosition(new Vector3(4,0f,5));
         renderer.camera.setRotate(new Vector3(0,-35,0));
 
+        // добавление в обновляемые объекты
         renderer.addUpdated(this);
     }
 
@@ -111,10 +119,14 @@ public final class GraphicsTest extends Scene implements Updated {
         light.setPosition(pos);
         lightRO.setPosition(pos);
         cd-=dt;
+        // проверка нажатия
         if(touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0)) && cd <= 0){
             if (i!=3) testsRO[i].activity=false;
             i++;
-            if(i>=5){core.setScene(new AnimScene(core));return;}
+            if(i>=5){
+                // переключение сцены
+                core.setScene(new AnimScene(core));
+                return;}
             testsRO[i].activity=true;
             cd=0.5f;
         }

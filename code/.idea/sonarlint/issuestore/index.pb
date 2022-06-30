@@ -1,10 +1,6 @@
 
 k
 ;app/src/main/java/com/example/engine_demo/MainActivity.java,1\c\1c832b825d50205f56f7719f69d1c9fa9837367d
-m
-=app/src/main/java/com/example/engine_demo/Scenes/Loading.java,f\4\f4acc49ac6c564925a0f40683680c1df843fc1dd
-o
-?app/src/main/java/com/example/engine_demo/Scenes/AnimScene.java,b\b\bb9aaa8d2740b2fa857580e13b46ade395481025
 q
 Aapp/engine/src/main/java/com/example/mylibrary/animation/Key.java,6\a\6aafa0efadc6d6f56e976a7949beaaf86e7dbf9d
 o
@@ -21,8 +17,6 @@ p
 @app/engine/src/main/java/com/example/mylibrary/core/Updated.java,6\d\6d0e8c4ff8e7a4a055d4d7367aa1327ad4b684a0
 o
 ?app/engine/src/main/java/com/example/mylibrary/math/Vector.java,3\5\35b808730a00cdb710ec4913a3fc282cc2a0efb7
-q
-Aapp/src/main/java/com/example/engine_demo/Scenes/PhysicsTest.java,5\f\5feb625e1b3e6a9b56af0cd16c0f252957db66f1
 m
 =app/engine/src/main/java/com/example/mylibrary/math/Func.java,e\f\ef0cb374cd8b0e4030ff07aebe5579b8fc2b13e7
 w

@@ -40,6 +40,7 @@ public final class PhysicsTest extends Scene implements Updated {
         renderer.global_light_dir = new Vector3(0,1,0);
         renderer.global_light_dir.norm();
 
+        // получение звука
         core.getAudioLoader().getAudio("bg").play(true, new Vector2(1));
 
         VertexesData vertexesDataPlane = modelLoader.getVertexesData("plane");
@@ -84,7 +85,8 @@ public final class PhysicsTest extends Scene implements Updated {
         renderer.camera.setPosition(new Vector3(0,15f,25));//0,15f,25
         renderer.camera.setRotate(new Vector3(20,0,0));//20,0,0
 
-        renderer.softShadow=5;
+        // создание теней
+        renderer.softShadow=3;
         Camera shadowCamera = new Camera(core);
         shadowCamera.rotateModeView = false;
         Vector2 res = new Vector2(800*2,600*2);
@@ -127,6 +129,7 @@ public final class PhysicsTest extends Scene implements Updated {
 
             renderer.addRenderObject(sphereRO);
             sphereRO.color=new Vector4(0.1f,0.1f,0.1f,1);
+            // создание RigidBody
             RigidBody sphereRB = new RigidBody(new CubeCollider(pos, new Vector3(0.8f)), sphereRO, core);
 
             pos = pos.clone();

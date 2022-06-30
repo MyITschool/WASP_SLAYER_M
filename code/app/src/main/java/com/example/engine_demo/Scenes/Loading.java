@@ -15,14 +15,13 @@ public final class Loading extends Scene {
 
     @Override
     public void start() {
+        // загрузка текстур
         renderer.loadTexture("textures/tests/floor.png", "floor");
         renderer.loadTexture("textures/tests/floor_normalmap.png", "floor_normalmap");
-
         renderer.loadTexture("textures/tests/wall.png", "wall");
         renderer.loadTexture("textures/tests/NormalMapWall.png", "wall_normalmap");
-
         renderer.loadTexture("textures/font.png", "font");
-
+        // загрузка неба
         renderer.loadCubemap(new String[]{
                 "textures/tests/skybox/r.png",
                 "textures/tests/skybox/l.png",
@@ -31,11 +30,11 @@ public final class Loading extends Scene {
                 "textures/tests/skybox/f.png",
                 "textures/tests/skybox/b.png"
         }, "sky");
-
+        // загрузка моделей
         modelLoader.loadModel("models/cube.obj", "cube");
         modelLoader.loadModel("models/sphere.obj", "sphere");
         modelLoader.loadModel("models/plane.obj", "plane");
-
+        // загрузка звука
         core.getAudioLoader().addAudio("audio/bg_m.mp3", "bg");
 
         core.setScene(new GraphicsTest(core));
