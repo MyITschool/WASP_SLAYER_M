@@ -7,9 +7,11 @@ import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 
 public class RebdererText extends RenderImg{
+    // текст
     public String text;
+    // сдвиг в текстуре
     protected float charSize = 1/16.0f;
-
+    // установить сдвиг
     public void setCharSize(int fontRes){
         this.charSize=1.0f/fontRes;
     }
@@ -30,6 +32,7 @@ public class RebdererText extends RenderImg{
         super(textureKey, renderer);
     }
 
+    // отрисовка
     public void draw(){
         if(!activity)return;
 
@@ -50,7 +53,7 @@ public class RebdererText extends RenderImg{
         setPosition(ip);
         setScale(isc);
 
-        renderer.UIModel.genTextureBuffer(new float[]{
+        renderer.UIModel.setVertexesTexture(new float[]{
                 0,1,
                 1,1,
                 1,0,
@@ -61,7 +64,6 @@ public class RebdererText extends RenderImg{
         });
         model.putShaderVariables();
     }
-
     protected void drawChar(int i, float scaleX, float posX){
         byte c = (byte)text.charAt(i);
         int x = c & 0b1111;
@@ -85,7 +87,7 @@ public class RebdererText extends RenderImg{
 
         setPosition(new Vector3(posX+scaleX*i, p.y, p.z));
 
-        renderer.UIModel.genTextureBuffer(mTextureCoordsData);
+        renderer.UIModel.setVertexesTexture(mTextureCoordsData);
         model.putShaderVariables();
     }
 }

@@ -7,37 +7,31 @@ import com.example.mylibrary.render.Renderer;
 import java.util.ArrayList;
 
 public final class Physics {
-    private final Renderer renderer;
 
+    private final Renderer renderer;
+    //ускорение свободного падения
     public Vector3 g = new Vector3(0,-9.8f,0);
 
     public Physics(Renderer renderer){
         this.renderer=renderer;
     }
-
+    // все коллайдеры
     private final ArrayList<CubeCollider> cubeColliders = new ArrayList<>();
-
-
+    // добавить коллайдер
     public void addCubeCollider(CubeCollider collider){
         cubeColliders.add(collider);
     }
+    // удалить коллайдер
     public void deleteCubeCollider(CubeCollider collider){
         cubeColliders.remove(collider);
     }
-    public CubeCollider getCubeCollider(int i){return cubeColliders.get(i);}
-
+    // удалить все коллайдеры
     public void clear(){
         cubeColliders.clear();
     }
-
+    // проверить столкновение
     public boolean testCollisionCube(CubeCollider collider){
-        for (int i = 0; i < cubeColliders.size(); i++){
-            CubeCollider ge = cubeColliders.get(i);
-            if (ge != collider && CubeInters(collider, ge))
-                return true;
-        }
-
-        return false;
+        return testCollisionCube(collider, new Collision());
     }
     public boolean testCollisionCube(CubeCollider collider, Collision collision){
         for (int i = 0; i < cubeColliders.size(); i++){
@@ -50,23 +44,15 @@ public final class Physics {
 
         return false;
     }
-
+    // проверка пересечения кубов
     public boolean CubeInters(CubeCollider collider, CubeCollider collider1) {
-        float[] cube0 = new float[]{collider.pos.x-collider.size.x, collider.pos.y-collider.size.y, collider.pos.z-collider.size.z,
-                collider.pos.x+collider.size.x, collider.pos.y+collider.size.y, collider.pos.z+collider.size.z};
-        float[] cube1 = new float[]{collider1.pos.x-collider1.size.x, collider1.pos.y-collider1.size.y, collider1.pos.z-collider1.size.z,
-                collider1.pos.x+collider1.size.x, collider1.pos.y+collider1.size.y, collider1.pos.z+collider1.size.z};
+        float[] cube0 = new float[]{collider.getPosition().x-collider.getScale().x, collider.getPosition().y-collider.getScale().y, collider.getPosition().z-collider.getScale().z,
+                collider.getPosition().x+collider.getScale().x, collider.getPosition().y+collider.getScale().y, collider.getPosition().z+collider.getScale().z};
+        float[] cube1 = new float[]{collider1.getPosition().x-collider1.getScale().x, collider1.getPosition().y-collider1.getScale().y, collider1.getPosition().z-collider1.getScale().z,
+                collider1.getPosition().x+collider1.getScale().x, collider1.getPosition().y+collider1.getScale().y, collider1.getPosition().z+collider1.getScale().z};
         for (int i = 0; i < 3; ++i)
             if (!Inters(cube0[i], cube0[i + 3], cube1[i], cube1[i + 3]))
                 return false;
-        return true;
-    }
-
-    private boolean CubeInters(float[] cube0, float[] cube1 ) {
-        for (int i = 0; i < 3; ++i)
-            if (!Inters(cube0[i], cube0[i + 3], cube1[i], cube1[i + 3]))
-                return false;
-
         return true;
     }
     private boolean Inters( float min1, float max1, float min2, float max2 ) {
@@ -75,85 +61,23 @@ public final class Physics {
         return true;
     }
 
+    // рэй каст ну понятно
     public boolean rayCastCamera(Hit hit, float minDepth, float maxDepth){
         Vector3 camr = renderer.camera.getRotation();
         Vector3 rd = new Vector3((float)Math.sin((camr.y)*Math.PI/180), (float)-Math.sin((camr.x)*Math.PI/180), (float)-Math.cos((camr.y)*Math.PI/180));
         Vector3 ro = renderer.camera.getPosition().clone();
         rd.norm();
-        Ray r = new Ray(ro, rd);
-
-        float min = maxDepth;
-
-        for(int i = 0; i < cubeColliders.size(); i++){
-            CubeCollider c = cubeColliders.get(i);
-            Brick b = new Brick(c.pos, Vector.add(c.pos, c.size));
-            boolean rc = IntersectRayBrick(r, b, minDepth, maxDepth);
-            if(rc){
-                float dist = Vector.sub(ro, c.pos).length();
-                if(dist < min){
-                    min=dist;
-                    hit.distance=dist;
-                    hit.collider=c;
-                    hit.index=i;
-                }
-            }
-        }
-        if(min==maxDepth)
-            return false;
-        return true;
+        return rayCast(hit, ro, rd, minDepth, maxDepth);
     }
     public boolean rayCastCamera(Hit hit, float minDepth, float maxDepth, CubeCollider collider){
         Vector3 camr = renderer.camera.getRotation();
         Vector3 rd = new Vector3((float)Math.sin((camr.y)*Math.PI/180), (float)-Math.sin((camr.x)*Math.PI/180), (float)-Math.cos((camr.y)*Math.PI/180));
         Vector3 ro = renderer.camera.getPosition().clone();
         rd.norm();
-        Ray r = new Ray(ro, rd);
-
-        float min = maxDepth;
-
-        for(int i = 0; i < cubeColliders.size(); i++){
-            CubeCollider c = cubeColliders.get(i);
-            Brick b = new Brick(c.pos, Vector.add(c.pos, c.size));
-            boolean rc = IntersectRayBrick(r, b, minDepth, maxDepth);
-            if(rc&&collider!=c){
-                float dist = Vector.sub(ro, c.pos).length();
-                if(dist < min){
-                    min=dist;
-                    hit.distance=dist;
-                    hit.collider=c;
-                    hit.index=i;
-                }
-            }
-        }
-        if(min==maxDepth)
-            return false;
-        return true;
+        return rayCast(hit, ro, rd, minDepth, maxDepth, collider);
     }
-
     public boolean rayCast(Hit hit, Vector3 ro, Vector3 rd, float minDepth, float maxDepth){
-        float min = maxDepth;
-        Vector3 rdir = rd.clone();
-        rdir.norm();
-        Ray r = new Ray(ro, rdir);
-
-        for(int i = 0; i < cubeColliders.size(); i++){
-            CubeCollider c = cubeColliders.get(i);
-            Brick b = new Brick(c.pos, Vector.add(c.pos, c.size));
-            boolean rc = IntersectRayBrick(r, b, minDepth, maxDepth);
-            if(rc){
-                float dist = Vector.sub(ro, c.pos).length();
-                if(dist < min){
-                    min=dist;
-                    hit.distance=dist;
-                    hit.collider=c;
-                    hit.index=i;
-                }
-            }
-        }
-
-        if(min==maxDepth)
-            return false;
-        return true;
+        return rayCast(hit,ro,rd,minDepth,maxDepth,null);
     }
     public boolean rayCast(Hit hit, Vector3 ro, Vector3 rd, float minDepth, float maxDepth, CubeCollider collider){
         float min = maxDepth;
@@ -163,15 +87,14 @@ public final class Physics {
 
         for(int i = 0; i < cubeColliders.size(); i++){
             CubeCollider c = cubeColliders.get(i);
-            Brick b = new Brick(c.pos, Vector.add(c.pos, c.size));
+            Brick b = new Brick(c.getPosition(), Vector.add(c.getPosition(), c.getScale()));
             boolean rc = IntersectRayBrick(r, b, minDepth, maxDepth);
             if(rc && collider != c){
-                float dist = Vector.sub(ro, c.pos).length();
+                float dist = Vector.sub(ro, c.getPosition()).length();
                 if(dist < min){
                     min=dist;
                     hit.distance=dist;
                     hit.collider=c;
-                    hit.index=i;
                 }
             }
         }
@@ -180,7 +103,7 @@ public final class Physics {
             return false;
         return true;
     }
-
+    // проверка попадания луча
     public boolean IntersectRayBrick(Ray ray, Brick brick, double t_near, double t_far) {
         if ( ray.start[0] >= brick.min_point[0] && ray.start[0] <= brick.max_point[0] &&
                 ray.start[1] >= brick.min_point[1] && ray.start[1] <= brick.max_point[1] &&

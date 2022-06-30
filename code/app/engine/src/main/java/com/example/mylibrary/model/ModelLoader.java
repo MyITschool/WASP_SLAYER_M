@@ -13,16 +13,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class ModelLoader {
-    private final Core core;
-
     private Logger logger = Logger.getLogger(ModelLoader.class.getName());
 
+    // ядро
+    private final Core core;
+    // загруженые модели
     private final HashMap<String, VertexesData> models = new HashMap<>();
 
     public ModelLoader(Core core){
         this.core=core;
     }
-
+    // загрузить модель             путь,       ключ
     public VertexesData loadModel(String src, String key) {
         ArrayList<Float> vn = new ArrayList<>();
         ArrayList<Float> vt = new ArrayList<>();
@@ -36,45 +37,7 @@ public final class ModelLoader {
         try {
             reader = new BufferedReader(new InputStreamReader(core.getAssets().open(src), StandardCharsets.UTF_8));
 
-            String mLine;
-            while ((mLine = reader.readLine()) != null) {
-
-                if(mLine.startsWith("vn ")){
-                    String[] vnA = mLine.split(" ");
-                    vn.add(Float.parseFloat(vnA[1]));
-                    vn.add(Float.parseFloat(vnA[2]));
-                    vn.add(Float.parseFloat(vnA[3]));
-                }else if(mLine.startsWith("vt ")){
-                    String[] vtA = mLine.split(" ");
-                    vt.add(Float.parseFloat(vtA[1]));
-                    vt.add(Float.parseFloat(vtA[2]));
-                }else if(mLine.startsWith("v ")){
-                    String[] vA = mLine.split(" ");
-                    v.add(Float.parseFloat(vA[1]));
-                    v.add(Float.parseFloat(vA[2]));
-                    v.add(Float.parseFloat(vA[3]));
-                }else if(mLine.startsWith("f ")){
-                    String[] fA = mLine.split(" ");
-                    for (int i = 1; i < 4; i++){
-                        String[] vA = fA[i].split("/");
-
-                        int vi = Integer.parseInt(vA[0])-1;
-                        Ov.add(v.get(vi*3));
-                        Ov.add(v.get(vi*3+1));
-                        Ov.add(v.get(vi*3+2));
-
-                        int vni = Integer.parseInt(vA[2])-1;
-                        Ovn.add(vn.get(vni*3));
-                        Ovn.add(vn.get(vni*3+1));
-                        Ovn.add(vn.get(vni*3+2));
-
-                        int vti = Integer.parseInt(vA[1])-1;
-                        Ovt.add(vt.get(vti*2));
-                        Ovt.add(vt.get(vti*2+1));
-                    }
-                }
-
-            }
+            parseOBJ(vn, vt, v, Ovn, Ovt, Ov, reader);
         } catch (IOException e) {
             logger.log(Level.WARNING, "ошибка загрузки модели", e);
         } finally {
@@ -87,6 +50,10 @@ public final class ModelLoader {
             }
         }
 
+        return genVD(Ovn, Ovt, Ov, key);
+    }
+    // создание верт.дат.
+    private VertexesData genVD(ArrayList<Float> Ovn, ArrayList<Float> Ovt, ArrayList<Float> Ov, String key){
         VertexesData m = new VertexesData();
 
         Vector3 min = new Vector3(0);
@@ -138,15 +105,67 @@ public final class ModelLoader {
 
         return m;
     }
+    // парсер OBJ файлов
+    private void parseOBJ(ArrayList<Float> vn, ArrayList<Float> vt, ArrayList<Float> v,
+                          ArrayList<Float> Ovn, ArrayList<Float> Ovt, ArrayList<Float> Ov, BufferedReader reader){
+        String mLine = null;
+        while (true) {
+            try {
+                if (!((mLine = reader.readLine()) != null)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if(mLine.startsWith("vn ")){
+                String[] vnA = mLine.split(" ");
+                vn.add(Float.parseFloat(vnA[1]));
+                vn.add(Float.parseFloat(vnA[2]));
+                vn.add(Float.parseFloat(vnA[3]));
+            }else if(mLine.startsWith("vt ")){
+                String[] vtA = mLine.split(" ");
+                vt.add(Float.parseFloat(vtA[1]));
+                vt.add(Float.parseFloat(vtA[2]));
+            }else if(mLine.startsWith("v ")){
+                String[] vA = mLine.split(" ");
+                v.add(Float.parseFloat(vA[1]));
+                v.add(Float.parseFloat(vA[2]));
+                v.add(Float.parseFloat(vA[3]));
+            }else if(mLine.startsWith("f ")){
+                String[] fA = mLine.split(" ");
+                for (int i = 1; i < 4; i++){
+                    String[] vA = fA[i].split("/");
+
+                    int vi = Integer.parseInt(vA[0])-1;
+                    Ov.add(v.get(vi*3));
+                    Ov.add(v.get(vi*3+1));
+                    Ov.add(v.get(vi*3+2));
+
+                    int vni = Integer.parseInt(vA[2])-1;
+                    Ovn.add(vn.get(vni*3));
+                    Ovn.add(vn.get(vni*3+1));
+                    Ovn.add(vn.get(vni*3+2));
+
+                    int vti = Integer.parseInt(vA[1])-1;
+                    Ovt.add(vt.get(vti*2));
+                    Ovt.add(vt.get(vti*2+1));
+                }
+            }
+
+        }
+    }
+    // получить модель
     public VertexesData getVertexesData(String key){
         return models.get(key);
     }
+    // добавить
     public void addVertexesData(VertexesData vertexesData, String key){
         models.put(key, vertexesData);
     }
+    // удалить
     public void deleteVertexesData(String key){
         models.remove(key);
     }
+    // удалить все
     public void clearVertexesData(){
         models.clear();
     }

@@ -1,19 +1,19 @@
 package com.example.mylibrary.physics.physics3D;
 
 public final class Hit {
+    // растояние
     public float distance;
+    // коллайдер
     public CubeCollider collider;
-    public int index;
 
-    public Hit(float distance, CubeCollider collider, int index){
+    public Hit(float distance, CubeCollider collider){
         this.distance=distance;
         this.collider=collider;
-        this.index=index;
     }
     public Hit(){}
 
     @Override
     public String toString() {
-        return "Hit"+"distance: "+distance+", collider: {"+collider.toString()+"}, index: "+index;
+        return "Hit"+"distance: "+distance+", collider: {"+collider.toString()+"}";
     }
 }

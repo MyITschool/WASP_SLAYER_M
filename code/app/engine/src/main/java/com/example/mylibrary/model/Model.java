@@ -24,7 +24,7 @@ import java.util.Map;
 
 
 public class Model {
-
+    // хранит информацию о буфере
     protected class BufferData{
         public FloatBuffer floatBuffer;
         public int COORDS_PER_VERTEX;
@@ -33,114 +33,112 @@ public class Model {
             this.COORDS_PER_VERTEX = COORDS_PER_VERTEX;
         }
     }
-
-    protected float[] vertexes = null;
-    protected float[] vertexes_normal = null;
-    protected float[] vertexes_texture = null;
-    protected float[] vertexes_normalTexture = null;
-
-    public int getNumberPolygons(){return vertexes.length/3;}
-
+    // мнформация о вершинах
+    protected VertexesData vertexesData = new VertexesData();
+    // количество полигонов
+    public int getNumberPolygons(){return vertexesData.vertexes.length/3;}
+    // мин и макс точки
     public Vector3 minPoint = new Vector3(-1);
     public Vector3 maxPoint = new Vector3(1);
-
+    // используемая шейдерная программа
     public final ShaderProgram shaderProgram;
-
+    // буферы
     protected final HashMap<String, BufferData> buffers = new HashMap<>();
+    // атрибуты
     protected HashMap<String, Integer> attributs;
+    // юниформы
     protected HashMap<String, Integer> uniforms;
-    protected int texture;
+    // текстура неба
+    private int texture;
+    // ядро
     public final Core core;
 
+    private static final String colorS = "color";
+    private static final String color_normalsS = "color_normals";
+    private static final String textureS = "texture";
+    private static final String texture_normalsS = "texture_normals";
+    private static final String texture_normalMapS = "texture_normalMap";
+    private static final String vPositionS = "vPosition";
+    // объект с цветом
     public Model(float[] vertexes, Core core){
-        this.vertexes = vertexes;
+        vertexesData.vertexes = vertexes;
         this.core = core;
-        this.shaderProgram = core.getRenderer().getShaderProgram("color");
+        this.shaderProgram = core.getRenderer().getShaderProgram(colorS);
 
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
 
-        vertexes_normal = null;
-        vertexes_texture = null;
-        vertexes_normalTexture = null;
-
         genBuffer();
     }
+    // с нормалями
     public Model(float[] vertexes, float[] vertexes_normal, Core core){
-        this.vertexes = vertexes;
-        this.vertexes_normal = vertexes_normal;
+        vertexesData.vertexes = vertexes;
+        vertexesData.vertexes_normal = vertexes_normal;
         this.core = core;
-        this.shaderProgram = core.getRenderer().getShaderProgram("color_normals");
+        this.shaderProgram = core.getRenderer().getShaderProgram(color_normalsS);
 
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
 
-        vertexes_texture = null;
-        vertexes_normalTexture = null;
-
         genBuffer();
     }
+    // с текстрой без нормалей
     public Model(float[] vertexes, float[] vertexes_texture, Core core, int texture){
-        this.vertexes = vertexes;
-        this.vertexes_texture = vertexes_texture;
+        vertexesData.vertexes = vertexes;
+        vertexesData.vertexes_texture = vertexes_texture;
         this.core = core;
-        this.shaderProgram = core.getRenderer().getShaderProgram("texture");
+        this.shaderProgram = core.getRenderer().getShaderProgram(textureS);
 
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
 
-        vertexes_normal = null;
-        vertexes_normalTexture = null;
-
         genBuffer();
     }
+    // текстура + нормали
     public Model(float[] vertexes, float[] vertexes_normal, float[] vertexes_texture, Core core){
-        this.vertexes = vertexes;
-        this.vertexes_normal = vertexes_normal;
-        this.vertexes_texture = vertexes_texture;
+        vertexesData.vertexes = vertexes;
+        vertexesData.vertexes_normal = vertexes_normal;
+        vertexesData.vertexes_texture = vertexes_texture;
         this.core = core;
-        this.shaderProgram = core.getRenderer().getShaderProgram("texture_normals");
+        this.shaderProgram = core.getRenderer().getShaderProgram(texture_normalsS);
 
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
 
-        vertexes_normalTexture = null;
-
         genBuffer();
     }
+    // текстура + карта нормалей
     public Model(float[] vertexes, float[] vertexes_normal, float[] vertexes_texture, float[] vertexes_normalTexture, Core core){
-        this.vertexes = vertexes;
-        this.vertexes_normal = vertexes_normal;
-        this.vertexes_texture = vertexes_texture;
-        this.vertexes_normalTexture = vertexes_normalTexture;
+        vertexesData.vertexes = vertexes;
+        vertexesData.vertexes_normal = vertexes_normal;
+        vertexesData.vertexes_texture = vertexes_texture;
+        vertexesData.vertexes_normalTexture = vertexes_normalTexture;
         this.core = core;
-        this.shaderProgram = core.getRenderer().getShaderProgram("texture_normalMap");
+        this.shaderProgram = core.getRenderer().getShaderProgram(texture_normalMapS);
 
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
 
         genBuffer();
     }
+    // авто
     public Model(VertexesData vertexesData, Core core){
-        vertexes = vertexesData.vertexes;
-        vertexes_normal = vertexesData.vertexes_normal;
-        vertexes_texture = vertexesData.vertexes_texture;
-        vertexes_normalTexture = vertexesData.vertexes_normalTexture;
+        this.vertexesData = vertexesData;
 
         maxPoint = vertexesData.maxPoint;
         minPoint = vertexesData.minPoint;
 
         this.core = core;
 
-        String spn = "color";
-        if(vertexes_normal!=null)
-            spn = "color_normals";
-        if(vertexes_texture!=null&&vertexes_normal==null)
-            spn = "texture";
-        if(vertexes_texture!=null&&vertexes_normal!=null)
-            spn = "texture_normals";
-        if(vertexes_normalTexture!=null)
-            spn = "texture_normalMap";
+        String spn = colorS;
+        if(vertexesData.vertexes_normal!=null)
+            spn = color_normalsS;
+        if(vertexesData.vertexes_texture!=null&&vertexesData.vertexes_normal==null)
+            spn = textureS;
+        if(vertexesData.vertexes_texture!=null&&vertexesData.vertexes_normal!=null)
+            spn = texture_normalsS;
+        if(vertexesData.vertexes_normalTexture!=null)
+            spn = texture_normalMapS;
 
         shaderProgram = core.getRenderer().getShaderProgram(spn);
 
@@ -149,6 +147,7 @@ public class Model {
 
         genBuffer();
     }
+    // небо
     public Model(String cubeMapKey, Core core){
         this.core = core;
         texture = core.getRenderer().getTexture(cubeMapKey);
@@ -158,11 +157,7 @@ public class Model {
         attributs = shaderProgram.getAttributs();
         uniforms = shaderProgram.getUniforms();
 
-        vertexes_normal = null;
-        vertexes_texture = null;
-        vertexes_normalTexture = null;
-
-        vertexes = new float[]{
+        vertexesData.vertexes = new float[]{
                 -1.0f, -1.0f,  1.0f,
                 1.0f, -1.0f,  1.0f,
                 1.0f,  1.0f,  1.0f,
@@ -227,36 +222,39 @@ public class Model {
         uniforms = shaderProgram.getUniforms();
     }
 
+    // создание буферов
     protected void genBuffer(){
-        int BYTES_PER_FLOAT = 4;
+        final int BYTES_PER_FLOAT = 4;
+        final int COORDS_PER_VERTEX = 3;
+        final int COORDS_PER_VERTEX_T = 2;
 
-        FloatBuffer mVertices = ByteBuffer.allocateDirect(vertexes.length * BYTES_PER_FLOAT)
+        FloatBuffer mVertices = ByteBuffer.allocateDirect(vertexesData.vertexes.length * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mVertices.put(vertexes).position(0);
+        mVertices.put(vertexesData.vertexes).position(0);
 
-        buffers.put("vPosition", new BufferData(mVertices, 3));
+        buffers.put(vPositionS, new BufferData(mVertices, COORDS_PER_VERTEX));
 
-        if(shaderProgram.name == "color_normals" || shaderProgram.name == "texture_normals" || shaderProgram.name == "texture_normalMap"){
-            FloatBuffer mNormals = ByteBuffer.allocateDirect(vertexes_normal.length * BYTES_PER_FLOAT)
+        if(shaderProgram.name == color_normalsS || shaderProgram.name == texture_normalsS || shaderProgram.name == texture_normalMapS){
+            FloatBuffer mNormals = ByteBuffer.allocateDirect(vertexesData.vertexes_normal.length * BYTES_PER_FLOAT)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            mNormals.put(vertexes_normal).position(0);
+            mNormals.put(vertexesData.vertexes_normal).position(0);
 
-            buffers.put("vNormal", new BufferData(mNormals, 3));
+            buffers.put("vNormal", new BufferData(mNormals, COORDS_PER_VERTEX));
         }
 
-        if(shaderProgram.name == "texture" || shaderProgram.name == "texture_normals" || shaderProgram.name == "texture_normalMap"){
-            FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexes_texture.length * BYTES_PER_FLOAT)
+        if(shaderProgram.name == textureS || shaderProgram.name == texture_normalsS || shaderProgram.name == texture_normalMapS){
+            FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexesData.vertexes_texture.length * BYTES_PER_FLOAT)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            mTexture.put(vertexes_texture).position(0);
+            mTexture.put(vertexesData.vertexes_texture).position(0);
 
-            buffers.put("vTexture", new BufferData(mTexture, 2));
+            buffers.put("vTexture", new BufferData(mTexture, COORDS_PER_VERTEX_T));
         }
-        if(shaderProgram.name == "texture_normalMap"){
-            FloatBuffer mTextureNormal = ByteBuffer.allocateDirect(vertexes_normalTexture.length * BYTES_PER_FLOAT)
+        if(shaderProgram.name == texture_normalMapS){
+            FloatBuffer mTextureNormal = ByteBuffer.allocateDirect(vertexesData.vertexes_normalTexture.length * BYTES_PER_FLOAT)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            mTextureNormal.put(vertexes_normalTexture).position(0);
+            mTextureNormal.put(vertexesData.vertexes_normalTexture).position(0);
 
-            buffers.put("vNormalTextureCoord", new BufferData(mTextureNormal, 2));
+            buffers.put("vNormalTextureCoord", new BufferData(mTextureNormal, COORDS_PER_VERTEX_T));
 
             float[] vertexes_tangent = genTangentData();
 
@@ -264,27 +262,28 @@ public class Model {
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
             mTangent.put(vertexes_tangent).position(0);
 
-            buffers.put("vTangent", new BufferData(mTangent, 3));
+            buffers.put("vTangent", new BufferData(mTangent, COORDS_PER_VERTEX));
         }
     }
+    // вочисление тан для карты нормалей
     protected float[] genTangentData(){
-        float[] mTangentData = new float[vertexes.length];
+        float[] mTangentData = new float[vertexesData.vertexes.length];
 
         int b = 0;
-        for (int i = 0; i < vertexes.length; i+=9){
-            float[] pos1 = {vertexes[i],vertexes[i+1],vertexes[i+2]};
-            float[] pos2 = {vertexes[i+3],vertexes[i+4],vertexes[i+5]};
-            float[] pos3 = {vertexes[i+6],vertexes[i+7],vertexes[i+8]};
+        for (int i = 0; i < vertexesData.vertexes.length; i+=9){
+            float[] pos1 = {vertexesData.vertexes[i],vertexesData.vertexes[i+1],vertexesData.vertexes[i+2]};
+            float[] pos2 = {vertexesData.vertexes[i+3],vertexesData.vertexes[i+4],vertexesData.vertexes[i+5]};
+            float[] pos3 = {vertexesData.vertexes[i+6],vertexesData.vertexes[i+7],vertexesData.vertexes[i+8]};
 
-            float[] uv1 = {vertexes_normalTexture[b],vertexes_normalTexture[b+1]};
-            float[] uv2 = {vertexes_normalTexture[b+2],vertexes_normalTexture[b+3]};
-            float[] uv3 = {vertexes_normalTexture[b+4],vertexes_normalTexture[b+5]};
+            float[] uv1 = {vertexesData.vertexes_normalTexture[b],vertexesData.vertexes_normalTexture[b+1]};
+            float[] uv2 = {vertexesData.vertexes_normalTexture[b+2],vertexesData.vertexes_normalTexture[b+3]};
+            float[] uv3 = {vertexesData.vertexes_normalTexture[b+4],vertexesData.vertexes_normalTexture[b+5]};
             b+=6;
 
-            float[] edge1 = {pos2[0]-pos1[0], pos2[1]-pos1[1], pos2[2]-pos1[2]};//pos2 - pos1;
-            float[] edge2 = {pos3[0]-pos1[0], pos3[1]-pos1[1], pos3[2]-pos1[2]};//pos3 - pos1;
-            float[] deltaUV1 = {uv2[0]-uv1[0], uv2[1]-uv1[1]};//uv2 - uv1;
-            float[] deltaUV2 = {uv3[0]-uv1[0], uv3[1]-uv1[1]};//uv3 - uv1;
+            float[] edge1 = {pos2[0]-pos1[0], pos2[1]-pos1[1], pos2[2]-pos1[2]};
+            float[] edge2 = {pos3[0]-pos1[0], pos3[1]-pos1[1], pos3[2]-pos1[2]};
+            float[] deltaUV1 = {uv2[0]-uv1[0], uv2[1]-uv1[1]};
+            float[] deltaUV2 = {uv3[0]-uv1[0], uv3[1]-uv1[1]};
 
             float f = 1.0f / (deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]);
 
@@ -303,11 +302,10 @@ public class Model {
 
         return mTangentData;
     }
-
-
+    // установка общих юниформ для объектов этой модели
     protected void setGeneralUniforms(){
         Renderer r = core.getRenderer();
-        if(shaderProgram.name == "color" || shaderProgram.name == "color_normals" || shaderProgram.name == "texture" || shaderProgram.name == "texture_normals" || shaderProgram.name == "texture_normalMap"){
+        if(shaderProgram.name == colorS || shaderProgram.name == color_normalsS || shaderProgram.name == textureS || shaderProgram.name == texture_normalsS || shaderProgram.name == texture_normalMapS){
             glUniformMatrix4fv(uniforms.get("uVPMatrix"), 1, false, r.camera.getvPMatrix(), 0);
             glUniform1f(uniforms.get("far"), r.camera.getFar());
             glUniform4fv(uniforms.get("fog_color"), 1, r.fog_color.getArray(), 0);
@@ -320,23 +318,24 @@ public class Model {
                 glUniformMatrix4fv(uniforms.get("depthMVP"), 1, false, r.getShadowCamera().getvPMatrix(), 0);
             }
         }
-        if(shaderProgram.name == "color_normals" || shaderProgram.name == "texture_normals" || shaderProgram.name == "texture_normalMap"){
+        if(shaderProgram.name == color_normalsS || shaderProgram.name == texture_normalsS || shaderProgram.name == texture_normalMapS){
             glUniform3fv(uniforms.get("uViewPos"), 1, r.camera.getPosition().getArray(), 0);
             glUniform3fv(uniforms.get("global_light_color"), 1, r.global_light_color.getArray(), 0);
             glUniform3fv(uniforms.get("global_light_dir"), 1, r.global_light_dir.getArray(), 0);
 
+            final String uLightS = "uLight[";
             int j = 0;
             for (int i = 0; i < r.getLightsArraySize(); i++){
                 j += r.getLight(i).draw(new int[]{
-                        uniforms.get("uLight["+j+"]"),
-                        uniforms.get("uLight["+(j+1)+"]"),
-                        uniforms.get("uLight["+(j+2)+"]")
+                        uniforms.get(uLightS+j+"]"),
+                        uniforms.get(uLightS+(j+1)+"]"),
+                        uniforms.get(uLightS+(j+2)+"]")
                 });
                 if(252-j+1<3)break;
             }
-            if(r.getLightsArraySize() == 0){
-                    glUniform4fv(uniforms.get("uLight["+0+"]"), 1, new float[]{0,0,0,0}, 0);
-                glUniform4fv(uniforms.get("uLight["+1+"]"), 1, new float[]{0,0,0,0}, 0);
+            if(252-j+1>=2){
+                glUniform4fv(uniforms.get(uLightS+j+"]"), 1, new float[]{0,0,0,0}, 0);
+                glUniform4fv(uniforms.get(uLightS+(j+1)+"]"), 1, new float[]{0,0,0,0}, 0);
             }
         }
         if(shaderProgram.name == "sky"){
@@ -344,6 +343,7 @@ public class Model {
             glUniform1i(uniforms.get("skyBox"), texture);
         }
     }
+    // установка буферов
     protected void setBuffers(){
         for (Map.Entry<String, Integer> entry : attributs.entrySet()) {
             int positionHandle = entry.getValue();
@@ -357,15 +357,16 @@ public class Model {
         }
     }
 
+    // старт установка буферов и юниформ
     public void putShaderVariables(){
         setBuffers();
         setGeneralUniforms();
     }
-
+    // для Z буфера
     public void setZbufferAtr(HashMap<String, Integer> attributs){
-        int positionHandle = attributs.get("vPosition");
+        int positionHandle = attributs.get(vPositionS);
 
-        BufferData bufferData = buffers.get("vPosition");
+        BufferData bufferData = buffers.get(vPositionS);
 
         glVertexAttribPointer(positionHandle, bufferData.COORDS_PER_VERTEX,
                 GL_FLOAT, false,
@@ -373,6 +374,7 @@ public class Model {
         glEnableVertexAttribArray(positionHandle);
     }
 
+    // очистка
     public void disableAttributs(){
         for (Map.Entry<String, Integer> entry : attributs.entrySet()) {
             glDisableVertexAttribArray(entry.getValue());
@@ -382,9 +384,7 @@ public class Model {
     @Override
     public String toString() {
         return getClass().getName()
-                +'\n'+"vertexes: "+ Arrays.toString(vertexes)
-                +'\n'+"vertexes_normal: "+ Arrays.toString(vertexes_normal)
-                +'\n'+"vertexes_normalTexture: "+ Arrays.toString(vertexes_normalTexture)
+                +'\n'+"vertexesData: "+ vertexesData
                 +'\n'+"shaderProgram: " + shaderProgram.name;
     }
 

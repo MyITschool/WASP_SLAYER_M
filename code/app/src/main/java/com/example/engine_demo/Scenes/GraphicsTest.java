@@ -76,7 +76,7 @@ public final class GraphicsTest extends Scene implements Updated {
         renderer.addRenderObject(skyRO);
         testsRO[4] = skyRO;
 
-        light = new Light(new Vector3(0,0,4), new Vector3(1), 4);
+        light = new Light(new Vector3(0,0,4), new Vector3(1), 4, renderer);
         renderer.addLigth(light);
 
         fpsRT = new RebdererText("font", "00", core);
@@ -108,7 +108,7 @@ public final class GraphicsTest extends Scene implements Updated {
     public void update(float dt) {
         t+=dt;
         Vector3 pos = new Vector3((float) Math.sin(t)*4,0,(float) Math.cos(t)*4);
-        light.position = pos;
+        light.setPosition(pos);
         lightRO.setPosition(pos);
         cd-=dt;
         if(touchListener.getTouchDown(new Vector2(0), new Vector2(1), new Vector2(0)) && cd <= 0){

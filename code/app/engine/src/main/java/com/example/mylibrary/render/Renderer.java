@@ -66,49 +66,61 @@ import javax.microedition.khronos.opengles.GL10;
 
 @SuppressLint("ViewConstructor")
 public final class Renderer extends GLSurfaceView implements GLSurfaceView.Renderer {
+    private Logger logger = Logger.getLogger(Renderer.class.getName());
 
     private final Core core;
 
-    private Logger logger = Logger.getLogger(Renderer.class.getName());
-
+    // программы
     private final HashMap<String, ShaderProgram> shaderPrograms = new HashMap<>();
+    // текстуры
     private final HashMap<String, Integer> textures = new HashMap<>();
+    // удалёные текстуры
     private final ArrayList<Integer> deleteTextures = new ArrayList<>();
-
+    // мадели
     private final ArrayList<Model> models = new ArrayList<>();
+    // объекты
     private final ArrayList<ArrayList<RenderObject>> obj = new ArrayList<>();
-
+    // UI модели
     private final ArrayList<Model> UImodels = new ArrayList<>();
+    // UI объекты
     private final ArrayList<ArrayList<RenderObject>> UIobj = new ArrayList<>();
-
+    // обновляемые объекты
     private final ArrayList<Updated> updateds = new ArrayList<>();
+    // свет
     private final ArrayList<Light> lights = new ArrayList<>();
-
+    // камера
     public Camera camera;
     public UIModel UIModel;
-
+    // цвет тумана в дали
     public Vector4 fog_color = new Vector4(1);
+    // мин освещение
     public float ambient = 0;
+    // направление глобального освещения
     public Vector3 global_light_dir = new Vector3(0,1,0);
+    // цвет глобального освещения
     public Vector3 global_light_color = new Vector3(1);
-
+    // уровень теней
     public int softShadow = 1;
-
+    // получить программу
     public ShaderProgram getShaderProgram(String key){
         return shaderPrograms.get(key);
     }
+    // удалить программу
     public void deleteShaderProgram(String key){
         shaderPrograms.remove(key);
     }
-
+    // разрешение
     private Vector2 res = new Vector2(1);
-
+    // получить рарешение
     public Vector2 getRes(){return res.clone();}
-
+    // камера теней
     private Camera shadowCamera;
+    // Z буфер
     private int fbo = -1;
+    // погрешность теней
     public float bias = 0.005f;
 
+    // писать в консоль ФПС
     public boolean logFPS = true;
 
     public Renderer(Core core){
@@ -125,6 +137,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     private final String uVPMatrixS = "uVPMatrix";
     private final String zBufferS = "zBuffer";
     private final String uModelMatrixS = "uModelMatrix";
+    // создание стандартных программ
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         final String fog_colorS = "fog_color";
@@ -224,6 +237,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     private int upd = 0;
     private long timer=System.currentTimeMillis();
     private int fps = 0;
+    // получить ФПС
     public int getLastFPS(){
         return fps;
     }
@@ -258,6 +272,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         glViewport(0, 0, (int)res.x, (int)res.y);
         drawRenderObject();
     }
+    // отрисовка в З буфер
     private void drawZBuffer(){
         if (models.size() != 0){
             ShaderProgram shaderProgram = shaderPrograms.get(zBufferS);
@@ -286,6 +301,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
             }
         }
     }
+    // отрисовка объектов
     private void drawRenderObject(){
         glClearDepthf(1.0f);
         glEnable(GL_DEPTH_TEST);
@@ -319,18 +335,23 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
             glEnable(GL_DEPTH_TEST);
         }
     }
+
+    // обновление
     private void update(float l){
         for(int i = 0; i < updateds.size(); i++){
             updateds.get(i).update(l);
         }
     }
+    // добавить обновляемый объект
     public void addUpdated(Updated updated){
         updateds.add(updated);
     }
+    // удалить
     public void deleteUpdated(Updated updated){
         updateds.remove(updated);
     }
 
+    // добавить 3Д объект
     public void addRenderObject(RenderObject renderObject){
         int im = models.lastIndexOf(renderObject.getModel());
         if(im != -1){
@@ -341,6 +362,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         obj.add(new ArrayList<RenderObject>());
         obj.get(obj.size()-1).add(renderObject);
     }
+    // удалить
     public void deleteRenderObject(RenderObject renderObject){
         int im = models.lastIndexOf(renderObject.getModel());
         obj.get(im).remove(renderObject);
@@ -350,6 +372,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         }
     }
 
+    // добавить 2Д
     public void addUI(RenderObject renderObject){
 
         int im = UImodels.lastIndexOf(renderObject.getModel());
@@ -361,6 +384,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         UIobj.add(new ArrayList<RenderObject>());
         UIobj.get(UIobj.size()-1).add(renderObject);
     }
+    // удалить
     public void deleteUI(RenderObject renderObject){
         int im = UImodels.lastIndexOf(renderObject.getModel());
         UIobj.get(im).remove(renderObject);
@@ -370,25 +394,30 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         }
     }
 
+    // добавить свет
     public void addLigth(Light light){
         lights.add(light);
         sortLigth();
     }
+    // удадить
     public void deleteLigth(Light light){
         lights.remove(light);
     }
+    // получить
     public Light getLight(int i){
         return lights.get(i);
     }
+    // получить количество света
     public int getLightsArraySize(){
         return lights.size();
     }
+    // сортировка
     public void sortLigth(){
         Vector3 camera_position = camera.getPosition();
         Collections.sort(lights, new Comparator<Light>(){
             public int compare(Light l, Light l1){
-                float d = Vector.sub(l.position, camera_position).length();
-                float d1 = Vector.sub(l1.position, camera_position).length();
+                float d = Vector.sub(l.getPosition(), camera_position).length();
+                float d1 = Vector.sub(l1.getPosition(), camera_position).length();
                 if(d == d1)
                     return 0;
                 return d < d1 ? -1 : 1;
@@ -396,6 +425,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         });
     }
 
+    // очистка
     public void clear(){
         models.clear();
         UImodels.clear();
@@ -405,13 +435,16 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         lights.clear();
     }
 
+    // получить номер текстуры
     public int getTexture(String key){
         return textures.get(key);
     }
+    // удалить
     public void deleteTexture(String key) {
         deleteTextures.add(textures.get(key));
         textures.remove(key);
     }
+    // загрузить
     public void loadTexture(String src, String key){
         AssetManager assetManager = core.getAssets();
 
@@ -464,6 +497,8 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         }
 
     }
+
+    // загрузить Cubemap (небо)
     public void loadCubemap(String[] src, String key){
         if(deleteTextures.size()!=0){
             glActiveTexture(GL_TEXTURE0+deleteTextures.get(0));
@@ -507,6 +542,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         }
     }
 
+    // добавить тени
     public void addShadow(Vector2 res, Camera shadowCamera){
         if(fbo!=-1){
             logger.log(Level.WARNING, "fbo уже есть");
@@ -516,6 +552,7 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         fbo = GLUtil.createFrameBuffer((int)res.x, (int)res.y, textures.size() )[1];
         textures.put(zBufferS, textures.size());
     }
+    // установка камеры теней
     public void setShadowCamera(Camera shadowCamera){
         if(fbo==-1){
             logger.log(Level.WARNING, "нет fbo");
@@ -523,9 +560,11 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
         }
         this.shadowCamera=shadowCamera;
     }
+    // получить камеру теней
     public Camera getShadowCamera(){
         return shadowCamera;
     }
+    // получить номер текстуры З буфера
     public int getFBO(){
         return fbo;
     }

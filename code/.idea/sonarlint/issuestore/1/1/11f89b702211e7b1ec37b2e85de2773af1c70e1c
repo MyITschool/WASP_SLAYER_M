@@ -1,8 +1,0 @@
-
-k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ýãÆ©úÿÿÿÿ
-f	java:S117 "QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿—ýÍ
-k	java:S117!"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ìãŠÀÿÿÿÿÿ
-h
-java:S3776"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(Èä—Ï
-E
-java:S2093$"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ

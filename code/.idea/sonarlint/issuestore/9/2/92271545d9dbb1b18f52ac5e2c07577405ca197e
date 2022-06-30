@@ -1,16 +1,0 @@
-
-o
-java:S1104"TMake vertexes a static final constant or non-public and provide accessors if needed.(ˆŠÎğıÿÿÿÿ
-v
-java:S1104"[Make vertexes_normal a static final constant or non-public and provide accessors if needed.(‰°ä›øÿÿÿÿ
-w
-java:S1104"\Make vertexes_texture a static final constant or non-public and provide accessors if needed.(òàşÿÿÿÿ
-x
-java:S1104	"bMake vertexes_normalTexture a static final constant or non-public and provide accessors if needed.(ÿ§ùª
-j
-java:S1104"TMake maxPoint a static final constant or non-public and provide accessors if needed.(øÍ­À
-j
-java:S1104"TMake minPoint a static final constant or non-public and provide accessors if needed.(Çö£
-t	java:S116"ZRename this field "vertexes_normal" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‰°ä›øÿÿÿÿ
-u	java:S116"[Rename this field "vertexes_texture" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(òàşÿÿÿÿ
-v	java:S116	"aRename this field "vertexes_normalTexture" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿ§ùª

@@ -4,6 +4,7 @@ package com.example.mylibrary.physics.physics3D;
 import com.example.mylibrary.math.Vector3;
 
 public final class Brick {
+    // макс и мин точки
     public float[] min_point;
     public float[] max_point;
 

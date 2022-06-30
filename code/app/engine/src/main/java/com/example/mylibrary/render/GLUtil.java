@@ -19,6 +19,8 @@ public final class GLUtil
 {
     private GLUtil(){}
     final static String sl = "ESShader";
+
+    // создать буфер кадра
     public static int[] createFrameBuffer(int width, int height, int lastTextureIndex) {
 
         glActiveTexture(GL_TEXTURE0+lastTextureIndex);
@@ -64,9 +66,8 @@ public final class GLUtil
 
         return new int[]{mOffscreenTexture, mFramebuffer, mDepthBuffer};
     }
-
-    static String readShader(Context context, String fileName)
-    {
+    // загрузка шейдера
+    static String readShader(Context context, String fileName) {
         String shaderSource = null;
 
         if ( fileName == null )
@@ -106,12 +107,10 @@ public final class GLUtil
 
         return shaderSource;
     }
+    // установка
+    public static int loadShader ( int type, String shaderSrc ) {
 
-    
-    public static int loadShader ( int type, String shaderSrc )
-    {
-        
-        
+
         int shader;
         int[] compiled = new int[1];
 
@@ -137,9 +136,8 @@ public final class GLUtil
 
         return shader;
     }
-
-    public static int loadProgram ( String vertShaderSrc, String fragShaderSrc)
-    {
+    // создание программы
+    public static int loadProgram ( String vertShaderSrc, String fragShaderSrc) {
         int vertexShader;
         int fragmentShader;
         int programObject;

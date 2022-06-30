@@ -19,19 +19,20 @@ import com.example.mylibrary.model.Model;
 import java.util.HashMap;
 
 public class RenderObject extends GameObject {
-
+    // модель
     protected Model model;
-
+    // текстура
     public int texture = 0;
+    // карта гормалей
     public int normalTexture = 0;
 
     protected float[] modelMatrix = new float[16];
     protected float[] rotateMatrix = new float[16];
 
     protected final Renderer renderer;
-
+    // блики
     public Vector2 specular = new Vector2(1, 32);
-
+    // юниформы
     protected HashMap<String, Integer> uniforms;
 
     public RenderObject(Model model){
@@ -71,6 +72,7 @@ public class RenderObject extends GameObject {
         genModelMat();
     }
 
+    // создание матрици модели
     protected void genModelMat(){
         float[] modelMatrix = new float[16];
         float[] rotateMatrix = new float[16];
@@ -107,7 +109,7 @@ public class RenderObject extends GameObject {
         this.modelMatrix = modelMatrix;
         this.rotateMatrix = rotateMatrix;
     }
-
+    // установка юниформ
     protected void setUniforms(){
         final String texture_normalMapS = "texture_normalMap";
         if(model.shaderProgram.name != "sky"){
@@ -127,6 +129,7 @@ public class RenderObject extends GameObject {
         }
     }
 
+    // проверка видимости
     protected boolean gp(Vector4 vm, float[] m){
         float[] vpos = vm.getArray();
 
@@ -138,7 +141,6 @@ public class RenderObject extends GameObject {
                 (-p.w <= p.y && p.y <= p.w) &&
                 (0 <= p.z && p.z <= p.w);
     }
-
     public boolean inCamera(Camera camera){
         if (Vector.sub(position, camera.getPosition()).length() > camera.getFar()){
             return false;
@@ -164,6 +166,7 @@ public class RenderObject extends GameObject {
                 gp(v4, m) || gp(v5, m) || gp(v6, m) || gp(v7, m);
     }
 
+    // отрисовка
     public void draw(){
         if(!activity)return;
         if (!inCamera(renderer.camera) && model.shaderProgram.name != "sky")return;
@@ -172,6 +175,7 @@ public class RenderObject extends GameObject {
 
         glDrawArrays(GL_TRIANGLES, 0, model.getNumberPolygons());
     }
+    // отрисовка в З буфер
     public void drawInBuff(int adrMM){
         if (!inCamera(renderer.getShadowCamera()) || !activity || model.shaderProgram.name == "sky")return;
         glUniformMatrix4fv(adrMM, 1, false, modelMatrix, 0);

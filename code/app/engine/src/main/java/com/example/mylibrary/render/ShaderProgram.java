@@ -8,12 +8,13 @@ import com.example.mylibrary.core.Core;
 import java.util.HashMap;
 
 public final class ShaderProgram {
-
+    // номер программы
     public final int shaderProgram;
-
+    // атрибуты
     private final HashMap<String, Integer> attributs = new HashMap<>();
+    // юниформы
     private final HashMap<String, Integer> uniforms = new HashMap<>();
-
+    // имя
     public final String name;
 
     public ShaderProgram(String name, String vs_src, String fs_src, String[] attributs, String[] uniforms, Core core){
@@ -25,7 +26,7 @@ public final class ShaderProgram {
 
         genAttributsUniforms(attributs, uniforms);
     }
-
+    // создание мапов
     private void genAttributsUniforms(String[] attributs, String[] uniforms){
 
         for (String attribut : attributs) {
@@ -36,7 +37,7 @@ public final class ShaderProgram {
         }
 
     }
-
+    // получение
     public HashMap<String, Integer> getAttributs(){
         return attributs;
     }

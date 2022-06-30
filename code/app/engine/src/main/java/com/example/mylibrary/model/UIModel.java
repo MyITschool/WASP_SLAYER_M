@@ -7,13 +7,13 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class UIModel extends Model{
-
-    public int getNumberPolygons(){return vertexes.length/2;}
+    // количество полигонов
+    public int getNumberPolygons(){return vertexesData.vertexes.length/2;}
 
     public UIModel(Core core){
         super(core.getRenderer().getShaderProgram("UI"), core);
 
-        vertexes = new float[]{
+        vertexesData.vertexes = new float[]{
                 -1,-1,
                 1,-1,
                 1,1,
@@ -23,7 +23,7 @@ public class UIModel extends Model{
                 -1,1
         };
 
-        vertexes_texture = new float[]{
+        vertexesData.vertexes_texture = new float[]{
                 0,1,
                 1,1,
                 1,0,
@@ -36,33 +36,34 @@ public class UIModel extends Model{
         genBuffer();
     }
 
+    // создание буферов
     protected void genBuffer() {
-        int BYTES_PER_FLOAT = 4;
+        final int BYTES_PER_FLOAT = 4;
+        final int COORDS_PER_VERTEX = 2;
 
-        FloatBuffer mVertices = ByteBuffer.allocateDirect(vertexes.length * BYTES_PER_FLOAT)
+        FloatBuffer mVertices = ByteBuffer.allocateDirect(vertexesData.vertexes.length * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mVertices.put(vertexes).position(0);
+        mVertices.put(vertexesData.vertexes).position(0);
 
-        buffers.put("vPosition", new BufferData(mVertices, 2));
+        buffers.put("vPosition", new BufferData(mVertices, COORDS_PER_VERTEX));
 
-        FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexes_texture.length * BYTES_PER_FLOAT)
+        FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexesData.vertexes_texture.length * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mTexture.put(vertexes_texture).position(0);
+        mTexture.put(vertexesData.vertexes_texture).position(0);
 
-        buffers.put("vTexture", new BufferData(mTexture, 2));
+        buffers.put("vTexture", new BufferData(mTexture, COORDS_PER_VERTEX));
     }
+    // установить новые координаты текстуры для вершин
+    public void setVertexesTexture(float[] vertexes_texture){
+        vertexesData.vertexes_texture=vertexes_texture;
 
-    public void genTextureBuffer(float[] vertexes_texture){
-        this.vertexes_texture=vertexes_texture;
-        int BYTES_PER_FLOAT = 4;
-
-        FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexes_texture.length * BYTES_PER_FLOAT)
+        FloatBuffer mTexture = ByteBuffer.allocateDirect(vertexes_texture.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mTexture.put(vertexes_texture).position(0);
 
         buffers.get("vTexture").floatBuffer = mTexture;
     }
-
+    // установка буферов
     public void putShaderVariables(){
         setBuffers();
     }

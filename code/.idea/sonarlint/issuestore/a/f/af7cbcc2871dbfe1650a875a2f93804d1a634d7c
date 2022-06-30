@@ -1,8 +1,0 @@
-
-o
-java:S1104"TMake distance a static final constant or non-public and provide accessors if needed.(Ñ¥ÊÅÿÿÿÿÿ
-o
-java:S1104"TMake collider a static final constant or non-public and provide accessors if needed.(€Ü·âüÿÿÿÿ
-l
-java:S1104"QMake index a static final constant or non-public and provide accessors if needed.(×´úÕúÿÿÿÿ
-o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(™˜à«

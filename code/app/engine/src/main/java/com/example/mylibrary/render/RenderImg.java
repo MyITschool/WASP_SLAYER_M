@@ -17,7 +17,7 @@ public class RenderImg extends RenderObject{
     public RenderImg(String textureKey, Renderer renderer){
         super(renderer.UIModel, textureKey);
     }
-
+    // установка юниформ
     public void setUniforms(){
         HashMap<String, Integer> uniforms = model.shaderProgram.getUniforms();
 
@@ -25,6 +25,7 @@ public class RenderImg extends RenderObject{
         glUniform4fv(uniforms.get("color"), 1, color.getArray(), 0);
         glUniform1i(uniforms.get("uTexture"), texture);
     }
+    // отрисовка
     public void draw(){
         if(!activity)return;
         setUniforms();
