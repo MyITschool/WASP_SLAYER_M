@@ -11,6 +11,7 @@ import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
 import com.example.mylibrary.model.Model;
 import com.example.mylibrary.model.ModelLoader;
+import com.example.mylibrary.model.UIModel;
 import com.example.mylibrary.model.VertexesData;
 import com.example.mylibrary.physics.physics3D.CubeCollider;
 import com.example.mylibrary.physics.physics3D.Physics;
@@ -70,13 +71,13 @@ public final class PhysicsTest extends Scene implements Updated {
         Model modelSky = new Model("sky", core);
         RenderObject skyRO = new RenderObject(modelSky);
         renderer.addRenderObject(skyRO);
-
-        fpsRT = new RebdererText("font", "00", core);
+        UIModel uiModel = new UIModel(core);
+        fpsRT = new RebdererText("font", "00", uiModel);
         fpsRT.setScale(new Vector3(0.2f,0.2f,1));
         fpsRT.setPosition(new Vector3(-0.8f,0.8f,0));
         renderer.addUI(fpsRT);
 
-        sphereCountRT = new RebdererText("font", "spheres: 0", core);
+        sphereCountRT = new RebdererText("font", "spheres: 0", uiModel);
         sphereCountRT.setScale(new Vector3(0.3f,0.2f,1));
         sphereCountRT.setPosition(new Vector3(0.5f,0.8f,0));
         renderer.addUI(sphereCountRT);

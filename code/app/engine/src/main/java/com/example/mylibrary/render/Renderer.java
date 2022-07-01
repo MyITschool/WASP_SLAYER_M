@@ -90,7 +90,6 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     private final ArrayList<Light> lights = new ArrayList<>();
     // камера
     public Camera camera;
-    public UIModel UIModel;
     // цвет тумана в дали
     public Vector4 fog_color = new Vector4(1);
     // мин освещение
@@ -206,13 +205,11 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
                 new String[]{vPositionS, vTextureS},
                 new String[]{uTextureS, colorS, uModelMatrixS},
                 core));
-        UIModel = new UIModel(core);
         ///////////////////////////////////////////////////////////////////////////
         shaderPrograms.put(zBufferS, new ShaderProgram(zBufferS,"shaders/zBuffer/vs.glsl","shaders/zBuffer/fs.glsl",
                 new String[]{vPositionS},
                 new String[]{uVPMatrixS,uModelMatrixS,"far"},
                 core));
-        UIModel = new UIModel(core);
         ///////////////////////////////////////////////////////////////////////////
         glEnable(GL_MULTISAMPLE);
         glEnable(GL10.GL_BLEND);

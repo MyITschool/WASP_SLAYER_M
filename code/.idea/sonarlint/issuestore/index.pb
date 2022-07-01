@@ -31,10 +31,6 @@ s
 Capp/engine/src/main/java/com/example/mylibrary/core/GameObject.java,d\2\d292a70c273ddb95a179de50983a36cb0e2ac656
 u
 Eapp/engine/src/main/java/com/example/mylibrary/model/ModelLoader.java,1\1\11f89b702211e7b1ec37b2e85de2773af1c70e1c
-q
-Aapp/engine/src/main/java/com/example/mylibrary/model/UIModel.java,a\f\af368fd1054dbd30b469d9cd23e47d1fffdf0e06
-o
-?app/engine/src/main/java/com/example/mylibrary/model/Model.java,1\4\14615de27f0f3506674e0462e82fb66e17d2cb4a
 v
 Fapp/engine/src/main/java/com/example/mylibrary/model/VertexesData.java,9\2\92271545d9dbb1b18f52ac5e2c07577405ca197e
 {
@@ -55,11 +51,5 @@ q
 Aapp/engine/src/main/java/com/example/mylibrary/render/GLUtil.java,c\c\cc86c33750b94346fee577b3f3307eed68b9ce1d
 p
 @app/engine/src/main/java/com/example/mylibrary/render/Light.java,f\4\f47a2a178ea4011d7c021d6afae7def7af449d80
-w
-Gapp/engine/src/main/java/com/example/mylibrary/render/RebdererText.java,b\9\b98c39c63c54f937b8c5f763dc54daf13b5f2914
-t
-Dapp/engine/src/main/java/com/example/mylibrary/render/RenderImg.java,4\b\4b1a54240b5f31aff7e20b02dab5c72b5ff558bc
-w
-Gapp/engine/src/main/java/com/example/mylibrary/render/RenderObject.java,d\2\d2703ce60efed7a4834ce47df50eac33b60d60f4
 x
 Happ/engine/src/main/java/com/example/mylibrary/render/ShaderProgram.java,f\b\fbe646b2a7d256b83b9319424e734aae6cc680bd

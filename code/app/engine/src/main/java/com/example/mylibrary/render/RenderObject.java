@@ -151,8 +151,8 @@ public class RenderObject extends GameObject {
         Matrix.multiplyMM(m, 0, cm, 0, modelMatrix, 0);
 
 
-        Vector3 min = model.minPoint;
-        Vector3 max = model.maxPoint;
+        Vector3 min = model.minPoint.clone();
+        Vector3 max = model.maxPoint.clone();
 
         Vector4 v2 = new Vector4(max.x, min.y, min.z, 1);
         Vector4 v3 = new Vector4(min.x, max.y, min.z, 1);

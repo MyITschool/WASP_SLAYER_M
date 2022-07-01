@@ -5,6 +5,8 @@ import static android.opengl.GLES20.glDrawArrays;
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.math.Vector4;
+import com.example.mylibrary.model.Model;
+import com.example.mylibrary.model.UIModel;
 
 public class RebdererText extends RenderImg{
     // текст
@@ -16,20 +18,18 @@ public class RebdererText extends RenderImg{
         this.charSize=1.0f/fontRes;
     }
 
-    public RebdererText(String textureKey, String text, Core core) {
-        super(textureKey, core);
-        this.text = text;
-    }
-    public RebdererText(String textureKey, String text, Renderer renderer) {
-        super(textureKey, renderer);
+    // модель
+    protected final UIModel uiModel;
+
+    public RebdererText(String textureKey, String text, UIModel uiModel) {
+        super(textureKey, uiModel);
+        this.uiModel = uiModel;
         this.text = text;
     }
     //////////////////////////////////////////////////////////
-    public RebdererText(String textureKey, Core core) {
-        super(textureKey, core);
-    }
-    public RebdererText(String textureKey, Renderer renderer) {
-        super(textureKey, renderer);
+    public RebdererText(String textureKey, UIModel uiModel) {
+        super(textureKey, uiModel);
+        this.uiModel = uiModel;
     }
 
     // отрисовка
@@ -53,7 +53,7 @@ public class RebdererText extends RenderImg{
         setPosition(ip);
         setScale(isc);
 
-        renderer.UIModel.setVertexesTexture(new float[]{
+        uiModel.setVertexesTexture(new float[]{
                 0,1,
                 1,1,
                 1,0,
@@ -87,7 +87,7 @@ public class RebdererText extends RenderImg{
 
         setPosition(new Vector3(posX+scaleX*i, p.y, p.z));
 
-        renderer.UIModel.setVertexesTexture(mTextureCoordsData);
+        uiModel.setVertexesTexture(mTextureCoordsData);
         model.putShaderVariables();
     }
 }

@@ -7,15 +7,14 @@ import static android.opengl.GLES20.glUniform4fv;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 
 import com.example.mylibrary.core.Core;
+import com.example.mylibrary.model.UIModel;
+
 import java.util.HashMap;
 
 public class RenderImg extends RenderObject{
 
-    public RenderImg(String textureKey, Core core){
-        super(core.getRenderer().UIModel, textureKey);
-    }
-    public RenderImg(String textureKey, Renderer renderer){
-        super(renderer.UIModel, textureKey);
+    public RenderImg(String textureKey, UIModel uiModel){
+        super(uiModel, textureKey);
     }
     // установка юниформ
     public void setUniforms(){

@@ -8,6 +8,7 @@ import com.example.mylibrary.math.Vector2;
 import com.example.mylibrary.math.Vector3;
 import com.example.mylibrary.model.Model;
 import com.example.mylibrary.model.ModelLoader;
+import com.example.mylibrary.model.UIModel;
 import com.example.mylibrary.model.VertexesData;
 import com.example.mylibrary.render.Light;
 import com.example.mylibrary.render.RebdererText;
@@ -85,7 +86,7 @@ public final class GraphicsTest extends Scene implements Updated {
         renderer.addLigth(light);
 
         // UI
-        fpsRT = new RebdererText("font", "00", core);
+        fpsRT = new RebdererText("font", "00", new UIModel(core));
         fpsRT.setScale(new Vector3(0.2f,0.2f,1));
         fpsRT.setPosition(new Vector3(-0.8f,0.8f,0));
         renderer.addUI(fpsRT);

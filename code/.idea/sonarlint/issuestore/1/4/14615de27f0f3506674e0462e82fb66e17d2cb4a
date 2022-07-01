@@ -1,29 +1,0 @@
-
-„
-java:S1319î"fThe type of "attributs" should be an interface such as "Map" rather than the implementation "HashMap".(”™·º8ğ¤Ç›0
-k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡„ˆÊøÿÿÿÿ
-r	java:S117J"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¼…ÆĞüÿÿÿÿ8ğ¤Ç›0
-r	java:S117V"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÅÙÚäşÿÿÿÿ8ğ¤Ç›0
-m	java:S117b"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ššÍÃ8ñ¤Ç›0
-m	java:S117b"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ššÍÃ8ñ¤Ç›0
-m	java:S117o"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿­ã¾8ñ¤Ç›0
-m	java:S117o"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿­ã¾8ñ¤Ç›0
-m	java:S117o"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿­ã¾8ñ¤Ç›0
-n	java:S117ƒ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›Îóú8ñ¤Ç›0
-r
-java:S1104"WMake floatBuffer a static final constant or non-public and provide accessors if needed.(Ä®Í‰ùÿÿÿÿ
-s
-java:S1104"]Make COORDS_PER_VERTEX a static final constant or non-public and provide accessors if needed.(’Ş‰á
-o
-java:S1104)"TMake minPoint a static final constant or non-public and provide accessors if needed.(©ãï˜ıÿÿÿÿ
-i
-java:S1104*"TMake maxPoint a static final constant or non-public and provide accessors if needed.(¬ˆ»V
-n	java:S1158"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ı‡‹\
-o	java:S1159"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ÊÙâ÷
-o	java:S115:"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Üá„³
-t	java:S115;"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ˆÁğúøÿÿÿÿ
-t	java:S115<"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(´§¾ëúÿÿÿÿ
-{	java:S115="ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(£íÒûùÿÿÿÿ8¶¦Ç›0
-q	java:S116"\Rename this field "COORDS_PER_VERTEX" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’Ş‰á
-P
-java:S1172V".Remove this unused method parameter "texture".(ÅÙÚäşÿÿÿÿ8¾¦Ç›0

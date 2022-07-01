@@ -1,9 +1,12 @@
 package com.example.engine_demo.Scenes;
 
+import com.example.mylibrary.audio.Audio;
+import com.example.mylibrary.audio.AudioLoader;
 import com.example.mylibrary.core.Core;
 import com.example.mylibrary.core.Scene;
 import com.example.mylibrary.model.Model;
 import com.example.mylibrary.model.ModelLoader;
+import com.example.mylibrary.model.VertexesData;
 import com.example.mylibrary.render.RenderObject;
 import com.example.mylibrary.render.Renderer;
 
@@ -18,6 +21,7 @@ public final class Loading extends Scene {
     @Override
     public void start() {
         // загрузка текстур
+
         renderer.loadTexture("textures/tests/floor.png", "floor");
         renderer.loadTexture("textures/tests/floor_normalmap.png", "floor_normalmap");
         renderer.loadTexture("textures/tests/wall.png", "wall");
