@@ -31,6 +31,11 @@ public final class CubeCollider extends GameObject implements Cloneable{
         this.scale = size;
     }
 
+    public CubeCollider(GameObject obj){
+        this.position = obj.getPosition();
+        this.scale = obj.getScale();
+    }
+
     @Override
     public String toString() {
         return "pos: "+position+", size: "+scale+", type: "+type+", obj: "+rigidBody;

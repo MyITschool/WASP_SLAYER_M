@@ -543,11 +543,12 @@ public final class Renderer extends GLSurfaceView implements GLSurfaceView.Rende
     }
 
     // добавить тени
-    public void addShadow(Vector2 res, Camera shadowCamera){
+    public void addShadow(Camera shadowCamera){
         if(fbo!=-1){
             logger.log(Level.WARNING, "fbo уже есть");
             return;
         }
+        Vector2 res = shadowCamera.getResolution();
         this.shadowCamera=shadowCamera;
         fbo = GLUtil.createFrameBuffer((int)res.x, (int)res.y, textures.size() )[1];
         textures.put(zBufferS, textures.size());

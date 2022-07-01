@@ -93,7 +93,7 @@ public final class PhysicsTest extends Scene implements Updated {
         shadowCamera.setResolution(res);
         shadowCamera.setPosition(new Vector3(0,100f,0));
         shadowCamera.setRotate(new Vector3(90,0,0));
-        renderer.addShadow(res, shadowCamera);
+        renderer.addShadow(shadowCamera);
         shadowCamera.setFar(200);
         renderer.camera.setFar(200);
 

@@ -39,8 +39,6 @@ v
 Fapp/engine/src/main/java/com/example/mylibrary/model/VertexesData.java,9\2\92271545d9dbb1b18f52ac5e2c07577405ca197e
 {
 Kapp/engine/src/main/java/com/example/mylibrary/physics/physics3D/Brick.java,1\5\159f65a9b60403c9b65ce9205f0daaf365663b55
-‚
-Rapp/engine/src/main/java/com/example/mylibrary/physics/physics3D/CubeCollider.java,5\b\5ba9dab3ce81119af87df9175af97933a7206c3d
 y
 Iapp/engine/src/main/java/com/example/mylibrary/physics/physics3D/Hit.java,a\f\af7cbcc2871dbfe1650a875a2f93804d1a634d7c
 }
@@ -59,17 +57,9 @@ p
 @app/engine/src/main/java/com/example/mylibrary/render/Light.java,f\4\f47a2a178ea4011d7c021d6afae7def7af449d80
 w
 Gapp/engine/src/main/java/com/example/mylibrary/render/RebdererText.java,b\9\b98c39c63c54f937b8c5f763dc54daf13b5f2914
-s
-Capp/engine/src/main/java/com/example/mylibrary/render/Renderer.java,6\6\664e7c61b2f4d1b8b7ec0628639b44552171ba9f
 t
 Dapp/engine/src/main/java/com/example/mylibrary/render/RenderImg.java,4\b\4b1a54240b5f31aff7e20b02dab5c72b5ff558bc
 w
 Gapp/engine/src/main/java/com/example/mylibrary/render/RenderObject.java,d\2\d2703ce60efed7a4834ce47df50eac33b60d60f4
 x
 Happ/engine/src/main/java/com/example/mylibrary/render/ShaderProgram.java,f\b\fbe646b2a7d256b83b9319424e734aae6cc680bd
-r
-Bapp/src/main/java/com/example/engine_demo/Scenes/GraphicsTest.java,f\9\f97e91f86965cd2b1853ed7ad14e36f19ce7df39
-o
-?app/src/main/java/com/example/engine_demo/Scenes/AnimScene.java,b\b\bb9aaa8d2740b2fa857580e13b46ade395481025
-m
-=app/src/main/java/com/example/engine_demo/Scenes/Loading.java,f\4\f4acc49ac6c564925a0f40683680c1df843fc1dd
