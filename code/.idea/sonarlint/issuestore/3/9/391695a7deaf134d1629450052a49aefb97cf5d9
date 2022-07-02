@@ -1,17 +1,0 @@
-
-k	java:S117k"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹°ä ÿÿÿÿÿ
-k	java:S117k"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹°ä ÿÿÿÿÿ
-c
-java:S1104"MMake g a static final constant or non-public and provide accessors if needed.(’·û¿
-o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(™˜à«
-h	java:S1000"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÚÖ¤Ýýÿÿÿÿ
-c	java:S100:"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(íüžþ
-W
-java:S1126<"AReplace this if-then-else statement by a single return statement.(ë¡Íø
-W
-java:S1126f"AReplace this if-then-else statement by a single return statement.(æáÚ¶
-h	java:S100k"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹°ä ÿÿÿÿÿ
-m
-java:S3776k"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(‹°ä ÿÿÿÿÿ
-;
-java:S1659r" Declare "t2" on a separate line.(ÃÍÄ¬ûÿÿÿÿ

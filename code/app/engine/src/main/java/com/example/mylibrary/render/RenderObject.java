@@ -22,9 +22,15 @@ public class RenderObject extends GameObject {
     // модель
     protected Model model;
     // текстура
-    public int texture = 0;
+    protected int texture = 0;
+    public void setTexture(String key){
+        texture = renderer.getTexture(key);
+    }
     // карта гормалей
-    public int normalTexture = 0;
+    protected int normalTexture = 0;
+    public void setNormalTexture(String key){
+        normalTexture = renderer.getTexture(key);
+    }
 
     protected float[] modelMatrix = new float[16];
     protected float[] rotateMatrix = new float[16];
