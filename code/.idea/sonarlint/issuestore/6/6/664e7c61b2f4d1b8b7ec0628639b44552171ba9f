@@ -1,0 +1,55 @@
+
+n	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(˜…õ¸8Ì“Ö‘›0
+K
+java:S1604"(Make this anonymous inner class a lambda(…±£´ÿÿÿÿÿ8Í“Ö‘›0
+m
+java:S1104\"RMake camera a static final constant or non-public and provide accessors if needed.(Û¾ÅÛÿÿÿÿÿ
+p
+java:S1104^"UMake fog_color a static final constant or non-public and provide accessors if needed.(†»ÇŠÿÿÿÿÿ
+i
+java:S1104`"SMake ambient a static final constant or non-public and provide accessors if needed.(¬¹´
+q
+java:S1104b"\Make global_light_dir a static final constant or non-public and provide accessors if needed.(›§ßg
+{
+java:S1104d"^Make global_light_color a static final constant or non-public and provide accessors if needed.(Àù²ï8Ğ ¿‘›0
+x
+java:S1104f"VMake softShadow a static final constant or non-public and provide accessors if needed.(Æ¾ÛÖûÿÿÿÿ8Ğ ¿‘›0
+r
+java:S1104x"PMake bias a static final constant or non-public and provide accessors if needed.(€ßø¸üÿÿÿÿ8ƒìÂ‘›0
+t
+java:S1104{"RMake logFPS a static final constant or non-public and provide accessors if needed.(ÃÅ÷úÿÿÿÿ8ƒìÂ‘›0
+Z
+java:S2629ø"7Use the built-in formatting to construct this argument.(õËÀøÿÿÿÿ8„ìÂ‘›0
+h	java:S116T"SRename this field "UImodels" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(«†®’
+q	java:S116V"PRename this field "UIobj" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ª›ŒØøÿÿÿÿ8Ã‚¸‘›0
+u	java:S116^"TRename this field "fog_color" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(†»ÇŠÿÿÿÿÿ8‹—¼‘›0
+o	java:S116b"[Rename this field "global_light_dir" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(›§ßg
+y	java:S116d"]Rename this field "global_light_color" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Àù²ï8¸¡¿‘›0
+8
+java:S1170ˆ"!Make this final field static too.(ÊÏÊÒ
+8
+java:S1170‰"!Make this final field static too.(ÔÎ¥Ì
+D
+java:S1170Š"!Make this final field static too.(€¾øšıÿÿÿÿ8èìÂ‘›0
+(
+java:S2176D"Rename this class.(éò’¬
+M
+java:S3416E"+Update this logger to use "Renderer.class".(èÊ¼îúÿÿÿÿ8›à­‘›0
+K
+java:S1905€"(Remove this unnecessary cast to "float".(§ş¦¨ûÿÿÿÿ8óìÂ‘›0
+Q
+java:S3457È"4Lambda should be used to defer string concatenation.(Õì¬`8æ”Ö‘›0
+\
+java:S1155Ì">Use isEmpty() to check whether the collection is empty or not.(Ì¼¥¹8æ”Ö‘›0
+Z
+java:S1117Ó"<Rename "textures" which hides the field declared at line 76.(îÎñÂ8ç”Ö‘›0
+\
+java:S1155é">Use isEmpty() to check whether the collection is empty or not.(Ì¼¥¹8ç”Ö‘›0
+\
+java:S1155ô">Use isEmpty() to check whether the collection is empty or not.(Ì¼¥¹8é”Ö‘›0
+W
+java:S3457Œ"4Lambda should be used to defer string concatenation.(æ³‡Üúÿÿÿÿ8ê”Ö‘›0
+\
+java:S1155–">Use isEmpty() to check whether the collection is empty or not.(Ì¼¥¹8ê”Ö‘›0
+U
+java:S1117¤"8Rename "res" which hides the field declared at line 112.(öÇ8šÔÔ¼›0
